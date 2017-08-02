@@ -4,21 +4,27 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
+import com.remswork.project.alice.bean.prop.DataSourcePropertiesBean;
+
 @Configuration
 public class JPAConfig {
+	
+	@Autowired
+	private DataSourcePropertiesBean datasourceProp;
 	
 	@Bean
 	public DataSource dataSource() {
 		return DataSourceBuilder.create()
-				.driverClassName("com.mysql.jdbc.Driver")
-				.url("jdbc:mysql://localhost:3306/dbalice")
-				.username("root")
-				.password("")
+				.driverClassName(datasourceProp.getDriverClassName())
+				.url(datasourceProp.getUrl())
+				.username(datasourceProp.getUsername())
+				.password(datasourceProp.getPassword())
 				.build();
 	}
 	
