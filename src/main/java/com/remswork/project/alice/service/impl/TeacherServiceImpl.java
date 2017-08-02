@@ -14,11 +14,6 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Autowired
 	private TeacherDaoImpl teacherDao;
-	
-	@Override
-	public Teacher addTeacher(final Teacher teacher) {
-		return teacherDao.addTeacher(teacher);
-	}
 
 	@Override
 	public Teacher getTeacherById(final int id) {
@@ -28,6 +23,11 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public List<Teacher> getTeacherList() {
 		return teacherDao.getTeacherList();
+	}
+	
+	@Override
+	public Teacher addTeacher(final Teacher teacher) {
+		return teacherDao.addTeacher(teacher);
 	}
 
 	@Override

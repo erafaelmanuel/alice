@@ -1,5 +1,8 @@
 package com.remswork.project.alice.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -22,13 +26,15 @@ public class Teacher {
 	private String lastName;
 	private String email;
 	private String password;
-	
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name="departmentId")
 	private Department department;
+	@Transient
+	private List<Link> links;
 	
 	public Teacher() {
 		super();
+		links = new ArrayList<>();
 	}
 	
 	public Teacher(String firstName, String lastName, String email, String password) {
@@ -90,5 +96,17 @@ public class Teacher {
 	
 	public void setDepartment(Department department) {
 		this.department = department;
+	}
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+
+	public void addLink(Link link) {
+		links.add(link);
 	}
 }
