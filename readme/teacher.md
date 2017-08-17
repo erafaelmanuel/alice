@@ -1,6 +1,6 @@
 # Teacher
 
-### getTeacherById
+## getTeacherById
 
 **Request**
 
@@ -35,7 +35,7 @@
 }
 ```
 
-### getTeacherList
+## getTeacherList
 
 **Request**
 
@@ -45,6 +45,54 @@
 **Response**
 
 * Status : 200 OK
+* Body :
+```
+[
+  {
+    "firstName":"",
+    "lastName":"",
+    "middleName":"",
+    "email":""
+  },
+  ...
+]
+```
+
+**Example**
+
+* URL : api/teacher
+* Body :
+```
+[
+  {
+    "id": 1
+    "firstName": "Verlie",
+    "lastName" : "Manuel",
+    "middleName": "Estrada",
+    "email": "verliemanuel@gmail.com"
+  },
+  ...
+]
+```
+
+## addTeacher
+
+**Request**
+
+* Requirment : None
+* Http Method : POST
+* URI : api/teacher
+* Body : 
+```
+  {
+    "firstName" : "",
+    "lastName" : "",
+    ...
+  }
+```
+**Response**
+
+* Status : 201 OK
 * Body :
 ```
 [
