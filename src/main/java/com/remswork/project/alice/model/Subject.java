@@ -14,7 +14,7 @@ public class Subject {
 	
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Id
-	private int id;
+	private long id;
 	private String name;
 	private String code;
 	private String description;
@@ -32,16 +32,16 @@ public class Subject {
 		this.unit = unit;
 	}
 	
-	public Subject(int id, String name, String code, String description, int unit) {
+	public Subject(long id, String name, String code, String description, int unit) {
 		this(name, code, description, unit);
 		this.id = id;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

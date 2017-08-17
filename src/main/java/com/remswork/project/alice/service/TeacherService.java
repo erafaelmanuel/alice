@@ -6,9 +6,11 @@ import com.remswork.project.alice.model.Teacher;
 
 public interface TeacherService {
 	
-	Teacher getTeacherById(int id);
+	Teacher getTeacherById(long id);
 	List<Teacher> getTeacherList();
 	Teacher addTeacher(Teacher teacher);
-	Teacher updateTeacherById(int id, Teacher newTeacher);
-	Teacher deleteTeacherById(int id);
+	Teacher addTeacher(Teacher teacher, long departmentId);
+	Teacher updateTeacherById(long id, Teacher newTeacher);
+	Teacher updateTeacherById(long id, Teacher newTeacher, long departmentId);
+	Teacher deleteTeacherById(long id);
 }

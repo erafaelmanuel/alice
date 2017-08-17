@@ -1,18 +1,9 @@
 package com.remswork.project.alice.model;
 
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @Entity
@@ -20,13 +11,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Teacher {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	@GeneratedValue(strategy= GenerationType.AUTO)
+	private long id;
 	private String firstName;
 	private String lastName;
+	private String middleName;
 	private String email;
-	private String password;
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="userDetailId")
+	private UserDetail userDetail;
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="departmentId")
 	private Department department;
 	@Transient
@@ -37,24 +31,24 @@ public class Teacher {
 		links = new ArrayList<>();
 	}
 	
-	public Teacher(String firstName, String lastName, String email, String password) {
+	public Teacher(String firstName, String lastName, String middleName, String email) {
 		this();
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.middleName = middleName;
 		this.email = email;
-		this.password = password;
 	}
 
-	public Teacher(int id, String firstName, String lastName, String email, String password) {
-		this(firstName, lastName, email, password);
+	public Teacher(long id, String firstName, String lastName, String middleName, String email) {
+		this(firstName, lastName, middleName, email);
 		this.id = id;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -74,6 +68,14 @@ public class Teacher {
 		this.lastName = lastName;
 	}
 
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -82,18 +84,18 @@ public class Teacher {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public UserDetail getUserDetail() {
+		return userDetail;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setUserDetail(UserDetail userDetail) {
+		this.userDetail = userDetail;
 	}
-	
+
 	public Department getDepartment() {
 		return department;
 	}
-	
+
 	public void setDepartment(Department department) {
 		this.department = department;
 	}

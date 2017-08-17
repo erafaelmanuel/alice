@@ -1,23 +1,23 @@
-package com.remswork.project.alice.res.link;
+package com.remswork.project.alice.resource.links;
 
 import com.remswork.project.alice.model.Link;
-import com.remswork.project.alice.res.TeacherResource;
+import com.remswork.project.alice.resource.TeacherResource;
 
 import javax.ws.rs.core.UriInfo;
 
-public class TeacherResourceLink {
+public class TeacherResourceLinks {
 
     private UriInfo uriInfo;
 
-    public TeacherResourceLink(UriInfo uriInfo) {
+    public TeacherResourceLinks(UriInfo uriInfo) {
         this.uriInfo = uriInfo;
     }
 
-    public Link self(int teacherId){
-        String rel =  "Self";
+    public Link self(final long teacherId){
+        String rel =  "self";
         String uri = uriInfo.getBaseUriBuilder()
                 .path(TeacherResource.class)
-                .path(Integer.toString(teacherId))
+                .path(Long.toString(teacherId))
                 .build().toString();
         return new Link(uri, rel);
     }

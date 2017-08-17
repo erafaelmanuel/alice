@@ -1,25 +1,26 @@
 package com.remswork.project.alice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 @Entity
 @Table(name="tbldepartment")
 public class Department {
-	
-	@GeneratedValue(strategy=GenerationType.AUTO)
+
 	@Id
-	private int id;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private long id;
 	private String name;
 	private String description;
+	@Transient
+	private List<Link> links;
 	
 	public Department() {
 		super();
+		links = new ArrayList<>();
 	}
 	
 	public Department(String name, String description) {
@@ -28,16 +29,16 @@ public class Department {
 		this.description = description;
 	}
 	
-	public Department(int id, String name, String description) {
+	public Department(long id, String name, String description) {
 		this(name, description);
 		this.id = id;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
@@ -52,7 +53,19 @@ public class Department {
 	public String getDescription() {
 		return description;
 	}
-	
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+
+	public void addLink(Link link){
+		links.add(link);
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
