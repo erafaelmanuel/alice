@@ -97,7 +97,7 @@
 ```
 **Response**
 
-* Status : 201 OK
+* Status : 201 CREATED
 * Body :
 ```
   {
