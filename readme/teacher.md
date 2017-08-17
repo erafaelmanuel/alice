@@ -23,7 +23,7 @@
 
 **Example**
 
-URL : api/teacher/5
+* URL : api/teacher/5
 * Body :
 ```
 {
