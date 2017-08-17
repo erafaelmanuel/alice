@@ -34,3 +34,43 @@
   "email": "erafaelmanuel@gmail.com"
 }
 ```
+
+### getTeacherList
+
+**Request**
+
+* Requirment : None
+* Http Method : GET
+* URI : api/teacher
+**Response**
+
+* Status : 200 OK
+* Body :
+```
+[
+  {
+    "firstName":"",
+    "lastName":"",
+    "middleName":"",
+    "email":""
+  },
+  ...
+]
+```
+
+**Example**
+
+* URL : api/teacher
+* Body :
+```
+[
+  {
+    "id": 1
+    "firstName": "Verlie",
+    "lastName" : "Manuel",
+    "middleName": "Estrada",
+    "email": "verliemanuel@gmail.com"
+  },
+  ...
+]
+```
