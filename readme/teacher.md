@@ -83,6 +83,10 @@
 * Requirment : None
 * Http Method : POST
 * URI : api/teacher
+* Fields : 
+```
+  departmentId=[department_id]
+```
 * Body : 
 ```
   {
@@ -106,7 +110,7 @@
 
 **Example**
 
-* URL : api/teacher
+* URL : api/teacher?departmentId=2
 * Body :
 ```
   {
@@ -114,6 +118,11 @@
     "firstName": "Verlie",
     "lastName" : "Manuel",
     "middleName": "Estrada",
-    "email": "verliemanuel@gmail.com"
+    "email": "verliemanuel@gmail.com",
+    "department" : {
+      "id":2,
+      "description":"Sample description",
+      "name":"College of Computer Studies"
+    }
   }
 ```
