@@ -17,10 +17,10 @@ public class Teacher {
 	private String lastName;
 	private String middleName;
 	private String email;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="userDetailId")
 	private UserDetail userDetail;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="departmentId")
 	private Department department;
 	@Transient

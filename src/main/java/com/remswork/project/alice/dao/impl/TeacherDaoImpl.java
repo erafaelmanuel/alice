@@ -67,39 +67,30 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             if (teacher == null)
-                throw new TeacherDaoException(
-                        "You tried to add teacher with a null value");
+                throw new TeacherDaoException("You tried to add teacher with a null value");
             if (teacher.getFirstName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's first name is required");
+                throw new TeacherDaoException("Teacher's first name is required");
             if (teacher.getFirstName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty first name");
+                throw new TeacherDaoException("Teacher can't have an empty first name");
             if (teacher.getLastName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's last name is required");
+                throw new TeacherDaoException("Teacher's last name is required");
             if (teacher.getLastName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty last name");
+                throw new TeacherDaoException("Teacher can't have an empty last name");
             if (teacher.getMiddleName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's middle name is required");
+                throw new TeacherDaoException("Teacher's middle name is required");
             if (teacher.getMiddleName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty middle name");
+                throw new TeacherDaoException("Teacher can't have an empty middle name");
             if (teacher.getEmail() == null)
-                throw new TeacherDaoException(
-                        "Teacher's email is required");
+                throw new TeacherDaoException("Teacher's email is required");
             if (teacher.getEmail().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty email");
+                throw new TeacherDaoException("Teacher can't have an empty email");
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
             userDetail.setRegistered(Calendar.getInstance().getTime().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
-            userDetail.setUserType(UserDetail.USER);
+            userDetail.setUserType(UserDetail.USER_TEACHER);
             teacher.setUserDetail(userDetail);
 
             session.persist(teacher);
@@ -119,32 +110,23 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             if (teacher == null)
-                throw new TeacherDaoException(
-                        "You tried to add teacher with a null value");
+                throw new TeacherDaoException("You tried to add teacher with a null value");
             if (teacher.getFirstName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's first name is required");
+                throw new TeacherDaoException("Teacher's first name is required");
             if (teacher.getFirstName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty first name");
+                throw new TeacherDaoException("Teacher can't have an empty first name");
             if (teacher.getLastName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's last name is required");
+                throw new TeacherDaoException("Teacher's last name is required");
             if (teacher.getLastName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty last name");
+                throw new TeacherDaoException("Teacher can't have an empty last name");
             if (teacher.getMiddleName() == null)
-                throw new TeacherDaoException(
-                        "Teacher's middle name is required");
+                throw new TeacherDaoException("Teacher's middle name is required");
             if (teacher.getMiddleName().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty middle name");
+                throw new TeacherDaoException("Teacher can't have an empty middle name");
             if (teacher.getEmail() == null)
-                throw new TeacherDaoException(
-                        "Teacher's email is required");
+                throw new TeacherDaoException("Teacher's email is required");
             if (teacher.getEmail().trim().equals(""))
-                throw new TeacherDaoException(
-                        "Teacher can't have an empty email");
+                throw new TeacherDaoException("Teacher can't have an empty email");
 
             if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
@@ -157,7 +139,7 @@ public class TeacherDaoImpl implements TeacherDao {
             userDetail.setRegistered(Calendar.getInstance().getTime().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
-            userDetail.setUserType(UserDetail.USER);
+            userDetail.setUserType(UserDetail.USER_TEACHER);
             teacher.setUserDetail(userDetail);
 
             teacher = (Teacher) session.merge(teacher);
@@ -177,8 +159,7 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             if (newTeacher == null)
-                throw new TeacherDaoException(
-                        "You tried to update teacher with a null value");
+                throw new TeacherDaoException("You tried to update teacher with a null value");
             Teacher teacher = session.get(Teacher.class, id);
 
             if (teacher == null)
@@ -208,8 +189,7 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             if (newTeacher == null)
-                throw new TeacherDaoException(
-                        "You tried to update teacher with a null value");
+                throw new TeacherDaoException("You tried to update teacher with a null value");
             Teacher teacher = session.get(Teacher.class, id);
 
             if (teacher == null)

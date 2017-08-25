@@ -16,8 +16,9 @@ public class UserDetail {
     private String userType;
     private boolean isEnabled;
     private String registered;
-    public static final String USER = "User/Client";
-    public static final String ADMIN = "Admin";
+    public static final String USER_TEACHER = "user/teacher";
+    public static final String USER_STUDENT = "user/student";
+    public static final String USER_ADMIN = "user/admin";
 
     public UserDetail() {
         super();

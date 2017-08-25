@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 
@@ -55,9 +52,10 @@ public class DepartmentResource {
 
             for(Department d : departmentList)
                 d.addLink(resourceLinks.self(d.getId()));
+            GenericEntity<List<Department>> entity = new GenericEntity<List<Department>>(departmentList){};
             return Response
                     .status(Response.Status.OK)
-                    .entity(departmentList)
+                    .entity(entity)
                     .build();
         }catch (DepartmentResourceException e){
             e.printStackTrace();

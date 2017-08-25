@@ -64,9 +64,11 @@ public class TeacherResource {
 				if(t.getDepartment() != null)
 					t.getDepartment().addLink(departmentResourceLinks.self(t.getDepartment().getId()));
 			}
+
+			GenericEntity<List<Teacher>> entity = new GenericEntity<List<Teacher>>(teacherList){};
 			return Response
 					.status(Response.Status.OK)
-					.entity(teacherList)
+					.entity(entity)
 					.build();
 		}catch (TeacherResourceException e){
 			e.printStackTrace();
