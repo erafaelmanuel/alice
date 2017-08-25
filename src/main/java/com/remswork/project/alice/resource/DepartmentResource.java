@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -59,7 +60,10 @@ public class DepartmentResource {
                     .build();
         }catch (DepartmentResourceException e){
             e.printStackTrace();
-            return  Response.status(Response.Status.NO_CONTENT).build();
+            return  Response
+                    .status(Response.Status.NO_CONTENT)
+                    .entity(new GenericEntity<List<Department>>(new ArrayList<>()){})
+                    .build();
         }
     }
 

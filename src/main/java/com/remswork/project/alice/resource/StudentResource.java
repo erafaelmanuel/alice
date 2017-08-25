@@ -2,7 +2,6 @@ package com.remswork.project.alice.resource;
 
 import com.remswork.project.alice.model.Student;
 import com.remswork.project.alice.resource.exception.StudentResourceException;
-import com.remswork.project.alice.resource.exception.TeacherResourceException;
 import com.remswork.project.alice.resource.links.StudentResourceLinks;
 import com.remswork.project.alice.service.impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,13 @@ public class StudentResource {
            Student student = studentService.getStudentById(id);
            StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
            if(student == null)
-               throw new TeacherResourceException("No StudentResource to display");
+               throw new StudentResourceException("No StudentResource to display");
            student.addLink(resourceLinks.self(id));
            return Response
                    .status(Response.Status.OK)
                    .entity(student)
                    .build();
-       }catch (TeacherResourceException e) {
+       }catch (StudentResourceException e) {
            e.printStackTrace();
            return Response.status(Response.Status.NOT_FOUND).build();
        }
@@ -64,7 +63,7 @@ public class StudentResource {
             e.printStackTrace();
             return Response
                     .status(Response.Status.NO_CONTENT)
-                    .entity(new GenericEntity<List<Student>>(new ArrayList<Student>()){})
+                    .entity(new GenericEntity<List<Student>>(new ArrayList<>()){})
                     .build();
         }
     }

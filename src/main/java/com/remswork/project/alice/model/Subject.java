@@ -1,11 +1,9 @@
 package com.remswork.project.alice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 @Entity
@@ -19,9 +17,12 @@ public class Subject {
 	private String code;
 	private String description;
 	private int unit;
+	@Transient
+	private List<Link> links;
 	
 	public Subject() {
 		super();
+		links = new ArrayList<>();
 	}
 	
 	public Subject(String name, String code, String description, int unit) {
@@ -75,5 +76,17 @@ public class Subject {
 
 	public void setUnit(int unit) {
 		this.unit = unit;
+	}
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+
+	public void addLink(Link link) {
+		links.add(link);
 	}
 }

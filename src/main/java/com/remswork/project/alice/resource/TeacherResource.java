@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -72,7 +73,10 @@ public class TeacherResource {
 					.build();
 		}catch (TeacherResourceException e){
 			e.printStackTrace();
-			return Response.status(Response.Status.NO_CONTENT).build();
+			return Response
+					.status(Response.Status.NO_CONTENT)
+					.entity(new GenericEntity<List<Teacher>>(new ArrayList<>()){})
+					.build();
 		}
 	}
 
