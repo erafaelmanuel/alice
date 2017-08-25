@@ -1,5 +1,7 @@
 package com.remswork.project.alice.model;
 
+import com.remswork.project.alice.model.support.Link;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;

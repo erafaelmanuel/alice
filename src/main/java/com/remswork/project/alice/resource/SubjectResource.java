@@ -1,7 +1,8 @@
 package com.remswork.project.alice.resource;
 
+import com.remswork.project.alice.exception.SubjectException;
 import com.remswork.project.alice.model.Subject;
-import com.remswork.project.alice.resource.exception.SubjectResourceException;
+import com.remswork.project.alice.model.support.Message;
 import com.remswork.project.alice.resource.links.SubjectResourceLinks;
 import com.remswork.project.alice.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -29,16 +29,15 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.getSubjectById(id);
-            if(subject == null)
-                throw new SubjectResourceException("No SubjectResource to display");
             subject.addLink(resourceLinks.self(id));
             return Response
                     .status(Response.Status.OK)
                     .entity(subject)
                     .build();
-        }catch (SubjectResourceException e) {
+        }catch (SubjectException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.NOT_FOUND).build();
+            Message message = new Message(404, "Not Found");
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
         }
     }
 
@@ -47,8 +46,6 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             List<Subject> subjectList = subjectService.getSubjectList();
-            if(subjectList.size() < 1)
-                throw new SubjectResourceException("No SubjectResource to display");
             for(Subject subject : subjectList)
                 subject.addLink(resourceLinks.self(subject.getId()));
             GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList){};
@@ -56,12 +53,10 @@ public class SubjectResource {
                     .status(Response.Status.OK)
                     .entity(entity)
                     .build();
-        }catch (SubjectResourceException e) {
+        }catch (SubjectException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.NO_CONTENT)
-                    .entity(new GenericEntity<List<Subject>>(new ArrayList<>()){})
-                    .build();
+            Message message = new Message(404, "Not Found");
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
         }
     }
 
@@ -70,16 +65,15 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             subject = subjectService.addSubject(subject);
-            if(subject == null)
-                throw new SubjectResourceException("No SubjectResource to display");
             subject.addLink(resourceLinks.self(subject.getId()));
             return Response
                     .status(Response.Status.OK)
                     .entity(subject)
                     .build();
-        }catch (SubjectResourceException e) {
+        }catch (SubjectException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            Message message = new Message(400, "Bad Request");
+            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }
 
@@ -89,16 +83,15 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.updateSubjectById(id, newSubject);
-            if(subject == null)
-                throw new SubjectResourceException("No SubjectResource to display");
             subject.addLink(resourceLinks.self(subject.getId()));
             return Response
                     .status(Response.Status.OK)
                     .entity(subject)
                     .build();
-        }catch (SubjectResourceException e) {
+        }catch (SubjectException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            Message message = new Message(400, "Bad Request");
+            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }
 
@@ -108,16 +101,15 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.deleteSubjectById(id);
-            if(subject == null)
-                throw new SubjectResourceException("No SubjectResource to display");
             subject.addLink(resourceLinks.self(subject.getId()));
             return Response
                     .status(Response.Status.OK)
                     .entity(subject)
                     .build();
-        }catch (SubjectResourceException e) {
+        }catch (SubjectException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            Message message = new Message(400, "Bad Request");
+            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }
 

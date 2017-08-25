@@ -2,7 +2,6 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.DepartmentDao;
 import com.remswork.project.alice.dao.exception.DepartmentDaoException;
-import com.remswork.project.alice.dao.exception.TeacherDaoException;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Teacher;
 import org.hibernate.Query;
@@ -64,7 +63,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         try {
             if(department == null)
                 throw new DepartmentDaoException(
-                        "You tried to add teacher with a null value");
+                        "You tried to add department with a null value");
             if(department.getName().trim().equals(""))
                 throw new DepartmentDaoException(
                         "Department can't have an empty department name");
@@ -91,9 +90,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
             Department department = session.get(Department.class, id);
 
             if(newDepartment == null)
-                throw new DepartmentDaoException("You tried to add teacher with a null value");
+                throw new DepartmentDaoException("You tried to add department with a null value");
             if(department == null)
-                throw new TeacherDaoException("Department with id : " + id + " does not exist.");
+                throw new DepartmentDaoException("Department with id : " + id + " does not exist.");
 
             if(!(newDepartment.getName()!=null?newDepartment.getName().trim():"").isEmpty())
                 department.setName(newDepartment.getName());

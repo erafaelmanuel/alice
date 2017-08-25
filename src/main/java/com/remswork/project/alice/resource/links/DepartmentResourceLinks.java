@@ -1,6 +1,6 @@
 package com.remswork.project.alice.resource.links;
 
-import com.remswork.project.alice.model.Link;
+import com.remswork.project.alice.model.support.Link;
 import com.remswork.project.alice.resource.DepartmentResource;
 
 import javax.ws.rs.core.UriInfo;

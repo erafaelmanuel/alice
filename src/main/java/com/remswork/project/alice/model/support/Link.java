@@ -1,4 +1,4 @@
-package com.remswork.project.alice.model;
+package com.remswork.project.alice.model.support;
 
 public class Link {
 	
