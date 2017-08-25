@@ -1,4 +1,4 @@
-package com.remswork.project.alice.bean.prop;
+package com.remswork.project.alice.bean;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

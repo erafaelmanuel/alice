@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.StudentDao;
 import com.remswork.project.alice.dao.exception.StudentDaoException;
+import com.remswork.project.alice.exception.StudentException;
 import com.remswork.project.alice.model.Student;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -19,7 +20,7 @@ public class StudentDaoImpl implements StudentDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public Student getStudentById(long id) {
+    public Student getStudentById(long id) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try{
@@ -30,14 +31,13 @@ public class StudentDaoImpl implements StudentDao {
             session.close();
             return student;
         }catch (StudentDaoException e){
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new StudentException(e.getMessage());
         }
     }
 
     @Override
-    public List<Student> getStudentList() {
+    public List<Student> getStudentList() throws StudentException {
         List<Student> studentList = new ArrayList<>();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -49,14 +49,13 @@ public class StudentDaoImpl implements StudentDao {
             session.close();
             return studentList;
         }catch (StudentDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new StudentException(e.getMessage());
         }
     }
 
     @Override
-    public Student addStudent(Student student) {
+    public Student addStudent(Student student) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try{
@@ -92,14 +91,13 @@ public class StudentDaoImpl implements StudentDao {
             session.close();
            return student;
         }catch (StudentDaoException e){
-           e.printStackTrace();
-           session.close();
-           return null;
+            session.close();
+            throw new StudentException(e.getMessage());
         }
     }
 
     @Override
-    public Student updateStudentById(long id, Student newStudent) {
+    public Student updateStudentById(long id, Student newStudent) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -129,14 +127,13 @@ public class StudentDaoImpl implements StudentDao {
             session.close();
             return student;
         }catch (StudentDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new StudentException(e.getMessage());
         }
     }
 
     @Override
-    public Student deleteStudentById(long id) {
+    public Student deleteStudentById(long id) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -148,9 +145,8 @@ public class StudentDaoImpl implements StudentDao {
             session.close();
             return student;
         }catch (StudentDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new StudentException(e.getMessage());
         }
     }
 }

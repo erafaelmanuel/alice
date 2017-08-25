@@ -2,9 +2,12 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.TeacherDao;
 import com.remswork.project.alice.dao.exception.TeacherDaoException;
+import com.remswork.project.alice.exception.DepartmentException;
+import com.remswork.project.alice.exception.TeacherException;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Teacher;
 import com.remswork.project.alice.model.UserDetail;
+import com.remswork.project.alice.model.support.Date;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +27,7 @@ public class TeacherDaoImpl implements TeacherDao {
     private DepartmentDaoImpl departmentDao;
 
     @Override
-    public Teacher getTeacherById(long id) {
+    public Teacher getTeacherById(long id) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -35,14 +38,13 @@ public class TeacherDaoImpl implements TeacherDao {
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public List<Teacher> getTeacherList() {
+    public List<Teacher> getTeacherList() throws TeacherException {
         final List<Teacher> teacherList = new ArrayList<>();
         Query query = null;
         Session session = sessionFactory.openSession();
@@ -55,14 +57,13 @@ public class TeacherDaoImpl implements TeacherDao {
             session.close();
             return teacherList;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return teacherList;
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public Teacher addTeacher(Teacher teacher) {
+    public Teacher addTeacher(Teacher teacher) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -85,9 +86,21 @@ public class TeacherDaoImpl implements TeacherDao {
             if (teacher.getEmail().trim().equals(""))
                 throw new TeacherDaoException("Teacher can't have an empty email");
 
+            if(teacher.getDepartment() != null) {
+                Department department = teacher.getDepartment();
+                if(department.getName() == null)
+                    throw new TeacherDaoException("Teacher's department name is required");
+                if (department.getName().trim().equals(""))
+                    throw new TeacherDaoException("Teacher's department can't have an empty name");
+                if(department.getDescription() == null)
+                    throw new TeacherDaoException("Teacher's department description is required");
+                if (department.getDescription().trim().equals(""))
+                    throw new TeacherDaoException("Teacher's department can't have an empty description");
+            }
+
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegistered(Calendar.getInstance().getTime().toString());
+            userDetail.setRegisterDate(new Date().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -98,14 +111,13 @@ public class TeacherDaoImpl implements TeacherDao {
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public Teacher addTeacher(Teacher teacher, long departmentId) {
+    public Teacher addTeacher(Teacher teacher, long departmentId) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -130,13 +142,12 @@ public class TeacherDaoImpl implements TeacherDao {
 
             if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
-                if (department != null)
-                    teacher.setDepartment(department);
+                teacher.setDepartment(department);
             }
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegistered(Calendar.getInstance().getTime().toString());
+            userDetail.setRegisterDate(Calendar.getInstance().getTime().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -147,14 +158,16 @@ public class TeacherDaoImpl implements TeacherDao {
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
+        } catch (DepartmentException e) {
+            session.close();
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public Teacher updateTeacherById(long id, Teacher newTeacher) {
+    public Teacher updateTeacherById(long id, Teacher newTeacher) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -177,14 +190,13 @@ public class TeacherDaoImpl implements TeacherDao {
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public Teacher updateTeacherById(long id, Teacher newTeacher, long departmentId) {
+    public Teacher updateTeacherById(long id, Teacher newTeacher, long departmentId) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -204,23 +216,23 @@ public class TeacherDaoImpl implements TeacherDao {
                 teacher.setMiddleName(newTeacher.getMiddleName());
             if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
-                if (department != null) {
-                    teacher.setDepartment(department);
-                    teacher = (Teacher) session.merge(teacher);
-                }
+                teacher.setDepartment(department);
+                teacher = (Teacher) session.merge(teacher);
             }
             session.getTransaction().commit();
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
+        } catch (DepartmentException e) {
+            session.close();
+            throw new TeacherException(e.getMessage());
         }
     }
 
     @Override
-    public Teacher deleteTeacherById(long id) {
+    public Teacher deleteTeacherById(long id) throws TeacherException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -229,14 +241,12 @@ public class TeacherDaoImpl implements TeacherDao {
                 session.delete(teacher);
             else
                 throw new TeacherDaoException("Teacher with id : " + id + " does not exist.");
-
             session.getTransaction().commit();
             session.close();
             return teacher;
         } catch (TeacherDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new TeacherException(e.getMessage());
         }
     }
 

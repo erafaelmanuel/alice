@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.SubjectDao;
 import com.remswork.project.alice.dao.exception.SubjectDaoException;
+import com.remswork.project.alice.exception.SubjectException;
 import com.remswork.project.alice.model.Subject;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -19,7 +20,7 @@ public class SubjectDaoImpl implements SubjectDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public Subject getSubjectById(long id) {
+    public Subject getSubjectById(long id) throws SubjectException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -30,14 +31,13 @@ public class SubjectDaoImpl implements SubjectDao {
             session.close();
             return subject;
         }catch (SubjectDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new SubjectException(e.getMessage());
         }
     }
 
     @Override
-    public List<Subject> getSubjectList() {
+    public List<Subject> getSubjectList() throws SubjectException {
         List<Subject> subjectList = new ArrayList<>();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -45,20 +45,17 @@ public class SubjectDaoImpl implements SubjectDao {
             Query query = session.createQuery("from Subject");
             for(Object subjectObj : query.list())
                 subjectList.add((Subject) subjectObj);
-            if(subjectList.size() < 1)
-                throw new SubjectDaoException("No Subject on the list");
             session.getTransaction().commit();
             session.close();
             return subjectList;
         }catch (SubjectDaoException e) {
-            e.printStackTrace();
             session.close();
-            return subjectList;
+            throw new SubjectException(e.getMessage());
         }
     }
 
     @Override
-    public Subject addSubject(Subject subject) {
+    public Subject addSubject(Subject subject) throws SubjectException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -86,14 +83,13 @@ public class SubjectDaoImpl implements SubjectDao {
             session.close();
             return subject;
         }catch (SubjectDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new SubjectException(e.getMessage());
         }
     }
 
     @Override
-    public Subject updateSubjectById(long id, Subject newSubject) {
+    public Subject updateSubjectById(long id, Subject newSubject) throws SubjectException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -117,14 +113,13 @@ public class SubjectDaoImpl implements SubjectDao {
             session.close();
             return subject;
         }catch (SubjectDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new SubjectException(e.getMessage());
         }
     }
 
     @Override
-    public Subject deleteSubjectById(long id) {
+    public Subject deleteSubjectById(long id) throws SubjectException {
        Session session = sessionFactory.openSession();
        session.beginTransaction();
        try {
@@ -136,9 +131,8 @@ public class SubjectDaoImpl implements SubjectDao {
            session.close();
            return subject;
        }catch (SubjectDaoException e) {
-           e.printStackTrace();
            session.close();
-           return null;
+           throw new SubjectException(e.getMessage());
        }
     }
 }

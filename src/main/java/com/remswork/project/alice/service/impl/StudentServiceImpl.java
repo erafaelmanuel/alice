@@ -17,41 +17,26 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Student getStudentById(long id) throws StudentException {
-        Student student = studentDao.getStudentById(id);
-        if(student == null)
-            throw new StudentException("No student to return");
-        return student;
+        return studentDao.getStudentById(id);
     }
 
     @Override
     public List<Student> getStudentList() throws StudentException {
-        List<Student> studentList = studentDao.getStudentList();
-        if(studentList == null)
-            throw new StudentException("No student to return");
-        return studentList;
+        return studentDao.getStudentList();
     }
 
     @Override
     public Student addStudent(Student student) throws StudentException {
-        Student s = studentDao.addStudent(student);
-        if(s == null)
-            throw new StudentException("No student to return");
-        return s;
+        return studentDao.addStudent(student);
     }
 
     @Override
     public Student updateStudentById(long id, Student newStudent) throws StudentException {
-        Student student = studentDao.updateStudentById(id, newStudent);
-        if(student == null)
-            throw new StudentException("No student to return");
-        return student;
+        return studentDao.updateStudentById(id, newStudent);
     }
 
     @Override
     public Student deleteStudentById(long id) throws StudentException {
-        Student student = studentDao.deleteStudentById(id);
-        if(student == null)
-            throw new StudentException("No student to return");
-        return student;
+       return studentDao.deleteStudentById(id);
     }
 }

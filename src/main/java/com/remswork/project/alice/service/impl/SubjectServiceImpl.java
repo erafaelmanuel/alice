@@ -17,41 +17,26 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject getSubjectById(long id) throws SubjectException {
-        Subject subject = subjectDao.getSubjectById(id);
-        if(subject == null)
-            throw new SubjectException("No subject to return");
-        return subject;
+        return subjectDao.getSubjectById(id);
     }
 
     @Override
     public List<Subject> getSubjectList() throws SubjectException {
-        List<Subject> subjectList = subjectDao.getSubjectList();
-        if(subjectList == null)
-            throw new SubjectException("No subject to return");
-        return subjectList;
+       return subjectDao.getSubjectList();
     }
 
     @Override
     public Subject addSubject(Subject subject) throws SubjectException {
-        Subject s = subjectDao.addSubject(subject);
-        if(s == null)
-            throw new SubjectException("No subject to return");
-        return s;
+        return subjectDao.addSubject(subject);
     }
 
     @Override
     public Subject updateSubjectById(long id, Subject newSubject) throws SubjectException {
-        Subject subject = subjectDao.updateSubjectById(id, newSubject);
-        if(subject == null)
-            throw new SubjectException("No subject to return");
-        return subject;
+        return subjectDao.updateSubjectById(id, newSubject);
     }
 
     @Override
     public Subject deleteSubjectById(long id) throws SubjectException {
-        Subject subject = subjectDao.deleteSubjectById(id);
-        if(subject == null)
-            throw new SubjectException("No subject to return");
-        return subject;
+        return subjectDao.deleteSubjectById(id);
     }
 }

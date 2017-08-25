@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
-import com.remswork.project.alice.bean.prop.DataSourcePropertiesBean;
+import com.remswork.project.alice.bean.DataSourcePropertiesBean;
 
 @Configuration
 public class JPAConfig {

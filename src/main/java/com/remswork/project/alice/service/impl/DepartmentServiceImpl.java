@@ -17,42 +17,27 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department getDepartmentById(final long id) throws DepartmentException {
-        Department department = departmentDao.getDepartmentById(id);
-        if(department == null)
-            throw new DepartmentException("No Department to return");
-        return department;
+        return departmentDao.getDepartmentById(id);
     }
 
     @Override
     public List<Department> getDepartmentList() throws DepartmentException {
-        List<Department> departmentList = departmentDao.getDepartmentList();
-        if(departmentList == null)
-            throw new DepartmentException("No Department to return");
-        return departmentList;
+       return departmentDao.getDepartmentList();
     }
 
     @Override
     public Department addDepartment(final Department department) throws DepartmentException {
-        Department d = departmentDao.addDepartment(department);
-        if(d == null)
-            throw new DepartmentException("No Department to return");
-        return d;
+        return departmentDao.addDepartment(department);
     }
 
     @Override
     public Department updateDepartmentById(final long id, final Department newDepartment) throws DepartmentException {
-        Department department = departmentDao.updateDepartmentById(id, newDepartment);
-        if(department == null)
-            throw new DepartmentException("No Department to return");
-        return department;
+        return departmentDao.updateDepartmentById(id, newDepartment);
     }
 
     @Override
     public Department deleteDepartmentById(final long id) throws DepartmentException {
-        Department department = departmentDao.deleteDepartmentById(id);
-        if(department == null)
-            throw new DepartmentException("No Department to return");
-        return department;
+        return departmentDao.deleteDepartmentById(id);
     }
 }
 

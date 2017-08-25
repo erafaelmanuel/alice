@@ -36,7 +36,7 @@ public class SubjectResource {
                     .build();
         }catch (SubjectException e) {
             e.printStackTrace();
-            Message message = new Message(404, "Not Found");
+            Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
         }
     }
@@ -55,7 +55,7 @@ public class SubjectResource {
                     .build();
         }catch (SubjectException e) {
             e.printStackTrace();
-            Message message = new Message(404, "Not Found");
+            Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
         }
     }
@@ -72,7 +72,7 @@ public class SubjectResource {
                     .build();
         }catch (SubjectException e) {
             e.printStackTrace();
-            Message message = new Message(400, "Bad Request");
+            Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }
@@ -90,7 +90,7 @@ public class SubjectResource {
                     .build();
         }catch (SubjectException e) {
             e.printStackTrace();
-            Message message = new Message(400, "Bad Request");
+            Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }
@@ -108,7 +108,7 @@ public class SubjectResource {
                     .build();
         }catch (SubjectException e) {
             e.printStackTrace();
-            Message message = new Message(400, "Bad Request");
+            Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
     }

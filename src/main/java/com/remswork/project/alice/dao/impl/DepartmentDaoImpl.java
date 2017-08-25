@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.DepartmentDao;
 import com.remswork.project.alice.dao.exception.DepartmentDaoException;
+import com.remswork.project.alice.exception.DepartmentException;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Teacher;
 import org.hibernate.Query;
@@ -20,7 +21,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public Department getDepartmentById(long id) {
+    public Department getDepartmentById(long id) throws DepartmentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try{
@@ -31,14 +32,13 @@ public class DepartmentDaoImpl implements DepartmentDao {
             session.close();
             return department;
         }catch (DepartmentDaoException e){
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new DepartmentException(e.getMessage());
         }
     }
 
     @Override
-    public List<Department> getDepartmentList() {
+    public List<Department> getDepartmentList() throws DepartmentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         List<Department> departmentList = new ArrayList<>();
@@ -50,40 +50,39 @@ public class DepartmentDaoImpl implements DepartmentDao {
             session.close();
             return departmentList;
         }catch (DepartmentDaoException e){
-            e.printStackTrace();
             session.close();
-            return departmentList;
+            throw new DepartmentException(e.getMessage());
         }
     }
 
     @Override
-    public Department addDepartment(Department department) {
+    public Department addDepartment(Department department) throws DepartmentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             if(department == null)
-                throw new DepartmentDaoException(
-                        "You tried to add department with a null value");
+                throw new DepartmentDaoException("You tried to add department with a null value");
+            if(department.getName() == null)
+                throw new DepartmentDaoException("Department's name is required");
             if(department.getName().trim().equals(""))
-                throw new DepartmentDaoException(
-                        "Department can't have an empty department name");
+                throw new DepartmentDaoException("Department can't have an empty name");
+            if(department.getDescription() == null)
+                throw new DepartmentDaoException("Department's description is required");
             if(department.getDescription().trim().equals(""))
-                throw new DepartmentDaoException(
-                        "Department can't have an empty department description");
+                throw new DepartmentDaoException( "Department can't have an empty description");
 
             session.save(department);
             session.getTransaction().commit();
             session.close();
             return department;
         }catch(DepartmentDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new DepartmentException(e.getMessage());
         }
     }
 
     @Override
-    public Department updateDepartmentById(long id, Department newDepartment) {
+    public Department updateDepartmentById(long id, Department newDepartment) throws DepartmentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try{
@@ -103,21 +102,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
             session.close();
             return department;
         }catch(DepartmentDaoException e){
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new DepartmentException(e.getMessage());
         }
     }
 
     @Override
-    public Department deleteDepartmentById(long id) {
+    public Department deleteDepartmentById(long id) throws DepartmentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             Department department = session.get(Department.class, id);
             if(department != null) {
-                //to avoid the constraints restriction we meed to delete the teacher with had the department
-                for(Object teacherObj : session.createQuery("from Teacher").list()){
+                //to avoid the constraints restriction we meed to delete the teacher that having the department
+                Query query = session.createQuery("from Teacher");
+                for(Object teacherObj : query.list()){
                     Teacher teacher = (Teacher) teacherObj;
                     if(teacher.getDepartment().equals(department) ||
                             (teacher.getDepartment()!=null?teacher.getDepartment().getId():0)==department.getId()) {
@@ -131,9 +130,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
             session.close();
             return department;
         }catch(DepartmentDaoException e) {
-            e.printStackTrace();
             session.close();
-            return null;
+            throw new DepartmentException(e.getMessage());
         }
     }
 }
