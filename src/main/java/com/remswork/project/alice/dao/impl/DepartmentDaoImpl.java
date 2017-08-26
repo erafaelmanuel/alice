@@ -4,6 +4,7 @@ import com.remswork.project.alice.dao.DepartmentDao;
 import com.remswork.project.alice.dao.exception.DepartmentDaoException;
 import com.remswork.project.alice.exception.DepartmentException;
 import com.remswork.project.alice.model.Department;
+import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Teacher;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -89,7 +90,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             Department department = session.get(Department.class, id);
 
             if(newDepartment == null)
-                throw new DepartmentDaoException("You tried to add department with a null value");
+                throw new DepartmentDaoException("You tried to update department with a null value");
             if(department == null)
                 throw new DepartmentDaoException("Department with id : " + id + " does not exist.");
 
@@ -113,19 +114,32 @@ public class DepartmentDaoImpl implements DepartmentDao {
         session.beginTransaction();
         try {
             Department department = session.get(Department.class, id);
-            if(department != null) {
-                //to avoid the constraints restriction we meed to delete the teacher that having the department
-                Query query = session.createQuery("from Teacher");
-                for(Object teacherObj : query.list()){
-                    Teacher teacher = (Teacher) teacherObj;
-                    if(teacher.getDepartment().equals(department) ||
-                            (teacher.getDepartment()!=null?teacher.getDepartment().getId():0)==department.getId()) {
-                        session.delete(teacher);
-                    }
-                }
-                session.delete(department);
-            }else
+            if(department == null)
                 throw new DepartmentDaoException("Department with id : " + id + " does not exist.");
+
+            //to avoid the constraints restriction we meed to delete the teacher that having the department
+            Query teacherQuery = session.createQuery("from Teacher");
+            for(Object teacherObj : teacherQuery.list()){
+                Teacher teacher = (Teacher) teacherObj;
+                if(teacher.getDepartment() == null)
+                    continue;
+                if(teacher.getDepartment().equals(department) ||
+                        (teacher.getDepartment()!=null?teacher.getDepartment().getId():0)==department.getId()) {
+                    session.delete(teacher);
+                }
+            }
+            //to avoid the constraints restriction we meed to delete the section that having the department
+            Query sectionQuery = session.createQuery("from Section");
+            for(Object sectionObj : sectionQuery.list()){
+                Section section = (Section) sectionObj;
+                if(section.getDepartment() == null)
+                    continue;
+                if(section.getDepartment().equals(department) ||
+                        (section.getDepartment()!=null?section.getDepartment().getId():0)==department.getId()) {
+                    session.delete(section);
+                }
+            }
+            session.delete(department);
             session.getTransaction().commit();
             session.close();
             return department;

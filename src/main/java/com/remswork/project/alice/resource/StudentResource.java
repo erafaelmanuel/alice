@@ -22,6 +22,8 @@ public class StudentResource {
     private StudentServiceImpl studentService;
     @Context
     private UriInfo uriInfo;
+    @QueryParam("sectionId")
+    private long sectionId;
 
     @GET
     @Path("{studentId}")
@@ -30,10 +32,7 @@ public class StudentResource {
            Student student = studentService.getStudentById(id);
            StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
            student.addLink(resourceLinks.self(id));
-           return Response
-                   .status(Response.Status.OK)
-                   .entity(student)
-                   .build();
+           return Response.status(Response.Status.OK).entity(student).build();
        }catch (StudentException e) {
            e.printStackTrace();
            Message message = new Message(404, "Not Found", e.getMessage());
@@ -52,10 +51,7 @@ public class StudentResource {
             }
 
             GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(studentList){};
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(entity)
-                    .build();
+            return Response.status(Response.Status.OK).entity(entity).build();
         }catch (StudentException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
@@ -67,12 +63,9 @@ public class StudentResource {
     public Response addStudent(Student student) {
         try {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
-            student = studentService.addStudent(student);
+            student = studentService.addStudent(student, sectionId);
             student.addLink(resourceLinks.self(student.getId()));
-            return Response
-                    .status(Response.Status.CREATED)
-                    .entity(student)
-                    .build();
+            return Response.status(Response.Status.CREATED).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
@@ -85,12 +78,9 @@ public class StudentResource {
     public Response updateStudentById(@PathParam("studentId") long id, Student newStudent) {
         try {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
-            Student student = studentService.updateStudentById(id, newStudent);
+            Student student = studentService.updateStudentById(id, newStudent, sectionId);
             student.addLink(resourceLinks.self(id));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(student)
-                    .build();
+            return Response.status(Response.Status.OK).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
@@ -105,10 +95,7 @@ public class StudentResource {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
             Student student = studentService.deleteStudentById(id);
             student.addLink(resourceLinks.self(id));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(student)
-                    .build();
+            return Response.status(Response.Status.OK).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @Repository
@@ -100,7 +99,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegisterDate(new Date().now().toString());
+            userDetail.setRegistrationDate(new Date().now().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -147,7 +146,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegisterDate(new Date().now().toString());
+            userDetail.setRegistrationDate(new Date().now().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -231,10 +230,10 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             Teacher teacher = session.get(Teacher.class, id);
-            if (teacher != null)
-                session.delete(teacher);
-            else
+            if (teacher == null)
                 throw new TeacherDaoException("Teacher with id : " + id + " does not exist.");
+            teacher.setDepartment(null);
+            session.delete(teacher);
             session.getTransaction().commit();
             session.close();
             return teacher;

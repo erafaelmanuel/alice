@@ -36,10 +36,7 @@ public class TeacherResource {
 			teacher.addLink(resourceLink.self(id));
 			if(teacher.getDepartment() != null)
 				teacher.getDepartment().addLink(departmentResourceLinks.self(teacher.getDepartment().getId()));
-			return Response
-					.status(Response.Status.OK)
-					.entity(teacher)
-					.build();
+			return Response.status(Response.Status.OK).entity(teacher).build();
 		}catch (TeacherException e){
 			e.printStackTrace();
 			Message message = new Message(404, "Not Found", e.getMessage());
@@ -53,17 +50,13 @@ public class TeacherResource {
 			TeacherResourceLinks resourceLink = new TeacherResourceLinks(uriInfo);
 			DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
 			List<Teacher> teacherList = teacherService.getTeacherList();
-
-			for (Teacher t : teacherList) {
-				t.addLink(resourceLink.self(t.getId()));
-				if(t.getDepartment() != null)
-					t.getDepartment().addLink(departmentResourceLinks.self(t.getDepartment().getId()));
+			for (Teacher teacher : teacherList) {
+				teacher.addLink(resourceLink.self(teacher.getId()));
+				if(teacher.getDepartment() != null)
+					teacher.getDepartment().addLink(departmentResourceLinks.self(teacher.getDepartment().getId()));
 			}
 			GenericEntity<List<Teacher>> entity = new GenericEntity<List<Teacher>>(teacherList){};
-			return Response
-					.status(Response.Status.OK)
-					.entity(entity)
-					.build();
+			return Response.status(Response.Status.OK).entity(entity).build();
 		}catch (TeacherException e){
 			e.printStackTrace();
 			Message message = new Message(404, "Not Found", e.getMessage());
@@ -76,19 +69,14 @@ public class TeacherResource {
 		try {
 			TeacherResourceLinks resourceLink = new TeacherResourceLinks(uriInfo);
 			DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
-
 			if(departmentId > 0)
 				teacher = teacherService.addTeacher(teacher, departmentId);
 			else
 				teacher = teacherService.addTeacher(teacher);
-
 			teacher.addLink(resourceLink.self(teacher.getId()));
 			if(teacher.getDepartment() != null)
 				teacher.getDepartment().addLink(departmentResourceLinks.self(teacher.getDepartment().getId()));
-			return Response
-					.status(Response.Status.CREATED)
-					.entity(teacher)
-					.build();
+			return Response.status(Response.Status.CREATED).entity(teacher).build();
 		}catch (TeacherException e){
 			e.printStackTrace();
 			Message message = new Message(400, "Bad Request", e.getMessage());
@@ -103,19 +91,14 @@ public class TeacherResource {
 			TeacherResourceLinks resourceLink = new TeacherResourceLinks(uriInfo);
 			DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
 			Teacher teacher;
-
 			if(departmentId > 0)
 				teacher = teacherService.updateTeacherById(id, newTeacher, departmentId);
 			else
 				teacher = teacherService.updateTeacherById(id, newTeacher);
-
 			teacher.addLink(resourceLink.self(id));
 			if(teacher.getDepartment() != null)
 				teacher.getDepartment().addLink(departmentResourceLinks.self(teacher.getDepartment().getId()));
-			return Response
-					.status(Response.Status.OK)
-					.entity(teacher)
-					.build();
+			return Response.status(Response.Status.OK).entity(teacher).build();
 		}catch (TeacherException e){
 			e.printStackTrace();
 			Message message = new Message(400, "Bad Request", e.getMessage());
@@ -133,10 +116,7 @@ public class TeacherResource {
 			teacher.addLink(resourceLink.self(id));
 			if(teacher.getDepartment() != null)
 				teacher.getDepartment().addLink(departmentResourceLinks.self(teacher.getDepartment().getId()));
-			return Response
-					.status(Response.Status.OK)
-					.entity(teacher)
-					.build();
+			return Response.status(Response.Status.OK).entity(teacher).build();
 		}catch (TeacherException e){
 			e.printStackTrace();
 			Message message = new Message(400, "Bad Request", e.getMessage());

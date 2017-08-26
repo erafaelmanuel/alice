@@ -15,7 +15,7 @@ public class UserDetail {
     private String password;
     private String userType;
     private boolean isEnabled;
-    private String registerDate;
+    private String registrationDate;
     public static final String USER_TEACHER = "user/teacher";
     public static final String USER_STUDENT = "user/student";
     public static final String USER_ADMIN = "user/admin";
@@ -24,12 +24,12 @@ public class UserDetail {
         super();
     }
 
-    public UserDetail(String username, String password, String userType, boolean isEnabled, String registerDate) {
+    public UserDetail(String username, String password, String userType, boolean isEnabled, String registrationDate) {
         this.username = username;
         this.password = password;
         this.userType = userType;
         this.isEnabled = isEnabled;
-        this.registerDate = registerDate;
+        this.registrationDate = registrationDate;
     }
 
     public UserDetail(long id, String username, String password, String userType, boolean isEnabled,
@@ -78,12 +78,12 @@ public class UserDetail {
         this.isEnabled = isEnabled;
     }
 
-    public String getRegisterDate() {
-        return registerDate;
+    public String getRegistrationDate() {
+        return registrationDate;
     }
 
-    public void setRegisterDate(String registerDate) {
-        this.registerDate = registerDate;
+    public void setRegistrationDate(String registerDate) {
+        this.registrationDate = registrationDate;
     }
 
 }

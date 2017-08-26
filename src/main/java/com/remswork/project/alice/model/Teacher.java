@@ -19,10 +19,10 @@ public class Teacher {
 	private String lastName;
 	private String middleName;
 	private String email;
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="userDetailId")
 	private UserDetail userDetail;
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="departmentId")
 	private Department department;
 	@Transient

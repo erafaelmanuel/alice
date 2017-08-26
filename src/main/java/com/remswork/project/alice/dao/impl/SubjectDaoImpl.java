@@ -95,7 +95,7 @@ public class SubjectDaoImpl implements SubjectDao {
         try {
             Subject subject = session.get(Subject.class, id);
             if(newSubject == null)
-                throw new SubjectDaoException("You tried to add subject with a null value");
+                throw new SubjectDaoException("You tried to update subject with a null value");
             if(subject == null)
                 throw new SubjectDaoException("Subject with id : " + id + " does not exist");
             if (!(newSubject.getName() != null ? newSubject.getName() : "").trim().isEmpty())

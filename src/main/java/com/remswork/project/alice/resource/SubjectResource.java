@@ -30,10 +30,7 @@ public class SubjectResource {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.getSubjectById(id);
             subject.addLink(resourceLinks.self(id));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(subject)
-                    .build();
+            return Response.status(Response.Status.OK).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
@@ -49,10 +46,7 @@ public class SubjectResource {
             for(Subject subject : subjectList)
                 subject.addLink(resourceLinks.self(subject.getId()));
             GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList){};
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(entity)
-                    .build();
+            return Response.status(Response.Status.OK).entity(entity).build();
         }catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
@@ -66,10 +60,7 @@ public class SubjectResource {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             subject = subjectService.addSubject(subject);
             subject.addLink(resourceLinks.self(subject.getId()));
-            return Response
-                    .status(Response.Status.CREATED)
-                    .entity(subject)
-                    .build();
+            return Response.status(Response.Status.CREATED).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
@@ -84,10 +75,7 @@ public class SubjectResource {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.updateSubjectById(id, newSubject);
             subject.addLink(resourceLinks.self(subject.getId()));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(subject)
-                    .build();
+            return Response.status(Response.Status.OK).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
@@ -102,10 +90,7 @@ public class SubjectResource {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.deleteSubjectById(id);
             subject.addLink(resourceLinks.self(subject.getId()));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(subject)
-                    .build();
+            return Response.status(Response.Status.OK).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());

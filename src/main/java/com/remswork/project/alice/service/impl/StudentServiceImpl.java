@@ -26,13 +26,13 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Student addStudent(Student student) throws StudentException {
-        return studentDao.addStudent(student);
+    public Student addStudent(Student student, long sectionId) throws StudentException {
+        return studentDao.addStudent(student, sectionId);
     }
 
     @Override
-    public Student updateStudentById(long id, Student newStudent) throws StudentException {
-        return studentDao.updateStudentById(id, newStudent);
+    public Student updateStudentById(long id, Student newStudent, long sectionId) throws StudentException {
+        return studentDao.updateStudentById(id, newStudent, sectionId);
     }
 
     @Override

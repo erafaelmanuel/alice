@@ -2,7 +2,9 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.StudentDao;
 import com.remswork.project.alice.dao.exception.StudentDaoException;
+import com.remswork.project.alice.exception.SectionException;
 import com.remswork.project.alice.exception.StudentException;
+import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Student;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -18,6 +20,8 @@ public class StudentDaoImpl implements StudentDao {
 
     @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    private SectionDaoImpl sectionDao;
 
     @Override
     public Student getStudentById(long id) throws StudentException {
@@ -55,7 +59,7 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public Student addStudent(Student student) throws StudentException {
+    public Student addStudent(Student student, long sectionId) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try{
@@ -85,19 +89,23 @@ public class StudentDaoImpl implements StudentDao {
                 throw new StudentDaoException("Student's gender is invalid");
             if (student.getAge() < 1)
                 throw new StudentDaoException("Student's age is invalid");
-
-            session.persist(student);
+            if(sectionId != 0) {
+                Section section = sectionDao.getSectionById(sectionId);
+                student.setSection(section);
+            }else
+                student.setSection(null);
+            student = (Student) session.merge(student);
             session.getTransaction().commit();
             session.close();
            return student;
-        }catch (StudentDaoException e){
+        }catch (StudentDaoException | SectionException e){
             session.close();
             throw new StudentException(e.getMessage());
         }
     }
 
     @Override
-    public Student updateStudentById(long id, Student newStudent) throws StudentException {
+    public Student updateStudentById(long id, Student newStudent, long sectionId) throws StudentException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
@@ -122,11 +130,15 @@ public class StudentDaoImpl implements StudentDao {
             }
             if (newStudent.getAge() > 14)
                 student.setAge(newStudent.getAge());
-
+            if(sectionId != 0) {
+                Section section = sectionDao.getSectionById(sectionId);
+                student.setSection(section);
+                student = (Student) session.merge(student);
+            }
             session.getTransaction().commit();
             session.close();
             return student;
-        }catch (StudentDaoException e) {
+        }catch (StudentDaoException | SectionException e) {
             session.close();
             throw new StudentException(e.getMessage());
         }
@@ -140,6 +152,7 @@ public class StudentDaoImpl implements StudentDao {
             Student student = session.get(Student.class, id);
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");
+            student.setSection(null);
             session.delete(student);
             session.getTransaction().commit();
             session.close();

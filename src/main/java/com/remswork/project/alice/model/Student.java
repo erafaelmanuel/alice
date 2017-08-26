@@ -22,9 +22,12 @@ public class Student {
     private String gender;
     private int age;
     private String imageSrc;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userDetailId")
     private UserDetail userDetail;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sectionId")
+    private Section section;
     @Transient
     private List<Link> links;
 
@@ -121,6 +124,14 @@ public class Student {
 
     public void setUserDetail(UserDetail userDetail) {
         this.userDetail = userDetail;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     public List<Link> getLinks() {

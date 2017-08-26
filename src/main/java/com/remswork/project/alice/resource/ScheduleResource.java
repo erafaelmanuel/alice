@@ -30,7 +30,6 @@ public class ScheduleResource {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             Schedule schedule = scheduleService.getScheduleById(id);
             schedule.addLink(resourceLinks.self(id));
-
             return Response.status(Response.Status.OK).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
@@ -47,7 +46,6 @@ public class ScheduleResource {
             for(Schedule schedule : scheduleList)
                 schedule.addLink(resourceLinks.self(schedule.getId()));
             GenericEntity<List<Schedule>> entity = new GenericEntity<List<Schedule>>(scheduleList){};
-
             return Response.status(Response.Status.OK).entity(entity).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
@@ -62,7 +60,6 @@ public class ScheduleResource {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             schedule = scheduleService.addSchedule(schedule);
             schedule.addLink(resourceLinks.self(schedule.getId()));
-
             return Response.status(Response.Status.CREATED).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
@@ -78,7 +75,6 @@ public class ScheduleResource {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             Schedule schedule = scheduleService.updateScheduleById(id, newSchedule);
             schedule.addLink(resourceLinks.self(schedule.getId()));
-
             return Response.status(Response.Status.OK).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
@@ -94,7 +90,6 @@ public class ScheduleResource {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             Schedule schedule = scheduleService.deleteScheduleById(id);
             schedule.addLink(resourceLinks.self(schedule.getId()));
-
             return Response.status(Response.Status.OK).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
