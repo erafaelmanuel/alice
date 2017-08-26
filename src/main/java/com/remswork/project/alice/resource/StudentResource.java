@@ -70,7 +70,7 @@ public class StudentResource {
             student = studentService.addStudent(student);
             student.addLink(resourceLinks.self(student.getId()));
             return Response
-                    .status(Response.Status.OK)
+                    .status(Response.Status.CREATED)
                     .entity(student)
                     .build();
         }catch (StudentException e) {

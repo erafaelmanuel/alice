@@ -67,7 +67,7 @@ public class SubjectResource {
             subject = subjectService.addSubject(subject);
             subject.addLink(resourceLinks.self(subject.getId()));
             return Response
-                    .status(Response.Status.OK)
+                    .status(Response.Status.CREATED)
                     .entity(subject)
                     .build();
         }catch (SubjectException e) {

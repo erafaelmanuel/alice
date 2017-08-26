@@ -3,6 +3,7 @@ package com.remswork.project.alice.model.support;
 import java.util.Calendar;
 import java.util.Locale;
 
+@Deprecated
 public class Date {
 
     private int day;
@@ -10,10 +11,7 @@ public class Date {
     private int year;
 
     public Date() {
-        Calendar calendar = Calendar.getInstance();
-        setDay(calendar.get(Calendar.DAY_OF_MONTH));
-        setMonth(calendar.get(Calendar.MONTH)+1);
-        setYear(calendar.get(Calendar.YEAR));
+        super();
     }
 
     public Date(int day, int month, int year) {
@@ -46,9 +44,17 @@ public class Date {
         this.year = year;
     }
 
+    public Date now() {
+        Calendar calendar = Calendar.getInstance();
+        setDay(calendar.get(Calendar.DAY_OF_MONTH));
+        setMonth(calendar.get(Calendar.MONTH)+1);
+        setYear(calendar.get(Calendar.YEAR));
+        return this;
+    }
+
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%d/%d/%d", month, day, year);
+        return String.format(Locale.ENGLISH, "%d/%d/%d", getMonth(), getDay(), getYear());
     }
 
 

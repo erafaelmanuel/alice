@@ -100,7 +100,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegisterDate(new Date().toString());
+            userDetail.setRegisterDate(new Date().now().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -147,7 +147,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
             UserDetail userDetail = new UserDetail();
             userDetail.setIsEnabled(true);
-            userDetail.setRegisterDate(Calendar.getInstance().getTime().toString());
+            userDetail.setRegisterDate(new Date().now().toString());
             userDetail.setUsername(teacher.getEmail());
             userDetail.setPassword((teacher.getFirstName() + teacher.getLastName()+"123").toLowerCase());
             userDetail.setUserType(UserDetail.USER_TEACHER);
@@ -157,10 +157,7 @@ public class TeacherDaoImpl implements TeacherDao {
             session.getTransaction().commit();
             session.close();
             return teacher;
-        } catch (TeacherDaoException e) {
-            session.close();
-            throw new TeacherException(e.getMessage());
-        } catch (DepartmentException e) {
+        } catch (TeacherDaoException | DepartmentException e) {
             session.close();
             throw new TeacherException(e.getMessage());
         }
@@ -222,10 +219,7 @@ public class TeacherDaoImpl implements TeacherDao {
             session.getTransaction().commit();
             session.close();
             return teacher;
-        } catch (TeacherDaoException e) {
-            session.close();
-            throw new TeacherException(e.getMessage());
-        } catch (DepartmentException e) {
+        } catch (TeacherDaoException | DepartmentException e) {
             session.close();
             throw new TeacherException(e.getMessage());
         }

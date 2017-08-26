@@ -68,7 +68,7 @@ public class DepartmentResource {
             department = departmentService.addDepartment(department);
             department.addLink(resourceLinks.self(department.getId()));
             return Response
-                    .status(Response.Status.OK)
+                    .status(Response.Status.CREATED)
                     .entity(department)
                     .build();
         }catch(DepartmentException e){
