@@ -46,7 +46,7 @@ public class ClassScheduleListResource {
             Schedule schedule = classService.getScheduleById(classId, id);
             schedule.addLink(resourceLinks.self(classId, id));
             return Response.status(Response.Status.OK).entity(schedule).build();
-        }catch (ClassException | ClassDaoException e) {
+        }catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();

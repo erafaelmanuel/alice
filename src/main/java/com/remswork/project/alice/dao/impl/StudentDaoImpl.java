@@ -87,9 +87,12 @@ public class StudentDaoImpl implements StudentDao {
             if (!(student.getGender().trim().equalsIgnoreCase("Male") ||
                     student.getGender().trim().equalsIgnoreCase("Female")))
                 throw new StudentDaoException("Student's gender is invalid");
-            if (student.getAge() < 1)
-                throw new StudentDaoException("Student's age is invalid");
-            if(sectionId != 0) {
+            if (student.getAge() == 0)
+                throw new StudentDaoException("Student's age is required");
+            if(student.getAge() <= 14 || student.getAge() > 60)
+                throw new StudentDaoException("Student's age is invalid. " +
+                        "The minimum age is 14 and the maximum age is 60");
+            if(sectionId > 0) {
                 Section section = sectionDao.getSectionById(sectionId);
                 student.setSection(section);
             }else
@@ -128,10 +131,16 @@ public class StudentDaoImpl implements StudentDao {
                     throw new StudentDaoException("Student's gender is invalid");
                 student.setGender(newStudent.getGender());
             }
-            if (newStudent.getAge() > 14)
+            if (newStudent.getAge() != 0) {
+                if(newStudent.getAge() <= 14 || newStudent.getAge() > 60)
+                    throw new StudentDaoException("Student's age is invalid. " +
+                            "The minimum age is 14 and the maximum age is 60");
                 student.setAge(newStudent.getAge());
-            if(sectionId != 0) {
+            }
+            if(sectionId > 0) {
                 Section section = sectionDao.getSectionById(sectionId);
+                if(section.getId() == sectionId)
+                    throw new StudentDaoException("Can't update student's section with same section");
                 student.setSection(section);
                 student = (Student) session.merge(student);
             }

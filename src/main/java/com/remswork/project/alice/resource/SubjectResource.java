@@ -85,7 +85,7 @@ public class SubjectResource {
 
     @DELETE
     @Path("{subjectId}")
-    public Response deleteSubjectById(@PathParam("subjectUd") long id) {
+    public Response deleteSubjectById(@PathParam("subjectId") long id) {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.deleteSubjectById(id);

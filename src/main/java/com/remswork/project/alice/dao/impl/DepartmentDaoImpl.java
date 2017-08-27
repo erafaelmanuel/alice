@@ -3,6 +3,7 @@ package com.remswork.project.alice.dao.impl;
 import com.remswork.project.alice.dao.DepartmentDao;
 import com.remswork.project.alice.dao.exception.DepartmentDaoException;
 import com.remswork.project.alice.exception.DepartmentException;
+import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Teacher;
@@ -115,7 +116,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
             if(department == null)
                 throw new DepartmentDaoException("Department with id : " + id + " does not exist.");
 
-            //to avoid the constraints restriction we meed to delete the teacher that having the department
+            //to avoid the constraints restriction we meed to remove department from the teacher
+            // that having the department
             Query teacherQuery = session.createQuery("from Teacher");
             for(Object teacherObj : teacherQuery.list()){
                 Teacher teacher = (Teacher) teacherObj;
@@ -123,7 +125,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
                     continue;
                 if(teacher.getDepartment().equals(department) ||
                         (teacher.getDepartment()!=null?teacher.getDepartment().getId():0)==department.getId()) {
-                    session.delete(teacher);
+                    teacher.setDepartment(null);
                 }
             }
             //to avoid the constraints restriction we meed to delete the section that having the department
@@ -132,9 +134,33 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 Section section = (Section) sectionObj;
                 if(section.getDepartment() == null)
                     continue;
-                if(section.getDepartment().equals(department) ||
-                        (section.getDepartment()!=null?section.getDepartment().getId():0)==department.getId()) {
+                if(section.getDepartment().equals(department) || (section.getDepartment() != null ?
+                        section.getDepartment().getId() : 0) == department.getId()) {
                     session.delete(section);
+                }
+            }
+            //to avoid the constraints restriction we meed to remove department from the class's teacher and section
+            // that having the department
+            Query classQuery = session.createQuery("from Class");
+            for(Object classObj : classQuery.list()){
+                Class _class = (Class) classObj;
+                Teacher teacher = (Teacher) _class.getTeacher();
+                Section section = (Section) _class.getSection();
+                if(teacher != null) {
+                    if (teacher.getDepartment() != null) {
+                        if (teacher.getDepartment().equals(department) || (teacher.getDepartment() != null ?
+                                teacher.getDepartment().getId() : 0) == department.getId()) {
+                            teacher.setDepartment(null);
+                        }
+                    }
+                }
+                if(section != null) {
+                    if (section.getDepartment() != null) {
+                        if(section.getDepartment().equals(department) || (section.getDepartment() != null ?
+                                section.getDepartment().getId() : 0) == department.getId()) {
+                            _class.setSection(null);
+                        }
+                    }
                 }
             }
             session.delete(department);

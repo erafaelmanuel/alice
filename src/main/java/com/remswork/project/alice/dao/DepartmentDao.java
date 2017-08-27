@@ -8,9 +8,13 @@ import java.util.List;
 public interface DepartmentDao {
 
     Department getDepartmentById(long id) throws DepartmentException;
+
     List<Department> getDepartmentList() throws DepartmentException;
+
     Department addDepartment(Department department) throws DepartmentException;
+
     Department updateDepartmentById(long id, Department newDepartment) throws DepartmentException;
+
     Department deleteDepartmentById(long id) throws DepartmentException;
 
 }

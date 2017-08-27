@@ -82,7 +82,7 @@ public class UserDetail {
         return registrationDate;
     }
 
-    public void setRegistrationDate(String registerDate) {
+    public void setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
     }
 

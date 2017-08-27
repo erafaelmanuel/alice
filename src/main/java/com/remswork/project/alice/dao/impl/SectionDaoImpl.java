@@ -4,6 +4,7 @@ import com.remswork.project.alice.dao.SectionDao;
 import com.remswork.project.alice.dao.exception.SectionDaoException;
 import com.remswork.project.alice.exception.DepartmentException;
 import com.remswork.project.alice.exception.SectionException;
+import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Student;
@@ -70,11 +71,11 @@ public class SectionDaoImpl implements SectionDao {
                 throw new SectionDaoException("Section's first name is required");
             if(section.getName().trim().equals(""))
                 throw new SectionDaoException("Section can't have an empty name");
-            if(departmentId != 0) {
-                Department department = departmentDao.getDepartmentById(departmentId);
-                section.setDepartment(department);
-            }else
-                section.setDepartment(null);
+            if(departmentId < 1)
+                throw new SectionDaoException("Query param : departmentId is required");
+
+            Department department = departmentDao.getDepartmentById(departmentId);
+            section.setDepartment(department);
             section = (Section) session.merge(section);
             session.getTransaction().commit();
             session.close();
@@ -97,10 +98,11 @@ public class SectionDaoImpl implements SectionDao {
                 newSection = new Section();
             if(!(newSection.getName() != null ? newSection.getName() : "").trim().isEmpty())
                 section.setName(newSection.getName().trim());
-            if(departmentId != 0) {
+            if(departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
+                if(department.getId() == departmentId)
+                    throw new SectionDaoException("Can't update section's department with same department");
                 section.setDepartment(department);
-                section = (Section) session.merge(section);
             }
             session.getTransaction().commit();
             session.close();
@@ -120,7 +122,7 @@ public class SectionDaoImpl implements SectionDao {
             if(section == null)
                 throw new SectionDaoException("Section with id : " + id + " does not exist");
 
-            //to avoid the constraints restriction we meed to delete the student that having the section
+            //to avoid the constraints restriction we meed to remove section from the student that having the section
             Query studentQuery = session.createQuery("from Student");
             for(Object studentObj : studentQuery.list()){
                 Student student = (Student) studentObj;
@@ -128,7 +130,19 @@ public class SectionDaoImpl implements SectionDao {
                     continue;
                 if(student.getSection().equals(section) ||
                         (student.getSection()!=null?student.getSection().getId():0)==section.getId()) {
-                    session.delete(student);
+                    student.setSection(null);
+                }
+            }
+
+            //to avoid the constraints restriction we meed to remove section from the class that having the section
+            Query classQuery = session.createQuery("from Class");
+            for(Object classObj : classQuery.list()){
+                Class _class = (Class) classObj;
+                if(_class.getSection() == null)
+                    continue;
+                if(_class.getSection().equals(section) ||
+                        (_class.getSection()!=null?_class.getSection().getId():0)==section.getId()) {
+                    _class.setSection(null);
                 }
             }
             section.setDepartment(null);

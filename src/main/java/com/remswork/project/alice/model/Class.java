@@ -18,16 +18,16 @@ public class Class {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "teacherId")
     private Teacher teacher;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "tblschedulelist", joinColumns = @JoinColumn(name = "scheduleId"))
     private Set<Schedule> scheduleList;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "sectionId")
     private Section section;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

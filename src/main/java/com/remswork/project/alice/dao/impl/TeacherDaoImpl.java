@@ -1,9 +1,11 @@
 package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.TeacherDao;
+import com.remswork.project.alice.dao.exception.StudentDaoException;
 import com.remswork.project.alice.dao.exception.TeacherDaoException;
 import com.remswork.project.alice.exception.DepartmentException;
 import com.remswork.project.alice.exception.TeacherException;
+import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Teacher;
 import com.remswork.project.alice.model.UserDetail;
@@ -139,7 +141,7 @@ public class TeacherDaoImpl implements TeacherDao {
             if (teacher.getEmail().trim().equals(""))
                 throw new TeacherDaoException("Teacher can't have an empty email");
 
-            if (departmentId != 0) {
+            if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
                 teacher.setDepartment(department);
             }
@@ -210,8 +212,10 @@ public class TeacherDaoImpl implements TeacherDao {
                 teacher.setEmail(newTeacher.getEmail());
             if (!(newTeacher.getMiddleName() != null ? newTeacher.getMiddleName() : "").trim().isEmpty())
                 teacher.setMiddleName(newTeacher.getMiddleName());
-            if (departmentId != 0) {
+            if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
+                if(department.getId() == departmentId)
+                    throw new TeacherDaoException("Can't update teacher's department with same department");
                 teacher.setDepartment(department);
                 teacher = (Teacher) session.merge(teacher);
             }
@@ -232,6 +236,19 @@ public class TeacherDaoImpl implements TeacherDao {
             Teacher teacher = session.get(Teacher.class, id);
             if (teacher == null)
                 throw new TeacherDaoException("Teacher with id : " + id + " does not exist.");
+
+            //To avoid the constraints restriction we meed to delete the class that having the teacher
+            Query classQuery = session.createQuery("from Class");
+            for(Object classObj : classQuery.list()){
+                Class _class = (Class) classObj;
+                if(_class.getTeacher() == null)
+                    continue;
+                if(_class.getTeacher().equals(teacher) ||
+                        (_class.getTeacher()!=null?_class.getTeacher().getId():0)==teacher.getId()) {
+                    session.delete(_class);
+                }
+            }
+
             teacher.setDepartment(null);
             session.delete(teacher);
             session.getTransaction().commit();

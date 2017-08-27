@@ -4,6 +4,9 @@ import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.support.Message;
 import com.remswork.project.alice.resource.links.ClassResourceLinks;
+import com.remswork.project.alice.resource.links.SectionResourceLinks;
+import com.remswork.project.alice.resource.links.SubjectResourceLinks;
+import com.remswork.project.alice.resource.links.TeacherResourceLinks;
 import com.remswork.project.alice.service.impl.ClassServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +25,8 @@ public class ClassResource {
     private ClassServiceImpl classService;
     @Autowired
     private ClassScheduleListResource classScheduleListResource;
+    @Autowired
+    private ClassStudentListResource classStudentListResource;
     @Context
     private UriInfo uriInfo;
     @QueryParam("teacherId")
@@ -32,17 +37,32 @@ public class ClassResource {
     private long sectionId;
     @QueryParam("scheduleId")
     private long scheduleId;
+    @QueryParam("studentId")
+    private long studentId;
 
     @GET
     @Path("{classId}")
     public Response getClassById(@PathParam("classId") long id) {
-        try{
+        try {
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
             Class _class = classService.getClassById(id);
+
             _class.addLink(resourceLinks.self(id));
             _class.addLink(resourceLinks.schedule(id));
+            _class.addLink(resourceLinks.student(id));
+
+            if(_class.getTeacher() != null)
+                _class.getTeacher().addLink(teacherResourceLinks.self(_class.getTeacher().getId()));
+            if(_class.getSubject() != null)
+                _class.getSubject().addLink(subjectResourceLinks.self(_class.getSubject().getId()));
+            if(_class.getSection() != null)
+                _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
+
             return Response.status(Response.Status.OK).entity(_class).build();
-        } catch (ClassException e){
+        } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
@@ -51,16 +71,28 @@ public class ClassResource {
 
     @GET
     public Response getClassList() {
-        try{
+        try {
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
             List<Class> classList = classService.getClassList();
             for (Class _class : classList) {
                 _class.addLink(resourceLinks.self(_class.getId()));
                 _class.addLink(resourceLinks.schedule(_class.getId()));
+                _class.addLink(resourceLinks.student(_class.getId()));
+
+                if(_class.getTeacher() != null)
+                    _class.getTeacher().addLink(teacherResourceLinks.self(_class.getTeacher().getId()));
+                if(_class.getSubject() != null)
+                    _class.getSubject().addLink(subjectResourceLinks.self(_class.getSubject().getId()));
+                if(_class.getSection() != null)
+                    _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
             }
-            GenericEntity<List<Class>> entity = new GenericEntity<List<Class>>(classList){};
+            GenericEntity<List<Class>> entity = new GenericEntity<List<Class>>(classList) {
+            };
             return Response.status(Response.Status.OK).entity(entity).build();
-        } catch (ClassException e){
+        } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
@@ -69,13 +101,26 @@ public class ClassResource {
 
     @POST
     public Response addClass(Class _class) {
-        try{
+        try {
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
             _class = classService.addClass(_class, teacherId, subjectId, sectionId);
+
             _class.addLink(resourceLinks.self(_class.getId()));
             _class.addLink(resourceLinks.schedule(_class.getId()));
+            _class.addLink(resourceLinks.student(_class.getId()));
+
+            if(_class.getTeacher() != null)
+                _class.getTeacher().addLink(teacherResourceLinks.self(_class.getTeacher().getId()));
+            if(_class.getSubject() != null)
+                _class.getSubject().addLink(subjectResourceLinks.self(_class.getSubject().getId()));
+            if(_class.getSection() != null)
+                _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
+
             return Response.status(Response.Status.OK).entity(_class).build();
-        } catch (ClassException e){
+        } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
@@ -84,14 +129,27 @@ public class ClassResource {
 
     @PUT
     @Path("{classId}")
-    public Response updateClassById(@PathParam("classId")long id, Class newClass) {
-        try{
+    public Response updateClassById(@PathParam("classId") long id, Class newClass) {
+        try {
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
             Class _class = classService.updateClassId(id, newClass, teacherId, subjectId, sectionId);
+
             _class.addLink(resourceLinks.self(id));
             _class.addLink(resourceLinks.schedule(id));
+            _class.addLink(resourceLinks.student(id));
+
+            if(_class.getTeacher() != null)
+                _class.getTeacher().addLink(teacherResourceLinks.self(_class.getTeacher().getId()));
+            if(_class.getSubject() != null)
+                _class.getSubject().addLink(subjectResourceLinks.self(_class.getSubject().getId()));
+            if(_class.getSection() != null)
+                _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
+
             return Response.status(Response.Status.OK).entity(_class).build();
-        } catch (ClassException e){
+        } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
@@ -103,11 +161,24 @@ public class ClassResource {
     public Response deleteClassById(@PathParam("classId") long id) {
         try {
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
             Class _class = classService.deleteClassById(id);
+
             _class.addLink(resourceLinks.self(id));
             _class.addLink(resourceLinks.schedule(id));
+            _class.addLink(resourceLinks.student(id));
+
+            if(_class.getTeacher() != null)
+                _class.getTeacher().addLink(teacherResourceLinks.self(_class.getTeacher().getId()));
+            if(_class.getSubject() != null)
+                _class.getSubject().addLink(subjectResourceLinks.self(_class.getSubject().getId()));
+            if(_class.getSection() != null)
+                _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
+
             return Response.status(Response.Status.OK).entity(_class).build();
-        } catch (ClassException e){
+        } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
@@ -119,5 +190,12 @@ public class ClassResource {
         classScheduleListResource.setScheduleId(scheduleId);
         classScheduleListResource.setUriInfo(uriInfo);
         return classScheduleListResource;
+    }
+
+    @Path("{classId}/student")
+    public ClassStudentListResource classStudentListResource() {
+        classStudentListResource.setStudentId(studentId);
+        classStudentListResource.setUriInfo(uriInfo);
+        return classStudentListResource;
     }
 }

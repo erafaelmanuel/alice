@@ -3,6 +3,7 @@ package com.remswork.project.alice.dao;
 import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Schedule;
+import com.remswork.project.alice.model.Student;
 
 import java.util.List;
 import java.util.Set;
@@ -17,13 +18,21 @@ public interface ClassDao {
 
     Set<Schedule> getScheduleList(long classId) throws ClassException;
 
+    Student getStudentById(long classId, long id) throws ClassException;
+
+    Set<Student> getStudentList(long classId) throws ClassException;
+
     Class addClass(Class _class, long teacherId, long subjectId, long sectionId) throws ClassException;
 
-    Schedule addScheduleById(long classId, long id) throws  ClassException;
+    Schedule addScheduleById(long classId, long id) throws ClassException;
+
+    Student addStudentById(long classId, long id) throws ClassException;
 
     Class updateClassId(long id, Class newClass, long teacherId, long subjectId, long sectionId) throws ClassException;
 
     Class deleteClassById(long id) throws ClassException;
 
     Schedule deleteScheduleById(long classId, long id) throws ClassException;
+
+    Student deleteStudentById(long classId, long id) throws ClassException;
 }

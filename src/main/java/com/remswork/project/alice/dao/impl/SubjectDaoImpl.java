@@ -3,6 +3,7 @@ package com.remswork.project.alice.dao.impl;
 import com.remswork.project.alice.dao.SubjectDao;
 import com.remswork.project.alice.dao.exception.SubjectDaoException;
 import com.remswork.project.alice.exception.SubjectException;
+import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Subject;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -126,6 +127,19 @@ public class SubjectDaoImpl implements SubjectDao {
            Subject subject = session.get(Subject.class, id);
            if(subject == null)
                throw new SubjectDaoException("Subject with id : " + id + " does not exist");
+
+           //to avoid the constraints restriction we meed to remove subject from the class that having the subject
+           Query classQuery = session.createQuery("from Class");
+           for(Object classObj : classQuery.list()){
+               Class _class = (Class) classObj;
+               if(_class.getSubject() == null)
+                   continue;
+               if(_class.getSubject().equals(subject) ||
+                       (_class.getSubject()!=null?_class.getSubject().getId():0)==subject.getId()) {
+                   _class.setSubject(null);
+               }
+           }
+
            session.delete(subject);
            session.getTransaction().commit();
            session.close();

@@ -109,6 +109,48 @@ public class ClassDaoImpl implements ClassDao {
     }
 
     @Override
+    public Student getStudentById(long classId, long id) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Class _class = session.get(Class.class, classId);
+            Student student = null;
+            if (_class == null)
+                throw new ClassDaoException("Class with id : " + classId + " does not exist");
+            for (Student s : _class.getStudentList()) {
+                if (s.getId() == id)
+                    student = s;
+            }
+            if (student == null)
+                throw new ClassDaoException("Class's student with id : " + id + " does not exist");
+            session.getTransaction().commit();
+            session.close();
+            return student;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<Student> getStudentList(long classId) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Class _class = session.get(Class.class, classId);
+            if (_class == null)
+                throw new ClassDaoException("Class with id : " + classId + " does not exist");
+            Set<Student> studentSet = _class.getStudentList();
+            session.getTransaction().commit();
+            session.close();
+            return studentSet;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
     public Class addClass(Class _class, long teacherId, long subjectId, long sectionId) throws ClassException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -166,6 +208,29 @@ public class ClassDaoImpl implements ClassDao {
     }
 
     @Override
+    public Student addStudentById(long classId, long id) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Class _class = session.get(Class.class, classId);
+            if (_class == null)
+                throw new ClassDaoException("Class with id : " + classId + " does not exist");
+            Student student = studentDao.getStudentById(id);
+            for (Student s : _class.getStudentList()) {
+                if (s.getId() == id)
+                    throw new ClassDaoException("Class's student with id : " + id + " already exist");
+            }
+            _class.getStudentList().add(student);
+            session.getTransaction().commit();
+            session.close();
+            return student;
+        } catch (ClassDaoException | StudentException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
     public Class updateClassId(long id, Class newClass, long teacherId, long subjectId, long sectionId)
             throws ClassException {
         Session session = sessionFactory.openSession();
@@ -176,16 +241,23 @@ public class ClassDaoImpl implements ClassDao {
                 throw new ClassDaoException("Class with id : " + id + " does not exist");
             if (teacherId != 0) {
                 Teacher teacher = teacherDao.getTeacherById(teacherId);
+                if((_class.getTeacher() != null ? _class.getTeacher().getId() : 0) == teacherId)
+                    throw new ClassDaoException("Can't update class's teacher with same teacher");
                 _class.setTeacher(teacher);
             }
             if (subjectId != 0) {
                 Subject subject = subjectDao.getSubjectById(subjectId);
+                if((_class.getSubject() != null ? _class.getSubject().getId() : 0) == subjectId)
+                    throw new ClassDaoException("Can't update class's subject with same subject");
                 _class.setSubject(subject);
             }
             if (sectionId != 0) {
                 Section section = sectionDao.getSectionById(sectionId);
+                if((_class.getSection() != null ? _class.getSection().getId() : 0) == sectionId)
+                    throw new ClassDaoException("Can't update class's section with same section");
                 _class.setSection(section);
             }
+            _class = (Class) session.merge(_class);
             session.getTransaction().commit();
             session.close();
             return _class;
@@ -241,6 +313,33 @@ public class ClassDaoImpl implements ClassDao {
             session.getTransaction().commit();
             session.close();
             return schedule;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Student deleteStudentById(long classId, long id) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Class _class = session.get(Class.class, classId);
+            Student student = null;
+            if (_class == null)
+                throw new ClassDaoException("Class with id : " + classId + " does not exist");
+            for (Student s : _class.getStudentList()) {
+                if (s.getId() == id) {
+                    _class.getStudentList().remove(s);
+                    student = s;
+                    break;
+                }
+            }
+            if (student == null)
+                throw new ClassDaoException("Class's student with id : " + id + " does not exist");
+            session.getTransaction().commit();
+            session.close();
+            return student;
         } catch (ClassDaoException e) {
             session.close();
             throw new ClassException(e.getMessage());
