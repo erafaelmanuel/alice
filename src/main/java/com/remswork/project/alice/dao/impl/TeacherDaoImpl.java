@@ -139,7 +139,7 @@ public class TeacherDaoImpl implements TeacherDao {
             if (teacher.getEmail().trim().equals(""))
                 throw new TeacherDaoException("Teacher can't have an empty email");
 
-            if (departmentId > 0) {
+            if (departmentId != 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
                 teacher.setDepartment(department);
             }
@@ -197,7 +197,7 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             if (newTeacher == null)
-                throw new TeacherDaoException("You tried to update teacher with a null value");
+                newTeacher = new Teacher();
             Teacher teacher = session.get(Teacher.class, id);
 
             if (teacher == null)
@@ -210,7 +210,7 @@ public class TeacherDaoImpl implements TeacherDao {
                 teacher.setEmail(newTeacher.getEmail());
             if (!(newTeacher.getMiddleName() != null ? newTeacher.getMiddleName() : "").trim().isEmpty())
                 teacher.setMiddleName(newTeacher.getMiddleName());
-            if (departmentId > 0) {
+            if (departmentId != 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
                 teacher.setDepartment(department);
                 teacher = (Teacher) session.merge(teacher);

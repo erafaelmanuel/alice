@@ -74,7 +74,7 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.updateSubjectById(id, newSubject);
-            subject.addLink(resourceLinks.self(subject.getId()));
+            subject.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             Subject subject = subjectService.deleteSubjectById(id);
-            subject.addLink(resourceLinks.self(subject.getId()));
+            subject.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(subject).build();
         }catch (SubjectException e) {
             e.printStackTrace();

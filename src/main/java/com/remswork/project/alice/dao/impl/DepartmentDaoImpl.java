@@ -88,12 +88,10 @@ public class DepartmentDaoImpl implements DepartmentDao {
         session.beginTransaction();
         try{
             Department department = session.get(Department.class, id);
-
-            if(newDepartment == null)
-                throw new DepartmentDaoException("You tried to update department with a null value");
             if(department == null)
                 throw new DepartmentDaoException("Department with id : " + id + " does not exist.");
-
+            if(newDepartment == null)
+                throw new DepartmentDaoException("You tried to update department with a null value");
             if(!(newDepartment.getName()!=null?newDepartment.getName().trim():"").isEmpty())
                 department.setName(newDepartment.getName());
             if(!(newDepartment.getDescription()!=null?newDepartment.getDescription().trim():"").isEmpty())

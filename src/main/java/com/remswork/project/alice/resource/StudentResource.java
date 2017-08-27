@@ -1,8 +1,11 @@
 package com.remswork.project.alice.resource;
 
 import com.remswork.project.alice.exception.StudentException;
+import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Student;
 import com.remswork.project.alice.model.support.Message;
+import com.remswork.project.alice.resource.links.DepartmentResourceLinks;
+import com.remswork.project.alice.resource.links.SectionResourceLinks;
 import com.remswork.project.alice.resource.links.StudentResourceLinks;
 import com.remswork.project.alice.service.impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +32,17 @@ public class StudentResource {
     @Path("{studentId}")
     public Response getStudentById(@PathParam("studentId") long id) {
        try{
-           Student student = studentService.getStudentById(id);
            StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
+           SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
+           DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
+           Student student = studentService.getStudentById(id);
            student.addLink(resourceLinks.self(id));
+           if(student.getSection() != null) {
+               Section section = student.getSection();
+               section.addLink(sectionResourceLinks.self(section.getId()));
+               if(section.getDepartment() != null)
+                   section.getDepartment().addLink(departmentResourceLinks.self(section.getDepartment().getId()));
+           }
            return Response.status(Response.Status.OK).entity(student).build();
        }catch (StudentException e) {
            e.printStackTrace();
@@ -43,13 +54,19 @@ public class StudentResource {
     @GET
     public Response getStudentList() {
         try {
-            List<Student> studentList = studentService.getStudentList();
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
-            for(Student s : studentList) {
-                if(s != null)
-                    s.addLink(resourceLinks.self(s.getId()));
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
+            DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
+            List<Student> studentList = studentService.getStudentList();
+            for(Student student : studentList) {
+                student.addLink(resourceLinks.self(student.getId()));
+                if(student.getSection() != null) {
+                    Section section = student.getSection();
+                    section.addLink(sectionResourceLinks.self(section.getId()));
+                    if(section.getDepartment() != null)
+                        section.getDepartment().addLink(departmentResourceLinks.self(section.getDepartment().getId()));
+                }
             }
-
             GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(studentList){};
             return Response.status(Response.Status.OK).entity(entity).build();
         }catch (StudentException e) {
@@ -63,8 +80,16 @@ public class StudentResource {
     public Response addStudent(Student student) {
         try {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
+            DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
             student = studentService.addStudent(student, sectionId);
             student.addLink(resourceLinks.self(student.getId()));
+            if(student.getSection() != null) {
+                Section section = student.getSection();
+                section.addLink(sectionResourceLinks.self(section.getId()));
+                if(section.getDepartment() != null)
+                    section.getDepartment().addLink(departmentResourceLinks.self(section.getDepartment().getId()));
+            }
             return Response.status(Response.Status.CREATED).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();
@@ -78,8 +103,16 @@ public class StudentResource {
     public Response updateStudentById(@PathParam("studentId") long id, Student newStudent) {
         try {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
+            DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
             Student student = studentService.updateStudentById(id, newStudent, sectionId);
             student.addLink(resourceLinks.self(id));
+            if(student.getSection() != null) {
+                Section section = student.getSection();
+                section.addLink(sectionResourceLinks.self(section.getId()));
+                if(section.getDepartment() != null)
+                    section.getDepartment().addLink(departmentResourceLinks.self(section.getDepartment().getId()));
+            }
             return Response.status(Response.Status.OK).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();
@@ -93,8 +126,16 @@ public class StudentResource {
     public Response deleteStudentById(@PathParam("studentId") long id) {
         try {
             StudentResourceLinks resourceLinks = new StudentResourceLinks(uriInfo);
+            SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
+            DepartmentResourceLinks departmentResourceLinks = new DepartmentResourceLinks(uriInfo);
             Student student = studentService.deleteStudentById(id);
             student.addLink(resourceLinks.self(id));
+            if(student.getSection() != null) {
+                Section section = student.getSection();
+                section.addLink(sectionResourceLinks.self(section.getId()));
+                if(section.getDepartment() != null)
+                    section.getDepartment().addLink(departmentResourceLinks.self(section.getDepartment().getId()));
+            }
             return Response.status(Response.Status.OK).entity(student).build();
         }catch (StudentException e) {
             e.printStackTrace();

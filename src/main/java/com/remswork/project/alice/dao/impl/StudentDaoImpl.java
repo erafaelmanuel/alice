@@ -109,11 +109,11 @@ public class StudentDaoImpl implements StudentDao {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
-            if(newStudent == null)
-                throw new StudentDaoException("You tried to update student with a null value");
             Student student = session.get(Student.class, id);
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");
+            if(newStudent == null)
+                newStudent = new Student();
             if (newStudent.getStudentNumber() < 1)
                 student.setStudentNumber(newStudent.getStudentNumber());
             if (!(newStudent.getFirstName() != null ? newStudent.getFirstName() : "").trim().isEmpty())

@@ -17,6 +17,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(SubjectResource.class);
 		register(ScheduleResource.class);
 		register(SectionResource.class);
+		register(ClassResource.class);
 	}
 
 }

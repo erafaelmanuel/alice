@@ -74,7 +74,7 @@ public class ScheduleResource {
         try {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             Schedule schedule = scheduleService.updateScheduleById(id, newSchedule);
-            schedule.addLink(resourceLinks.self(schedule.getId()));
+            schedule.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class ScheduleResource {
         try {
             ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
             Schedule schedule = scheduleService.deleteScheduleById(id);
-            schedule.addLink(resourceLinks.self(schedule.getId()));
+            schedule.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(schedule).build();
         }catch (ScheduleException e) {
             e.printStackTrace();

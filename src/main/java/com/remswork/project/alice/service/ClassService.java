@@ -1,0 +1,29 @@
+package com.remswork.project.alice.service;
+
+import com.remswork.project.alice.exception.ClassException;
+import com.remswork.project.alice.model.Class;
+import com.remswork.project.alice.model.Schedule;
+
+import java.util.List;
+import java.util.Set;
+
+public interface ClassService {
+
+    Class getClassById(long id) throws ClassException;
+
+    List<Class> getClassList() throws ClassException;
+
+    Schedule getScheduleById(long classId, long id) throws ClassException;
+
+    Set<Schedule> getScheduleList(long classId) throws ClassException;
+
+    Class addClass(Class _class, long teacherId, long subjectId, long sectionId) throws ClassException;
+
+    Schedule addScheduleById(long classId, long id) throws  ClassException;
+
+    Class updateClassId(long id, Class newClass, long teacherId, long subjectId, long sectionId) throws ClassException;
+
+    Class deleteClassById(long id) throws ClassException;
+
+    Schedule deleteScheduleById(long classId, long id) throws ClassException;
+}

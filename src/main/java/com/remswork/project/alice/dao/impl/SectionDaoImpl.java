@@ -7,7 +7,6 @@ import com.remswork.project.alice.exception.SectionException;
 import com.remswork.project.alice.model.Department;
 import com.remswork.project.alice.model.Section;
 import com.remswork.project.alice.model.Student;
-import com.remswork.project.alice.model.Teacher;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -95,7 +94,7 @@ public class SectionDaoImpl implements SectionDao {
             if(section == null)
                 throw new SectionDaoException("Section with id : " + id + " does not exist");
             if(newSection == null)
-                throw new SectionDaoException("You tried to update section with a null value");
+                newSection = new Section();
             if(!(newSection.getName() != null ? newSection.getName() : "").trim().isEmpty())
                 section.setName(newSection.getName().trim());
             if(departmentId != 0) {
