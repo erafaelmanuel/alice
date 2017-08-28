@@ -214,7 +214,7 @@ public class TeacherDaoImpl implements TeacherDao {
                 teacher.setMiddleName(newTeacher.getMiddleName());
             if (departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
-                if(department.getId() == departmentId)
+                if(department.getId() == teacher.getDepartment().getId())
                     throw new TeacherDaoException("Can't update teacher's department with same department");
                 teacher.setDepartment(department);
                 teacher = (Teacher) session.merge(teacher);

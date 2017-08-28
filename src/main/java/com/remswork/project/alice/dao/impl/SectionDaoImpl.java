@@ -100,7 +100,7 @@ public class SectionDaoImpl implements SectionDao {
                 section.setName(newSection.getName().trim());
             if(departmentId > 0) {
                 Department department = departmentDao.getDepartmentById(departmentId);
-                if(department.getId() == departmentId)
+                if(department.getId() == section.getId())
                     throw new SectionDaoException("Can't update section's department with same department");
                 section.setDepartment(department);
             }

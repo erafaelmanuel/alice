@@ -241,19 +241,19 @@ public class ClassDaoImpl implements ClassDao {
                 throw new ClassDaoException("Class with id : " + id + " does not exist");
             if (teacherId != 0) {
                 Teacher teacher = teacherDao.getTeacherById(teacherId);
-                if((_class.getTeacher() != null ? _class.getTeacher().getId() : 0) == teacherId)
+                if((_class.getTeacher() != null ? _class.getTeacher().getId() : 0) == teacher.getId())
                     throw new ClassDaoException("Can't update class's teacher with same teacher");
                 _class.setTeacher(teacher);
             }
             if (subjectId != 0) {
                 Subject subject = subjectDao.getSubjectById(subjectId);
-                if((_class.getSubject() != null ? _class.getSubject().getId() : 0) == subjectId)
+                if((_class.getSubject() != null ? _class.getSubject().getId() : 0) == subject.getId())
                     throw new ClassDaoException("Can't update class's subject with same subject");
                 _class.setSubject(subject);
             }
             if (sectionId != 0) {
                 Section section = sectionDao.getSectionById(sectionId);
-                if((_class.getSection() != null ? _class.getSection().getId() : 0) == sectionId)
+                if((_class.getSection() != null ? _class.getSection().getId() : 0) == section.getId())
                     throw new ClassDaoException("Can't update class's section with same section");
                 _class.setSection(section);
             }
