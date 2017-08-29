@@ -28,7 +28,7 @@ public interface ClassDao {
 
     Student addStudentById(long classId, long id) throws ClassException;
 
-    Class updateClassId(long id, Class newClass, long teacherId, long subjectId, long sectionId) throws ClassException;
+    Class updateClassById(long id, Class newClass, long teacherId, long subjectId, long sectionId) throws ClassException;
 
     Class deleteClassById(long id) throws ClassException;
 

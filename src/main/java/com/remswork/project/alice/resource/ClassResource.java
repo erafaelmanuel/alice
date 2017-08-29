@@ -135,7 +135,7 @@ public class ClassResource {
             TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
             SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
-            Class _class = classService.updateClassId(id, newClass, teacherId, subjectId, sectionId);
+            Class _class = classService.updateClassById(id, newClass, teacherId, subjectId, sectionId);
 
             _class.addLink(resourceLinks.self(id));
             _class.addLink(resourceLinks.schedule(id));

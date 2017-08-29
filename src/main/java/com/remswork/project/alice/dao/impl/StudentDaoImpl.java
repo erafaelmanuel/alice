@@ -139,7 +139,7 @@ public class StudentDaoImpl implements StudentDao {
             }
             if(sectionId > 0) {
                 Section section = sectionDao.getSectionById(sectionId);
-                if(section.getId() == student.getId())
+                if(section.getId() == (student.getSection() != null ? student.getSection().getId() : 0))
                     throw new StudentDaoException("Can't update student's section with same section");
                 student.setSection(section);
                 student = (Student) session.merge(student);

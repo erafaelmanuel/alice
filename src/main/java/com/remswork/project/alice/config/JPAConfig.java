@@ -39,7 +39,7 @@ public class JPAConfig {
 	
 	public Properties hibernateProperties() {
 		Properties properties = new Properties();
-		properties.put("hibernate.hbm2ddl.auto", "create");
+		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		return properties;

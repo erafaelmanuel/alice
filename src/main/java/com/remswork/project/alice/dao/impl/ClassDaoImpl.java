@@ -231,7 +231,7 @@ public class ClassDaoImpl implements ClassDao {
     }
 
     @Override
-    public Class updateClassId(long id, Class newClass, long teacherId, long subjectId, long sectionId)
+    public Class updateClassById(long id, Class newClass, long teacherId, long subjectId, long sectionId)
             throws ClassException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();

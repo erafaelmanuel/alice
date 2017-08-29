@@ -142,10 +142,10 @@ public class DepartmentDaoImpl implements DepartmentDao {
             //to avoid the constraints restriction we meed to remove department from the class's teacher and section
             // that having the department
             Query classQuery = session.createQuery("from Class");
-            for(Object classObj : classQuery.list()){
+            for(Object classObj : classQuery.list()) {
                 Class _class = (Class) classObj;
-                Teacher teacher = (Teacher) _class.getTeacher();
-                Section section = (Section) _class.getSection();
+                Teacher teacher = _class.getTeacher();
+                Section section = _class.getSection();
                 if(teacher != null) {
                     if (teacher.getDepartment() != null) {
                         if (teacher.getDepartment().equals(department) || (teacher.getDepartment() != null ?
