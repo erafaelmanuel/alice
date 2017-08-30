@@ -119,7 +119,7 @@ public class ClassResource {
             if(_class.getSection() != null)
                 _class.getSection().addLink(sectionResourceLinks.self(_class.getSection().getId()));
 
-            return Response.status(Response.Status.OK).entity(_class).build();
+            return Response.status(Response.Status.CREATED).entity(_class).build();
         } catch (ClassException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
