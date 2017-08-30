@@ -36,15 +36,20 @@ public class Student {
         links = new ArrayList<>();
     }
 
-    public Student(long studentNumber, String firstName, String lastName, String middleName,
-                   String gender, int age, String imageSrc) {
+    public Student(long studentNumber, String firstName, String middleName, String lastName,
+                   String gender, int age) {
         this();
         this.studentNumber = studentNumber;
         this.firstName = firstName;
-        this.lastName = lastName;
         this.middleName = middleName;
+        this.lastName = lastName;
         this.gender = gender;
         this.age = age;
+    }
+
+    public Student(long studentNumber, String firstName, String middleName, String lastName,
+                   String gender, int age, String imageSrc) {
+        this(studentNumber, firstName, middleName, lastName, gender, age);
         this.imageSrc = imageSrc;
     }
 

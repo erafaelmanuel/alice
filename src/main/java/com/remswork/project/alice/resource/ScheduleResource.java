@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Produces(value = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -31,6 +32,23 @@ public class ScheduleResource {
             Schedule schedule = scheduleService.getScheduleById(id);
             schedule.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(schedule).build();
+        }catch (ScheduleException e) {
+            e.printStackTrace();
+            Message message = new Message(404, "Not Found", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
+    }
+
+    @GET
+    @Path("1")
+    public Response getScheduleListByTeacherId(@QueryParam("teacherId") long teacherId) {
+        try {
+            ScheduleResourceLinks resourceLinks = new ScheduleResourceLinks(uriInfo);
+            Set<Schedule> scheduleSet = scheduleService.getScheduleListByTeacherId(teacherId);
+            for(Schedule schedule : scheduleSet)
+                schedule.addLink(resourceLinks.self(schedule.getId()));
+            GenericEntity<Set<Schedule>> entity = new GenericEntity<Set<Schedule>>(scheduleSet){};
+            return Response.status(Response.Status.OK).entity(entity).build();
         }catch (ScheduleException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());

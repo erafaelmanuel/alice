@@ -33,16 +33,16 @@ public class Teacher {
 		links = new ArrayList<>();
 	}
 	
-	public Teacher(String firstName, String lastName, String middleName, String email) {
+	public Teacher(String firstName, String middleName, String lastName, String email) {
 		this();
 		this.firstName = firstName;
-		this.lastName = lastName;
 		this.middleName = middleName;
+		this.lastName = lastName;
 		this.email = email;
 	}
 
 	public Teacher(long id, String firstName, String lastName, String middleName, String email) {
-		this(firstName, lastName, middleName, email);
+		this(firstName, middleName, lastName, email);
 		this.id = id;
 	}
 

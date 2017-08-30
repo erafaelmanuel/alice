@@ -1,6 +1,7 @@
 package com.remswork.project.alice.service.impl;
 
 import com.remswork.project.alice.dao.impl.SubjectDaoImpl;
+import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.exception.SubjectException;
 import com.remswork.project.alice.model.Subject;
 import com.remswork.project.alice.service.SubjectService;
@@ -21,8 +22,23 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    public Subject getSubjectByClassAndTeacherId(long classId, long teacherId) throws SubjectException {
+        return subjectDao.getSubjectByClassAndTeacherId(classId, teacherId);
+    }
+
+    @Override
+    public Subject getSubjectByScheduleId(long scheduleId) throws SubjectException {
+        return subjectDao.getSubjectByScheduleId(scheduleId);
+    }
+
+    @Override
     public List<Subject> getSubjectList() throws SubjectException {
        return subjectDao.getSubjectList();
+    }
+
+    @Override
+    public List<Subject> getSubjectListByTeacherId(long teacherId) throws SubjectException {
+        return subjectDao.getSubjectListByTeacherId(teacherId);
     }
 
     @Override

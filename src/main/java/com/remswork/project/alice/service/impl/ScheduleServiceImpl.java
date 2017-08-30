@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -23,6 +24,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<Schedule> getScheduleList() throws ScheduleException {
         return scheduleDao.getScheduleList();
+    }
+
+    @Override
+    public Set<Schedule> getScheduleListByTeacherId(long teacherId) throws ScheduleException {
+        return scheduleDao.getScheduleListByTeacherId(teacherId);
     }
 
     @Override

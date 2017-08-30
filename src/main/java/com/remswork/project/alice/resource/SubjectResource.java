@@ -24,6 +24,29 @@ public class SubjectResource {
     private UriInfo uriInfo;
 
     @GET
+    @Path("0")
+    public Response getSubject(@QueryParam("classId") long classId, @QueryParam("scheduleId") long scheduleId,
+                               @QueryParam("teacherId") long teacherId) {
+        try {
+            if (classId != 0 && teacherId != 0) {
+                SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
+                Subject subject = subjectService.getSubjectByClassAndTeacherId(classId, teacherId);
+                subject.addLink(resourceLinks.self(subject.getId()));
+                return Response.status(Response.Status.OK).entity(subject).build();
+            } else {
+                SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
+                Subject subject = subjectService.getSubjectByScheduleId(scheduleId);
+                subject.addLink(resourceLinks.self(subject.getId()));
+                return Response.status(Response.Status.OK).entity(subject).build();
+            }
+        } catch (SubjectException e) {
+            e.printStackTrace();
+            Message message = new Message(404, "Not Found", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
+    }
+
+    @GET
     @Path("{subjectId}")
     public Response getSubjectById(@PathParam("subjectId") long id) {
         try {
@@ -31,7 +54,25 @@ public class SubjectResource {
             Subject subject = subjectService.getSubjectById(id);
             subject.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(subject).build();
-        }catch (SubjectException e) {
+        } catch (SubjectException e) {
+            e.printStackTrace();
+            Message message = new Message(404, "Not Found", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
+    }
+
+    @GET
+    @Path("1")
+    public Response getSubjectListByTeacherId(@QueryParam("teacherId") long teacherId) {
+        try {
+            SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
+            List<Subject> subjectList = subjectService.getSubjectListByTeacherId(teacherId);
+            for (Subject subject : subjectList)
+                subject.addLink(resourceLinks.self(subject.getId()));
+            GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList) {
+            };
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
@@ -43,11 +84,12 @@ public class SubjectResource {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
             List<Subject> subjectList = subjectService.getSubjectList();
-            for(Subject subject : subjectList)
+            for (Subject subject : subjectList)
                 subject.addLink(resourceLinks.self(subject.getId()));
-            GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList){};
+            GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList) {
+            };
             return Response.status(Response.Status.OK).entity(entity).build();
-        }catch (SubjectException e) {
+        } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(message).build();
@@ -61,7 +103,7 @@ public class SubjectResource {
             subject = subjectService.addSubject(subject);
             subject.addLink(resourceLinks.self(subject.getId()));
             return Response.status(Response.Status.CREATED).entity(subject).build();
-        }catch (SubjectException e) {
+        } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
@@ -76,7 +118,7 @@ public class SubjectResource {
             Subject subject = subjectService.updateSubjectById(id, newSubject);
             subject.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(subject).build();
-        }catch (SubjectException e) {
+        } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
@@ -91,7 +133,7 @@ public class SubjectResource {
             Subject subject = subjectService.deleteSubjectById(id);
             subject.addLink(resourceLinks.self(id));
             return Response.status(Response.Status.OK).entity(subject).build();
-        }catch (SubjectException e) {
+        } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();

@@ -18,6 +18,7 @@ public class Schedule {
     private String day;
     private String time;
     private String period;
+    private String room;
     @Transient
     private List<Link> links;
 
@@ -26,11 +27,17 @@ public class Schedule {
         links = new ArrayList<>();
     }
 
-    public Schedule(String day, String time, String period) {
+    public Schedule(String day, String time, String period, String room) {
         this();
         this.day = day;
         this.time = time;
         this.period = period;
+        this.room = room;
+    }
+
+    public Schedule(int id, String day, String time, String period, String room) {
+        this(day, time, period, room);
+        this.id = id;
     }
 
     public long getId() {
@@ -63,6 +70,14 @@ public class Schedule {
 
     public void setPeriod(String period) {
         this.period = period;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public List<Link> getLinks() {

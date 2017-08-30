@@ -5,6 +5,7 @@ import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Schedule;
 import com.remswork.project.alice.model.Student;
+import com.remswork.project.alice.model.Subject;
 import com.remswork.project.alice.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

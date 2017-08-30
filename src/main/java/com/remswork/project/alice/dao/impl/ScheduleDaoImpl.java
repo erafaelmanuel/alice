@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.bean.TimeHelperBean;
 import com.remswork.project.alice.dao.ScheduleDao;
+import com.remswork.project.alice.dao.exception.ClassDaoException;
 import com.remswork.project.alice.dao.exception.ScheduleDaoException;
 import com.remswork.project.alice.exception.ScheduleException;
 import com.remswork.project.alice.model.Schedule;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class ScheduleDaoImpl implements ScheduleDao {
@@ -52,6 +55,29 @@ public class ScheduleDaoImpl implements ScheduleDao {
             session.close();
             return scheduleList;
         }catch (ScheduleDaoException e) {
+            session.close();
+            throw new ScheduleException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<Schedule> getScheduleListByTeacherId(long teacherId) throws ScheduleException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Set<Schedule> scheduleSet = new HashSet<>();
+            String hql = "from Class as c join c.scheduleList as s join c.teacher as t where t.id = :teacherId";
+            Query query = session.createQuery(hql);
+            query.setParameter("teacherId", teacherId);
+
+            for(Object list : query.list()) {
+                Object[] row = (Object[]) list;
+                scheduleSet.add((Schedule) row[1]);
+            }
+            session.getTransaction().commit();
+            session.close();
+            return scheduleSet;
+        }catch (ClassDaoException e) {
             session.close();
             throw new ScheduleException(e.getMessage());
         }
