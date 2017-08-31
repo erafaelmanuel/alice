@@ -56,6 +56,10 @@ public class Department {
 		return description;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public List<Link> getLinks() {
 		return links;
 	}
@@ -65,10 +69,14 @@ public class Department {
 	}
 
 	public void addLink(Link link){
-		links.add(link);
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+		boolean isExist = false;
+		for (Link eachLink : links) {
+			if(eachLink.getRel().equalsIgnoreCase(link.getRel())) {
+				isExist = true;
+				break;
+			}
+		}
+		if(!isExist)
+			links.add(link);
 	}
 }

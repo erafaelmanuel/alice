@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -222,6 +221,7 @@ public class ClassDaoImpl implements ClassDao {
                     throw new ClassDaoException("Class's student with id : " + id + " already exist");
             }
             _class.getStudentList().add(student);
+            session.merge(_class);
             session.getTransaction().commit();
             session.close();
             return student;

@@ -24,13 +24,13 @@ public class Class {
     @OneToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tblschedulelist", joinColumns = @JoinColumn(name = "scheduleId"))
     private Set<Schedule> scheduleList;
     @OneToOne
     @JoinColumn(name = "sectionId")
     private Section section;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tblstudentlist", joinColumns = @JoinColumn(name = "studentId"))
     private Set<Student> studentList;
     @Transient
@@ -112,6 +112,14 @@ public class Class {
     }
 
     public void addLink(Link link) {
-        links.add(link);
+        boolean isExist = false;
+        for (Link eachLink : links) {
+            if(eachLink.getRel().equalsIgnoreCase(link.getRel())) {
+                isExist = true;
+                break;
+            }
+        }
+        if(!isExist)
+            links.add(link);
     }
 }

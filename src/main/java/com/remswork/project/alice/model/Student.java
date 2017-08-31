@@ -148,6 +148,14 @@ public class Student {
     }
 
     public void addLink(Link link) {
-        links.add(link);
+        boolean isExist = false;
+        for (Link eachLink : links) {
+            if(eachLink.getRel().equalsIgnoreCase(link.getRel())) {
+                isExist = true;
+                break;
+            }
+        }
+        if(!isExist)
+            links.add(link);
     }
 }
