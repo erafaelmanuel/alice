@@ -62,11 +62,17 @@ public class SubjectResource {
     }
 
     @GET
-    @Path("1")
-    public Response getSubjectListByTeacherId(@QueryParam("teacherId") long teacherId) {
+    public Response getSubjectList(@QueryParam("teacherId") long teacherId, @QueryParam("studentId") long studentId) {
         try {
+            List<Subject> subjectList;
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
-            List<Subject> subjectList = subjectService.getSubjectListByTeacherId(teacherId);
+
+            if(teacherId != 0)
+                subjectList = subjectService.getSubjectListByTeacherId(teacherId);
+            else if(studentId != 0)
+                subjectList = subjectService.getSubjectListByStudentId(studentId);
+            else
+                subjectList = subjectService.getSubjectList();
             for (Subject subject : subjectList)
                 subject.addLink(resourceLinks.self(subject.getId()));
             GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList) {
@@ -80,10 +86,12 @@ public class SubjectResource {
     }
 
     @GET
-    public Response getSubjectList() {
+    @Path("1")
+    @Deprecated
+    public Response getSubjectListByTeacherId(@QueryParam("teacherId") long teacherId) {
         try {
             SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
-            List<Subject> subjectList = subjectService.getSubjectList();
+            List<Subject> subjectList = subjectService.getSubjectListByTeacherId(teacherId);
             for (Subject subject : subjectList)
                 subject.addLink(resourceLinks.self(subject.getId()));
             GenericEntity<List<Subject>> entity = new GenericEntity<List<Subject>>(subjectList) {

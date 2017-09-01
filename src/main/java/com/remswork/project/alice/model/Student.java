@@ -9,7 +9,7 @@ import java.util.List;
 
 @XmlRootElement
 @Entity
-@Table(name="tlbstudent")
+@Table(name="tblstudent")
 public class Student {
 
     @GeneratedValue(strategy=GenerationType.AUTO)

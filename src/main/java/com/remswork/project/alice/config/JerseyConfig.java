@@ -18,6 +18,13 @@ public class JerseyConfig extends ResourceConfig {
 		register(ScheduleResource.class);
 		register(SectionResource.class);
 		register(ClassResource.class);
+		register(ActivityResource.class);
+		register(AssignmentResource.class);
+		register(AttendanceResource.class);
+		register(ExamResource.class);
+		register(ProjectResource.class);
+		register(QuizResource.class);
+		register(RecitationResource.class);
 	}
 
 }

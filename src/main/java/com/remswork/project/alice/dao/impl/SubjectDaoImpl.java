@@ -126,6 +126,29 @@ public class SubjectDaoImpl implements SubjectDao {
     }
 
     @Override
+    public List<Subject> getSubjectListByStudentId(long studentId) throws SubjectException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Subject> subjectList = new ArrayList<>();
+            String hql = "from Class as c join c.subject as su join c.studentList as st where st.id = :studentId";
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+
+            for(Object list : query.list()) {
+                Object[] row = (Object[]) list;
+                subjectList.add((Subject) row[1]);
+            }
+            session.getTransaction().commit();
+            session.close();
+            return subjectList;
+        }catch (ClassDaoException e) {
+            session.close();
+            throw new SubjectException(e.getMessage());
+        }
+    }
+
+    @Override
     public Subject addSubject(Subject subject) throws SubjectException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();

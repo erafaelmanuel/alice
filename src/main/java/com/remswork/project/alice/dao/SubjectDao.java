@@ -17,6 +17,8 @@ public interface SubjectDao {
 
     List<Subject> getSubjectListByTeacherId(long teacherId) throws SubjectException;
 
+    List<Subject> getSubjectListByStudentId(long studentId) throws SubjectException;
+
     Subject addSubject(Subject subject) throws SubjectException;
 
     Subject updateSubjectById(long id, Subject newSubject) throws SubjectException;

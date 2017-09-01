@@ -6,6 +6,8 @@ import com.remswork.project.alice.model.support.Message;
 import com.remswork.project.alice.resource.links.DepartmentResourceLinks;
 import com.remswork.project.alice.resource.links.TeacherResourceLinks;
 import com.remswork.project.alice.service.impl.TeacherServiceImpl;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,10 @@ public class TeacherResource {
 	private UriInfo uriInfo;
 	@QueryParam("departmentId")
 	private long departmentId;
-	
+
+	@Autowired
+	SessionFactory sessionFactory;
+
 	@GET
 	@Path("{teacherId}")
 	public Response getTeacherById(@PathParam("teacherId") long id) {

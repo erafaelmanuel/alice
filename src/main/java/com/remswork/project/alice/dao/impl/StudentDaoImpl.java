@@ -66,7 +66,7 @@ public class StudentDaoImpl implements StudentDao {
             if (student == null)
                 throw new StudentDaoException("You tried to add student with a null value");
             if (student.getStudentNumber() == 0)
-                throw new StudentDaoException("Student's \"studentnumber\" is required");
+                throw new StudentDaoException("Student's studentnumber is required");
             if (student.getFirstName() == null)
                 throw new StudentDaoException("Student's first name is required");
             if (student.getFirstName().trim().equals(""))
