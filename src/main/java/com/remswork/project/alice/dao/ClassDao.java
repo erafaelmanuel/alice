@@ -14,6 +14,12 @@ public interface ClassDao {
 
     List<Class> getClassList() throws ClassException;
 
+    List<Class> getClassListByTeacherId(long teacherId) throws ClassException;
+
+    List<Class> getClassListByStudentId(long studentId) throws ClassException;
+
+    List<Class> getClassListBySubjectId(long subjectId) throws ClassException;
+
     Schedule getScheduleById(long classId, long id) throws ClassException;
 
     Set<Schedule> getScheduleList(long classId) throws ClassException;

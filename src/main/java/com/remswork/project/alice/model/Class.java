@@ -24,14 +24,16 @@ public class Class {
     @OneToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tblschedulelist", joinColumns = @JoinColumn(name = "scheduleId"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tblschedulelist", joinColumns = @JoinColumn(name = "classId"),
+            inverseJoinColumns = @JoinColumn(name = "scheduleId"))
     private Set<Schedule> scheduleList;
     @OneToOne
     @JoinColumn(name = "sectionId")
     private Section section;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tblstudentlist", joinColumns = @JoinColumn(name = "studentId"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tblstudentlist", joinColumns = @JoinColumn(name = "classId"),
+            inverseJoinColumns = @JoinColumn(name = "studentId"))
     private Set<Student> studentList;
     @Transient
     private List<Link> links;
@@ -95,6 +97,7 @@ public class Class {
     }
 
     @XmlTransient
+    @Deprecated
     public Set<Student> getStudentList() {
         return studentList;
     }

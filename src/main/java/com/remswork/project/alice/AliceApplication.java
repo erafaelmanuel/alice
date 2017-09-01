@@ -1,5 +1,6 @@
 package com.remswork.project.alice;
 
+import com.remswork.project.alice.model.Activity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

@@ -5,7 +5,6 @@ import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Schedule;
 import com.remswork.project.alice.model.Student;
-import com.remswork.project.alice.model.Subject;
 import com.remswork.project.alice.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,21 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public List<Class> getClassList() throws ClassException {
         return classDao.getClassList();
+    }
+
+    @Override
+    public List<Class> getClassListByTeacherId(long teacherId) throws ClassException {
+        return classDao.getClassListByTeacherId(teacherId);
+    }
+
+    @Override
+    public List<Class> getClassListByStudentId(long studentId) throws ClassException {
+        return classDao.getClassListByStudentId(studentId);
+    }
+
+    @Override
+    public List<Class> getClassListBySubjectId(long subjectId) throws ClassException {
+        return classDao.getClassListBySubjectId(subjectId);
     }
 
     @Override

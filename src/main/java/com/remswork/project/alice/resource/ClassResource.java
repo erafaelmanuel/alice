@@ -72,11 +72,20 @@ public class ClassResource {
     @GET
     public Response getClassList() {
         try {
+            List<Class> classList;
             ClassResourceLinks resourceLinks = new ClassResourceLinks(uriInfo);
             TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
             SectionResourceLinks sectionResourceLinks = new SectionResourceLinks(uriInfo);
-            List<Class> classList = classService.getClassList();
+            if(teacherId != 0)
+                classList = classService.getClassListByTeacherId(teacherId);
+            else if(studentId != 0)
+                classList = classService.getClassListByStudentId(studentId);
+            else if(subjectId != 0)
+                classList = classService.getClassListBySubjectId(subjectId);
+            else
+                classList = classService.getClassList();
+
             for (Class _class : classList) {
                 _class.addLink(resourceLinks.self(_class.getId()));
                 _class.addLink(resourceLinks.schedule(_class.getId()));

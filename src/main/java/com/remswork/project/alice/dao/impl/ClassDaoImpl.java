@@ -67,6 +67,63 @@ public class ClassDaoImpl implements ClassDao {
     }
 
     @Override
+    public List<Class> getClassListByTeacherId(long teacherId) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Class> classList = new ArrayList<>();
+            Query query = session.createQuery("from Class as c join c.teacher as t where t.id = :teacherId");
+            query.setParameter("teacherId", teacherId);
+            for (Object classObject : query.list())
+                classList.add((Class)((Object[]) classObject)[0]);
+            session.getTransaction().commit();
+            session.close();
+            return classList;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Class> getClassListByStudentId(long studentId) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Class> classList = new ArrayList<>();
+            Query query = session.createQuery("from Class as c join c.studentList as st where st.id = :studentId");
+            query.setParameter("studentId", studentId);
+            for (Object classObject : query.list())
+                classList.add((Class)((Object[]) classObject)[0]);
+            session.getTransaction().commit();
+            session.close();
+            return classList;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Class> getClassListBySubjectId(long subjectId) throws ClassException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Class> classList = new ArrayList<>();
+            Query query = session.createQuery("from Class as c join c.subject as su where su.id = :subjectId");
+            query.setParameter("subjectId", subjectId);
+            for (Object classObject : query.list())
+                classList.add((Class)((Object[]) classObject)[0]);
+            session.getTransaction().commit();
+            session.close();
+            return classList;
+        } catch (ClassDaoException e) {
+            session.close();
+            throw new ClassException(e.getMessage());
+        }
+    }
+
+    @Override
     public Schedule getScheduleById(long classId, long id) throws ClassException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();

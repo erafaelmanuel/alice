@@ -3,10 +3,9 @@ package com.remswork.project.alice.dao.impl;
 import com.remswork.project.alice.dao.SubjectDao;
 import com.remswork.project.alice.dao.exception.ClassDaoException;
 import com.remswork.project.alice.dao.exception.SubjectDaoException;
-import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.exception.SubjectException;
+import com.remswork.project.alice.model.*;
 import com.remswork.project.alice.model.Class;
-import com.remswork.project.alice.model.Subject;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -217,6 +216,15 @@ public class SubjectDaoImpl implements SubjectDao {
        Session session = sessionFactory.openSession();
        session.beginTransaction();
        try {
+           String[] table = new String[7];
+           table[0] = Activity.class.getSimpleName();
+           table[1] = Assignment.class.getSimpleName();
+           table[2] = Attendance.class.getSimpleName();
+           table[3] = Exam.class.getSimpleName();
+           table[4] = Project.class.getSimpleName();
+           table[5] = Quiz.class.getSimpleName();
+           table[6] = Recitation.class.getSimpleName();
+
            Subject subject = session.get(Subject.class, id);
            if(subject == null)
                throw new SubjectDaoException("Subject with id : " + id + " does not exist");
@@ -231,6 +239,12 @@ public class SubjectDaoImpl implements SubjectDao {
                        (_class.getSubject()!=null?_class.getSubject().getId():0)==subject.getId()) {
                    _class.setSubject(null);
                }
+           }
+           for(String cell : table) {
+               String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
+               Query query = session.createQuery(hql);
+               query.setParameter("subjectId", id);
+               query.executeUpdate();
            }
 
            session.delete(subject);

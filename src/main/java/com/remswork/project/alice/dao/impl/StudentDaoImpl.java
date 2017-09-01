@@ -4,8 +4,7 @@ import com.remswork.project.alice.dao.StudentDao;
 import com.remswork.project.alice.dao.exception.StudentDaoException;
 import com.remswork.project.alice.exception.SectionException;
 import com.remswork.project.alice.exception.StudentException;
-import com.remswork.project.alice.model.Section;
-import com.remswork.project.alice.model.Student;
+import com.remswork.project.alice.model.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -159,8 +158,24 @@ public class StudentDaoImpl implements StudentDao {
         session.beginTransaction();
         try {
             Student student = session.get(Student.class, id);
+            String[] table = new String[7];
+            table[0] = Activity.class.getSimpleName();
+            table[1] = Assignment.class.getSimpleName();
+            table[2] = Attendance.class.getSimpleName();
+            table[3] = Exam.class.getSimpleName();
+            table[4] = Project.class.getSimpleName();
+            table[5] = Quiz.class.getSimpleName();
+            table[6] = Recitation.class.getSimpleName();
+
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");
+
+            for(String cell : table) {
+                String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
+                Query query = session.createQuery(hql);
+                query.setParameter("subjectId", id);
+                query.executeUpdate();
+            }
             student.setSection(null);
             session.delete(student);
             session.getTransaction().commit();
