@@ -1,16 +1,16 @@
 package com.remswork.project.alice.service.impl;
 
-import com.remswork.project.alice.dao.ExamDao;
 import com.remswork.project.alice.dao.impl.ExamDaoImpl;
 import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Exam;
+import com.remswork.project.alice.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ExamServiceImpl implements ExamDao {
+public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private ExamDaoImpl examDao;
@@ -33,14 +33,31 @@ public class ExamServiceImpl implements ExamDao {
     }
 
     @Override
+    public List<Exam> getExamListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        return examDao.getExamListByStudentAndSubjectId(studentId, subjectId, termId);
+    }
+
+    @Override
     public Exam addExam(Exam exam, long studentId, long subjectId) throws GradingFactorException {
         return examDao.addExam(exam, studentId, subjectId);
+    }
+
+    @Override
+    public Exam addExam(Exam exam, long studentId, long subjectId, long termId) throws GradingFactorException {
+        return examDao.addExam(exam, studentId, subjectId, termId);
     }
 
     @Override
     public Exam updateExamById(long id, Exam newExam, long studentId, long subjectId)
             throws GradingFactorException {
         return examDao.updateExamById(id, newExam, studentId, subjectId);
+    }
+
+    @Override
+    public Exam updateExamById(long id, Exam newExam, long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        return examDao.updateExamById(id, newExam, studentId, subjectId, termId);
     }
 
     @Override

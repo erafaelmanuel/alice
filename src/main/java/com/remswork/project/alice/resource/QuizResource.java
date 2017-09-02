@@ -28,6 +28,8 @@ public class QuizResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{quizId}")
@@ -59,7 +61,9 @@ public class QuizResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                quizList = quizService.getQuizListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 quizList = quizService.getQuizListByStudentAndSubjectId(studentId, subjectId);
             else
                 quizList = quizService.getQuizList();
@@ -86,7 +90,10 @@ public class QuizResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            quiz = quizService.addQuiz(quiz, studentId, subjectId);
+            if(termId > 0)
+                quiz = quizService.addQuiz(quiz, studentId, subjectId, termId);
+            else
+                quiz = quizService.addQuiz(quiz, studentId, subjectId);
             quiz.addLink(resourceLinks.self(quiz.getId()));
             if(quiz.getStudent() != null)
                 quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
@@ -107,8 +114,12 @@ public class QuizResource {
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Quiz quiz;
 
-            Quiz quiz = quizService.updateQuizById(id, newQuiz, studentId, subjectId);
+            if(termId > 0)
+                quiz = quizService.updateQuizById(id, newQuiz, studentId, subjectId,termId);
+            else
+                quiz = quizService.updateQuizById(id, newQuiz, studentId, subjectId);
             quiz.addLink(resourceLinks.self(quiz.getId()));
             if(quiz.getStudent() != null)
                 quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));

@@ -28,6 +28,8 @@ public class ActivityResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{activityId}")
@@ -59,7 +61,9 @@ public class ActivityResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                activityList = activityService.getActivityListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 activityList = activityService.getActivityListByStudentAndSubjectId(studentId, subjectId);
             else
                 activityList = activityService.getActivityList();
@@ -86,7 +90,10 @@ public class ActivityResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            activity = activityService.addActivity(activity, studentId, subjectId);
+            if(termId > 0)
+                activity = activityService.addActivity(activity, studentId, subjectId, termId);
+            else
+                activity = activityService.addActivity(activity, studentId, subjectId);
             activity.addLink(resourceLinks.self(activity.getId()));
             if(activity.getStudent() != null)
                 activity.getStudent().addLink(studentResourceLinks.self(activity.getStudent().getId()));
@@ -107,8 +114,11 @@ public class ActivityResource {
             ActivityResourceLinks resourceLinks = new ActivityResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
-
-            Activity activity = activityService.updateActivityById(id, newActivity, studentId, subjectId);
+            Activity activity;
+            if(termId > 0)
+                activity = activityService.updateActivityById(id, newActivity, studentId, subjectId, termId);
+            else
+                activity = activityService.updateActivityById(id, newActivity, studentId, subjectId);
             activity.addLink(resourceLinks.self(activity.getId()));
             if(activity.getStudent() != null)
                 activity.getStudent().addLink(studentResourceLinks.self(activity.getStudent().getId()));

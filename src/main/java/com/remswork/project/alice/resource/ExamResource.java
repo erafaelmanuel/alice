@@ -28,6 +28,8 @@ public class ExamResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{examId}")
@@ -59,7 +61,9 @@ public class ExamResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                examList = examService.getExamListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 examList = examService.getExamListByStudentAndSubjectId(studentId, subjectId);
             else
                 examList = examService.getExamList();
@@ -86,7 +90,10 @@ public class ExamResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            exam = examService.addExam(exam, studentId, subjectId);
+            if(termId > 0)
+                exam = examService.addExam(exam, studentId, subjectId,termId);
+            else
+                exam = examService.addExam(exam, studentId, subjectId);
             exam.addLink(resourceLinks.self(exam.getId()));
             if(exam.getStudent() != null)
                 exam.getStudent().addLink(studentResourceLinks.self(exam.getStudent().getId()));
@@ -107,8 +114,12 @@ public class ExamResource {
             ExamResourceLinks resourceLinks = new ExamResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Exam exam;
 
-            Exam exam = examService.updateExamById(id, newExam, studentId, subjectId);
+            if(termId > 0)
+                exam = examService.updateExamById(id, newExam, studentId, subjectId, termId);
+            else
+                exam = examService.updateExamById(id, newExam, studentId, subjectId);
             exam.addLink(resourceLinks.self(exam.getId()));
             if(exam.getStudent() != null)
                 exam.getStudent().addLink(studentResourceLinks.self(exam.getStudent().getId()));

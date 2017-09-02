@@ -24,7 +24,7 @@ public class Class {
     @OneToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tblschedulelist", joinColumns = @JoinColumn(name = "classId"),
             inverseJoinColumns = @JoinColumn(name = "scheduleId"))
     private Set<Schedule> scheduleList;

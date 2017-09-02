@@ -5,10 +5,8 @@ import com.remswork.project.alice.dao.exception.StudentDaoException;
 import com.remswork.project.alice.dao.exception.TeacherDaoException;
 import com.remswork.project.alice.exception.DepartmentException;
 import com.remswork.project.alice.exception.TeacherException;
+import com.remswork.project.alice.model.*;
 import com.remswork.project.alice.model.Class;
-import com.remswork.project.alice.model.Department;
-import com.remswork.project.alice.model.Teacher;
-import com.remswork.project.alice.model.UserDetail;
 import com.remswork.project.alice.model.support.Date;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -234,19 +232,20 @@ public class TeacherDaoImpl implements TeacherDao {
         session.beginTransaction();
         try {
             Teacher teacher = session.get(Teacher.class, id);
+            String[] table = new String[2];
+            table[0] = Class.class.getSimpleName();
+            table[1] = Formula.class.getSimpleName();
+
             if (teacher == null)
                 throw new TeacherDaoException("Teacher with id : " + id + " does not exist.");
 
-            //To avoid the constraints restriction we meed to delete the class that having the teacher
-            Query classQuery = session.createQuery("from Class");
-            for(Object classObj : classQuery.list()){
-                Class _class = (Class) classObj;
-                if(_class.getTeacher() == null)
-                    continue;
-                if(_class.getTeacher().equals(teacher) ||
-                        (_class.getTeacher()!=null?_class.getTeacher().getId():0)==teacher.getId()) {
-                    session.delete(_class);
-                }
+            for(String cell : table) {
+                String hql = "delete from "
+                        .concat(cell)
+                        .concat(" where teacher.id = :teacherId");
+                Query query = session.createQuery(hql);
+                query.setParameter("teacherId", id);
+                query.executeUpdate();
             }
 
             teacher.setDepartment(null);

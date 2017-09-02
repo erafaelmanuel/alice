@@ -13,9 +13,19 @@ public interface ProjectService {
 
     List<Project> getProjectListByStudentAndSubjectId(long studentId, long subjectId) throws GradingFactorException;
 
+    List<Project> getProjectListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Project addProject(Project project, long studentId, long subjectId) throws GradingFactorException;
 
-    Project updateProjectById(long id, Project newProject, long studentId, long subjectId) throws GradingFactorException;
+    Project addProject(Project project, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
+    Project updateProjectById(long id, Project newProject, long studentId, long subjectId)
+            throws GradingFactorException;
+
+    Project updateProjectById(long id, Project newProject, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
 
     Project deleteProjectById(long id) throws GradingFactorException;
 }

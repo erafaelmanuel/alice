@@ -14,9 +14,18 @@ public interface AttendanceDao {
     List<Attendance> getAttendanceListByStudentAndSubjectId(long studentId, long subjectId)
             throws GradingFactorException;
 
+    List<Attendance> getAttendanceListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Attendance addAttendance(Attendance attendance, long studentId, long subjectId) throws GradingFactorException;
 
+    Attendance addAttendance(Attendance attendance, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Attendance updateAttendanceById(long id, Attendance newAttendance, long studentId, long subjectId)
+            throws GradingFactorException;
+
+    Attendance updateAttendanceById(long id, Attendance newAttendance, long studentId, long subjectId, long termId)
             throws GradingFactorException;
 
     Attendance deleteAttendanceById(long id) throws GradingFactorException;

@@ -13,9 +13,17 @@ public interface ExamDao {
 
     List<Exam> getExamListByStudentAndSubjectId(long studentId, long subjectId) throws GradingFactorException;
 
+    List<Exam> getExamListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Exam addExam(Exam exam, long studentId, long subjectId) throws GradingFactorException;
 
+    Exam addExam(Exam exam, long studentId, long subjectId, long termId) throws GradingFactorException;
+
     Exam updateExamById(long id, Exam newExam, long studentId, long subjectId) throws GradingFactorException;
+
+    Exam updateExamById(long id, Exam newExam, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
 
     Exam deleteExamById(long id) throws GradingFactorException;
 }

@@ -33,12 +33,13 @@ public class SubjectResource {
                 Subject subject = subjectService.getSubjectByClassAndTeacherId(classId, teacherId);
                 subject.addLink(resourceLinks.self(subject.getId()));
                 return Response.status(Response.Status.OK).entity(subject).build();
-            } else {
+            } else if(scheduleId != 0){
                 SubjectResourceLinks resourceLinks = new SubjectResourceLinks(uriInfo);
                 Subject subject = subjectService.getSubjectByScheduleId(scheduleId);
                 subject.addLink(resourceLinks.self(subject.getId()));
                 return Response.status(Response.Status.OK).entity(subject).build();
-            }
+            } else
+                throw new SubjectException("No subject found");
         } catch (SubjectException e) {
             e.printStackTrace();
             Message message = new Message(404, "Not Found", e.getMessage());

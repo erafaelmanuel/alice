@@ -23,9 +23,11 @@ public class Attendance {
     @ManyToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
+    @ManyToOne
+    @JoinColumn(name = "termId")
+    private Term term;
     @Transient
     private List<Link> links;
-
 
     public Attendance() {
         links = new ArrayList<>();
@@ -80,6 +82,14 @@ public class Attendance {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
     }
 
     public List<Link> getLinks() {

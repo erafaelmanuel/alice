@@ -247,9 +247,14 @@ public class ClassDaoImpl implements ClassDao {
         session.beginTransaction();
         try {
             Class _class = session.get(Class.class, classId);
+            Schedule schedule = scheduleDao.getScheduleById(id);
+            String hql = "from Class as c join c.subject as su join c.scheduleList as sc where sc.id = :scheduleId";
+            Query query = session.createQuery("from Class as c join c.scheduleList as sc where sc.id = :scheduleId");
+            query.setParameter("scheduleId", id);
             if (_class == null)
                 throw new ClassDaoException("Class with id : " + classId + " does not exist");
-            Schedule schedule = scheduleDao.getScheduleById(id);
+            if(query.list().size() > 0)
+                throw new ClassDaoException("Schedule with id : " + id + " already exist in a class");
             for (Schedule s : _class.getScheduleList()) {
                 if (s.getId() == id)
                     throw new ClassDaoException("Class's schedule with id : " + id + " already exist");

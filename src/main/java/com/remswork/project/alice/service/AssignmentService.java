@@ -14,9 +14,18 @@ public interface AssignmentService {
     List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId)
             throws GradingFactorException;
 
+    List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Assignment addAssignment(Assignment assignment, long studentId, long subjectId) throws GradingFactorException;
 
+    Assignment addAssignment(Assignment assignment, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId)
+            throws GradingFactorException;
+
+    Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId, long termId)
             throws GradingFactorException;
 
     Assignment deleteAssignmentById(long id) throws GradingFactorException;

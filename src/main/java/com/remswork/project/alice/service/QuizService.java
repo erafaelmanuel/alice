@@ -1,21 +1,29 @@
 package com.remswork.project.alice.service;
 
 import com.remswork.project.alice.exception.GradingFactorException;
-import com.remswork.project.alice.model.Exam;
+import com.remswork.project.alice.model.Quiz;
 
 import java.util.List;
 
 public interface QuizService {
 
-    Exam getExamById(long id) throws GradingFactorException;
+    Quiz getQuizById(long id) throws GradingFactorException;
 
-    List<Exam> getExamList() throws GradingFactorException;
+    List<Quiz> getQuizList() throws GradingFactorException;
 
-    List<Exam> getExamListByStudentAndSubjectId(long studentId, long subjectId) throws GradingFactorException;
+    List<Quiz> getQuizListByStudentAndSubjectId(long studentId, long subjectId) throws GradingFactorException;
 
-    Exam addExam(Exam quiz, long studentId, long subjectId) throws GradingFactorException;
+    List<Quiz> getQuizListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
 
-    Exam updateExamById(long id, Exam newExam, long studentId, long subjectId) throws GradingFactorException;
+    Quiz addQuiz(Quiz quiz, long studentId, long subjectId) throws GradingFactorException;
 
-    Exam deleteExamById(long id) throws GradingFactorException;
+    Quiz addQuiz(Quiz quiz, long studentId, long subjectId, long termId) throws GradingFactorException;
+
+    Quiz updateQuizById(long id, Quiz newQuiz, long studentId, long subjectId) throws GradingFactorException;
+
+    Quiz updateQuizById(long id, Quiz newQuiz, long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
+    Quiz deleteQuizById(long id) throws GradingFactorException;
 }

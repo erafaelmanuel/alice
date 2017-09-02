@@ -6,6 +6,7 @@ import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Activity;
 import com.remswork.project.alice.model.Student;
 import com.remswork.project.alice.model.Subject;
+import com.remswork.project.alice.model.Term;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,6 +80,30 @@ public class ActivityDaoImpl implements ActivityDao{
     }
 
     @Override
+    public List<Activity> getActivityListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Activity> activityList = new ArrayList<>();
+            String hql =
+                    "from Activity where student.id = :studentId and subject.id = :subjectId and term.id = :termId";
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+            query.setParameter("subjectId", subjectId);
+            query.setParameter("termId", termId);
+            for (Object objActivity : query.list())
+                activityList.add((Activity) objActivity);
+            session.getTransaction().commit();
+            session.close();
+            return activityList;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
     public Activity addActivity(Activity activity, long studentId, long subjectId) throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -123,6 +148,57 @@ public class ActivityDaoImpl implements ActivityDao{
     }
 
     @Override
+    public Activity addActivity(Activity activity, long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Student student = session.get(Student.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
+            Term term = session.get(Term.class, termId);
+
+            if (activity == null)
+                throw new GradingFactorException("You tried to add class with a null value");
+            if (studentId == 0)
+                throw new GradingFactorException("Query param : studentId is required");
+            if (subjectId == 0)
+                throw new GradingFactorException("Query param : subjectId is required");
+            if (termId < 1)
+                throw new GradingFactorException("Query param : termId has an invalid input");
+            if (student == null)
+                throw new GradingFactorException("Activity's student with id : " + studentId + " does not exist");
+            if (subject == null)
+                throw new GradingFactorException("Activity's subject with id : " + subjectId + " does not exist");
+            if (term == null)
+                throw new GradingFactorException("Activity's term with id : " + termId + " does not exist");
+            if (activity.getTitle() == null)
+                throw new GradingFactorException("Activity's title is required");
+            if (activity.getTitle().trim().equals(""))
+                throw new GradingFactorException("Activity can't have an empty title");
+            if (activity.getDate() == null)
+                throw new GradingFactorException("Activity's date is required");
+            if (activity.getDate().trim().equals(""))
+                throw new GradingFactorException("Activity can't have an empty date");
+            if(activity.getItemTotal() < 0)
+                throw new GradingFactorException("Activity's itemTotal is invalid");
+            if(activity.getScore() < 0 && activity.getScore() > activity.getItemTotal())
+                throw new GradingFactorException("Activity's score is invalid");
+
+            activity.setStudent(student);
+            activity.setSubject(subject);
+            activity.setTerm(term);
+
+            session.persist(activity);
+            session.getTransaction().commit();
+            session.close();
+            return activity;
+        }catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
     public Activity updateActivityById(long id, Activity newActivity, long studentId, long subjectId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
@@ -130,7 +206,7 @@ public class ActivityDaoImpl implements ActivityDao{
         try {
             Activity activity = session.get(Activity.class, id);
             Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
 
             if(newActivity == null)
                 newActivity = new Activity();
@@ -153,6 +229,54 @@ public class ActivityDaoImpl implements ActivityDao{
                 if(subjectId == (activity.getSubject() != null ? activity.getSubject().getId() : 0))
                     throw new GradingFactorException("Activity's  student with id : " + id + " already exist");
                 activity.setSubject(subject);
+            }
+            session.getTransaction().commit();
+            session.close();
+            return activity;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Activity updateActivityById(long id, Activity newActivity, long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Activity activity = session.get(Activity.class, id);
+            Student student = session.get(Student.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
+            Term term = session.get(Term.class, termId);
+
+            if(newActivity == null)
+                newActivity = new Activity();
+            if(activity == null)
+                throw new GradingFactorException("Activity with id : " + id + " does not exist");
+            if (student == null && studentId != 0)
+                throw new GradingFactorException("Activity's student with id : " + studentId + " does not exist");
+            if (subject == null && subjectId != 0)
+                throw new GradingFactorException("Activity's subject with id : " + subjectId + " does not exist");
+            if (term == null && termId > 0)
+                throw new GradingFactorException("Activity's term with id : " + termId + " does not exist");
+            if(!(newActivity.getTitle() != null ? newActivity.getTitle() : "").trim().isEmpty())
+                activity.setTitle(newActivity.getTitle());
+            if(!(newActivity.getDate() != null ? newActivity.getDate() : "").trim().isEmpty())
+                activity.setDate(newActivity.getDate());
+            if(studentId > 0) {
+                if(studentId == (activity.getStudent() != null ? activity.getStudent().getId() : 0))
+                    throw new GradingFactorException("Activity's  student with id : " + id + " already exist");
+                activity.setStudent(student);
+            }
+            if(subjectId > 0) {
+                if(subjectId == (activity.getSubject() != null ? activity.getSubject().getId() : 0))
+                    throw new GradingFactorException("Activity's  student with id : " + id + " already exist");
+                activity.setSubject(subject);
+            }
+            if(termId > 0) {
+                if(termId != (activity.getTerm() != null ? activity.getTerm().getId() : 0))
+                    activity.setTerm(term);
             }
             session.getTransaction().commit();
             session.close();

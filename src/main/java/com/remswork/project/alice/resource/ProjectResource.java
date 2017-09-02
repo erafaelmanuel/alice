@@ -28,6 +28,8 @@ public class ProjectResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{projectId}")
@@ -59,7 +61,9 @@ public class ProjectResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                projectList = projectService.getProjectListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 projectList = projectService.getProjectListByStudentAndSubjectId(studentId, subjectId);
             else
                 projectList = projectService.getProjectList();
@@ -86,7 +90,10 @@ public class ProjectResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            project = projectService.addProject(project, studentId, subjectId);
+            if(termId > 0)
+                project = projectService.addProject(project, studentId, subjectId, termId);
+            else
+                project = projectService.addProject(project, studentId, subjectId);
             project.addLink(resourceLinks.self(project.getId()));
             if(project.getStudent() != null)
                 project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
@@ -107,8 +114,12 @@ public class ProjectResource {
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Project project;
 
-            Project project = projectService.updateProjectById(id, newProject, studentId, subjectId);
+            if(termId > 0)
+                project = projectService.updateProjectById(id, newProject, studentId, subjectId, termId);
+            else
+                project = projectService.updateProjectById(id, newProject, studentId, subjectId);
             project.addLink(resourceLinks.self(project.getId()));
             if(project.getStudent() != null)
                 project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));

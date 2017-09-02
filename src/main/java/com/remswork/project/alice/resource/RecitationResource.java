@@ -28,6 +28,8 @@ public class RecitationResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{recitationId}")
@@ -59,7 +61,9 @@ public class RecitationResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                recitationList = recitationService.getRecitationListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 recitationList = recitationService.getRecitationListByStudentAndSubjectId(studentId, subjectId);
             else
                 recitationList = recitationService.getRecitationList();
@@ -86,7 +90,10 @@ public class RecitationResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            recitation = recitationService.addRecitation(recitation, studentId, subjectId);
+            if(termId > 0)
+                recitation = recitationService.addRecitation(recitation, studentId, subjectId, termId);
+            else
+                recitation = recitationService.addRecitation(recitation, studentId, subjectId);
             recitation.addLink(resourceLinks.self(recitation.getId()));
             if(recitation.getStudent() != null)
                 recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
@@ -107,8 +114,12 @@ public class RecitationResource {
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Recitation recitation;
 
-            Recitation recitation = recitationService.updateRecitationById(id, newRecitation, studentId, subjectId);
+            if(termId > 0)
+                recitation = recitationService.updateRecitationById(id, newRecitation, studentId, subjectId, termId);
+            else
+                recitation = recitationService.updateRecitationById(id, newRecitation, studentId, subjectId);
             recitation.addLink(resourceLinks.self(recitation.getId()));
             if(recitation.getStudent() != null)
                 recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));

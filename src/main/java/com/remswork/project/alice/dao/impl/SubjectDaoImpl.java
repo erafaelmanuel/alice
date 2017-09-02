@@ -1,7 +1,6 @@
 package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.SubjectDao;
-import com.remswork.project.alice.dao.exception.ClassDaoException;
 import com.remswork.project.alice.dao.exception.SubjectDaoException;
 import com.remswork.project.alice.exception.SubjectException;
 import com.remswork.project.alice.model.*;
@@ -50,13 +49,13 @@ public class SubjectDaoImpl implements SubjectDao {
             query.setParameter("teacherId", teacherId);
 
             if(query.list().size() < 1)
-                return null;
+                throw new SubjectDaoException("No subject found with teacherId : " + teacherId);
 
             Subject subject = (Subject) ((Object[]) query.list().get(0))[1];
             session.getTransaction().commit();
             session.close();
             return subject;
-        }catch (ClassDaoException e) {
+        }catch (SubjectDaoException e) {
             session.close();
             throw new SubjectException(e.getMessage());
         }
@@ -72,12 +71,12 @@ public class SubjectDaoImpl implements SubjectDao {
             query.setParameter("scheduleId", scheduleId);
 
             if(query.list().size() < 1)
-                return null;
+                throw new SubjectDaoException("No subject found with scheduleId : " + scheduleId);
             Subject subject = (Subject) ((Object[]) query.list().get(0))[1];
             session.getTransaction().commit();
             session.close();
             return subject;
-        }catch (ClassDaoException e) {
+        }catch (SubjectDaoException e) {
             session.close();
             throw new SubjectException(e.getMessage());
         }
@@ -118,7 +117,7 @@ public class SubjectDaoImpl implements SubjectDao {
             session.getTransaction().commit();
             session.close();
             return subjectList;
-        }catch (ClassDaoException e) {
+        }catch (SubjectDaoException e) {
             session.close();
             throw new SubjectException(e.getMessage());
         }
@@ -141,7 +140,7 @@ public class SubjectDaoImpl implements SubjectDao {
             session.getTransaction().commit();
             session.close();
             return subjectList;
-        }catch (ClassDaoException e) {
+        }catch (SubjectDaoException e) {
             session.close();
             throw new SubjectException(e.getMessage());
         }
@@ -216,30 +215,21 @@ public class SubjectDaoImpl implements SubjectDao {
        Session session = sessionFactory.openSession();
        session.beginTransaction();
        try {
-           String[] table = new String[7];
-           table[0] = Activity.class.getSimpleName();
-           table[1] = Assignment.class.getSimpleName();
-           table[2] = Attendance.class.getSimpleName();
-           table[3] = Exam.class.getSimpleName();
-           table[4] = Project.class.getSimpleName();
-           table[5] = Quiz.class.getSimpleName();
-           table[6] = Recitation.class.getSimpleName();
+           String[] table = new String[9];
+           table[0] = Class.class.getSimpleName();
+           table[1] = Activity.class.getSimpleName();
+           table[2] = Assignment.class.getSimpleName();
+           table[3] = Attendance.class.getSimpleName();
+           table[4] = Exam.class.getSimpleName();
+           table[5] = Project.class.getSimpleName();
+           table[6] = Quiz.class.getSimpleName();
+           table[7] = Recitation.class.getSimpleName();
+           table[8] = Formula.class.getSimpleName();
 
            Subject subject = session.get(Subject.class, id);
            if(subject == null)
                throw new SubjectDaoException("Subject with id : " + id + " does not exist");
 
-           //to avoid the constraints restriction we meed to remove subject from the class that having the subject
-           Query classQuery = session.createQuery("from Class");
-           for(Object classObj : classQuery.list()){
-               Class _class = (Class) classObj;
-               if(_class.getSubject() == null)
-                   continue;
-               if(_class.getSubject().equals(subject) ||
-                       (_class.getSubject()!=null?_class.getSubject().getId():0)==subject.getId()) {
-                   _class.setSubject(null);
-               }
-           }
            for(String cell : table) {
                String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
                Query query = session.createQuery(hql);

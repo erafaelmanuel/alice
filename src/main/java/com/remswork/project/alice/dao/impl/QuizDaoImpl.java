@@ -6,6 +6,7 @@ import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Quiz;
 import com.remswork.project.alice.model.Student;
 import com.remswork.project.alice.model.Subject;
+import com.remswork.project.alice.model.Term;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,6 +80,30 @@ public class QuizDaoImpl implements QuizDao{
     }
 
     @Override
+    public List<Quiz> getQuizListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            List<Quiz> quizList = new ArrayList<>();
+            String hql =
+                    "from Quiz where student.id = :studentId and subject.id = :subjectId and term.id = :termId";
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+            query.setParameter("subjectId", subjectId);
+            query.setParameter("termId", termId);
+            for (Object objQuiz : query.list())
+                quizList.add((Quiz) objQuiz);
+            session.getTransaction().commit();
+            session.close();
+            return quizList;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
     public Quiz addQuiz(Quiz quiz, long studentId, long subjectId) throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -123,6 +148,56 @@ public class QuizDaoImpl implements QuizDao{
     }
 
     @Override
+    public Quiz addQuiz(Quiz quiz, long studentId, long subjectId, long termId) throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Student student = session.get(Student.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
+            Term term = session.get(Term.class, termId);
+
+            if (quiz == null)
+                throw new GradingFactorException("You tried to add class with a null value");
+            if (studentId == 0)
+                throw new GradingFactorException("Query param : studentId is required");
+            if (subjectId == 0)
+                throw new GradingFactorException("Query param : subjectId is required");
+            if (termId < 1)
+                throw new GradingFactorException("Query param : termId has in invalid");
+            if (student == null)
+                throw new GradingFactorException("Quiz's student with id : " + studentId + " does not exist");
+            if (subject == null)
+                throw new GradingFactorException("Quiz's subject with id : " + subjectId + " does not exist");
+            if (term == null)
+                throw new GradingFactorException("Quiz's term with id : " + termId + " does not exist");
+            if (quiz.getTitle() == null)
+                throw new GradingFactorException("Quiz's title is required");
+            if (quiz.getTitle().trim().equals(""))
+                throw new GradingFactorException("Quiz can't have an empty title");
+            if (quiz.getDate() == null)
+                throw new GradingFactorException("Quiz's date is required");
+            if (quiz.getDate().trim().equals(""))
+                throw new GradingFactorException("Quiz can't have an empty date");
+            if(quiz.getItemTotal() < 0)
+                throw new GradingFactorException("Quiz's itemTotal is invalid");
+            if(quiz.getScore() < 0 && quiz.getScore() > quiz.getItemTotal())
+                throw new GradingFactorException("Quiz's score is invalid");
+
+            quiz.setStudent(student);
+            quiz.setSubject(subject);
+            quiz.setTerm(term);
+
+            session.persist(quiz);
+            session.getTransaction().commit();
+            session.close();
+            return quiz;
+        }catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
     public Quiz updateQuizById(long id, Quiz newQuiz, long studentId, long subjectId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
@@ -130,7 +205,7 @@ public class QuizDaoImpl implements QuizDao{
         try {
             Quiz quiz = session.get(Quiz.class, id);
             Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
 
             if(newQuiz == null)
                 newQuiz = new Quiz();
@@ -153,6 +228,54 @@ public class QuizDaoImpl implements QuizDao{
                 if(subjectId == (quiz.getSubject() != null ? quiz.getSubject().getId() : 0))
                     throw new GradingFactorException("Quiz's  student with id : " + id + " already exist");
                 quiz.setSubject(subject);
+            }
+            session.getTransaction().commit();
+            session.close();
+            return quiz;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Quiz updateQuizById(long id, Quiz newQuiz, long studentId, long subjectId, long termId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Quiz quiz = session.get(Quiz.class, id);
+            Student student = session.get(Student.class, studentId);
+            Subject subject = session.get(Subject.class, subjectId);
+            Term term = session.get(Term.class, termId);
+
+            if(newQuiz == null)
+                newQuiz = new Quiz();
+            if(quiz == null)
+                throw new GradingFactorException("Quiz with id : " + id + " does not exist");
+            if (student == null && studentId != 0)
+                throw new GradingFactorException("Quiz's student with id : " + studentId + " does not exist");
+            if (subject == null && subjectId != 0)
+                throw new GradingFactorException("Quiz's subject with id : " + subjectId + " does not exist");
+            if (term == null && termId > 0)
+                throw new GradingFactorException("Quiz's term with id : " + termId + " does not exist");
+            if(!(newQuiz.getTitle() != null ? newQuiz.getTitle() : "").trim().isEmpty())
+                quiz.setTitle(newQuiz.getTitle());
+            if(!(newQuiz.getDate() != null ? newQuiz.getDate() : "").trim().isEmpty())
+                quiz.setDate(newQuiz.getDate());
+            if(studentId > 0) {
+                if(studentId == (quiz.getStudent() != null ? quiz.getStudent().getId() : 0))
+                    throw new GradingFactorException("Quiz's  student with id : " + id + " already exist");
+                quiz.setStudent(student);
+            }
+            if(subjectId > 0) {
+                if(subjectId == (quiz.getSubject() != null ? quiz.getSubject().getId() : 0))
+                    throw new GradingFactorException("Quiz's  student with id : " + id + " already exist");
+                quiz.setSubject(subject);
+            }
+            if(termId > 0) {
+                if(termId != (quiz.getTerm() != null ? quiz.getTerm().getId() : 0))
+                    quiz.setTerm(term);
             }
             session.getTransaction().commit();
             session.close();

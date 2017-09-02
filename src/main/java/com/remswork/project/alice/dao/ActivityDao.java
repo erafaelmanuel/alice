@@ -13,9 +13,17 @@ public interface ActivityDao {
 
     List<Activity> getActivityListByStudentAndSubjectId(long studentId, long subjectId) throws GradingFactorException;
 
+    List<Activity> getActivityListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+            throws GradingFactorException;
+
     Activity addActivity(Activity activity, long studentId, long subjectId) throws GradingFactorException;
 
+    Activity addActivity(Activity activity, long studentId, long subjectId, long termId) throws GradingFactorException;
+
     Activity updateActivityById(long id, Activity newActivity, long studentId, long subjectId)
+            throws GradingFactorException;
+
+    Activity updateActivityById(long id, Activity newActivity, long studentId, long subjectId, long termId)
             throws GradingFactorException;
 
     Activity deleteActivityById(long id) throws GradingFactorException;

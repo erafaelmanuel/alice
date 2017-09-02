@@ -28,6 +28,8 @@ public class AssignmentResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{assignmentId}")
@@ -59,7 +61,9 @@ public class AssignmentResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                assignmentList = assignmentService.getAssignmentListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if (studentId != 0 && subjectId != 0)
                 assignmentList = assignmentService.getAssignmentListByStudentAndSubjectId(studentId, subjectId);
             else
                 assignmentList = assignmentService.getAssignmentList();
@@ -86,7 +90,10 @@ public class AssignmentResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            assignment = assignmentService.addAssignment(assignment, studentId, subjectId);
+            if(termId > 0)
+                assignment = assignmentService.addAssignment(assignment, studentId, subjectId, termId);
+            else
+                assignment = assignmentService.addAssignment(assignment, studentId, subjectId);
             assignment.addLink(resourceLinks.self(assignment.getId()));
             if(assignment.getStudent() != null)
                 assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
@@ -107,8 +114,12 @@ public class AssignmentResource {
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Assignment assignment;
 
-            Assignment assignment = assignmentService.updateAssignmentById(id, newAssignment, studentId, subjectId);
+            if(termId > 0)
+                assignment = assignmentService.updateAssignmentById(id, newAssignment, studentId, subjectId, termId);
+            else
+                assignment = assignmentService.updateAssignmentById(id, newAssignment, studentId, subjectId);
             assignment.addLink(resourceLinks.self(assignment.getId()));
             if(assignment.getStudent() != null)
                 assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));

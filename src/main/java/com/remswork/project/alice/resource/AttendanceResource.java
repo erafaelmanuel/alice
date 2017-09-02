@@ -28,6 +28,8 @@ public class AttendanceResource {
     private long studentId;
     @QueryParam("subjectId")
     private long subjectId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{attendanceId}")
@@ -59,7 +61,9 @@ public class AttendanceResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            if(studentId != 0 || subjectId != 0)
+            if(studentId != 0 && subjectId != 0 && termId != 0)
+                attendanceList = attendanceService.getAttendanceListByStudentAndSubjectId(studentId, subjectId, termId);
+            else if(studentId != 0 && subjectId != 0)
                 attendanceList = attendanceService.getAttendanceListByStudentAndSubjectId(studentId, subjectId);
             else
                 attendanceList = attendanceService.getAttendanceList();
@@ -86,7 +90,10 @@ public class AttendanceResource {
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
 
-            attendance = attendanceService.addAttendance(attendance, studentId, subjectId);
+            if(termId > 0)
+                attendance = attendanceService.addAttendance(attendance, studentId, subjectId, termId);
+            else
+                attendance = attendanceService.addAttendance(attendance, studentId, subjectId);
             attendance.addLink(resourceLinks.self(attendance.getId()));
             if(attendance.getStudent() != null)
                 attendance.getStudent().addLink(studentResourceLinks.self(attendance.getStudent().getId()));
@@ -107,8 +114,12 @@ public class AttendanceResource {
             AttendanceResourceLinks resourceLinks = new AttendanceResourceLinks(uriInfo);
             StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            Attendance attendance;
 
-            Attendance attendance = attendanceService.updateAttendanceById(id, newAttendance, studentId, subjectId);
+            if(termId > 0)
+                attendance = attendanceService.updateAttendanceById(id, newAttendance, studentId, subjectId, termId);
+            else
+                attendance = attendanceService.updateAttendanceById(id, newAttendance, studentId, subjectId);
             attendance.addLink(resourceLinks.self(attendance.getId()));
             if(attendance.getStudent() != null)
                 attendance.getStudent().addLink(studentResourceLinks.self(attendance.getStudent().getId()));
