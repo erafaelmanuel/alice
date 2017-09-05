@@ -4,8 +4,7 @@ import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Assignment;
 import com.remswork.project.alice.model.support.Message;
 import com.remswork.project.alice.resource.links.AssignmentResourceLinks;
-import com.remswork.project.alice.resource.links.StudentResourceLinks;
-import com.remswork.project.alice.resource.links.SubjectResourceLinks;
+import com.remswork.project.alice.resource.links.ClassResourceLinks;
 import com.remswork.project.alice.service.impl.AssignmentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,29 +21,28 @@ public class AssignmentResource {
 
     @Autowired
     private AssignmentServiceImpl assignmentService;
+    @Autowired
+    private AssignmentResultResource assignmentResultResource;
     @Context
     private UriInfo uriInfo;
-    @QueryParam("studentId")
-    private long studentId;
-    @QueryParam("subjectId")
-    private long subjectId;
+    @QueryParam("classId")
+    private long classId;
     @QueryParam("termId")
     private long termId;
+    @QueryParam("studentId")
+    private long studentId;
 
     @GET
     @Path("{assignmentId}")
     public Response getAssignmentById(@PathParam("assignmentId") long id) {
         try {
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Assignment assignment = assignmentService.getAssignmentById(id);
             assignment.addLink(resourceLinks.self(id));
-            if(assignment.getStudent() != null)
-                assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
-            if(assignment.getSubject() != null)
-                assignment.getSubject().addLink(subjectResourceLinks.self(assignment.getSubject().getId()));
+            if(assignment.get_class() != null)
+                assignment.get_class().addLink(classResourceLinks.self(assignment.get_class().getId()));
             return Response.status(Response.Status.OK).entity(assignment).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -58,21 +56,22 @@ public class AssignmentResource {
         try {
             List<Assignment> assignmentList;
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
-            if(studentId != 0 && subjectId != 0 && termId != 0)
-                assignmentList = assignmentService.getAssignmentListByStudentAndSubjectId(studentId, subjectId, termId);
-            else if (studentId != 0 && subjectId != 0)
-                assignmentList = assignmentService.getAssignmentListByStudentAndSubjectId(studentId, subjectId);
+            if(classId != 0 && termId != 0)
+                assignmentList = assignmentService.getAssignmentListByClassId(classId, termId);
+            else if(classId != 0)
+                assignmentList = assignmentService.getAssignmentListByClassId(classId);
+            if(studentId != 0 && termId != 0)
+                assignmentList = assignmentService.getAssignmentListByStudentId(studentId, termId);
+            else if(studentId != 0)
+                assignmentList = assignmentService.getAssignmentListByStudentId(studentId);
             else
                 assignmentList = assignmentService.getAssignmentList();
             for(Assignment assignment : assignmentList) {
                 assignment.addLink(resourceLinks.self(assignment.getId()));
-                if(assignment.getStudent() != null)
-                    assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
-                if(assignment.getSubject() != null)
-                    assignment.getSubject().addLink(subjectResourceLinks.self(assignment.getSubject().getId()));
+                if(assignment.get_class() != null)
+                    assignment.get_class().addLink(classResourceLinks.self(assignment.get_class().getId()));
             }
             GenericEntity<List<Assignment>> entity = new GenericEntity<List<Assignment>>(assignmentList){};
             return Response.status(Response.Status.OK).entity(entity).build();
@@ -87,18 +86,15 @@ public class AssignmentResource {
     public Response addAssignment(Assignment assignment) {
         try {
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             if(termId > 0)
-                assignment = assignmentService.addAssignment(assignment, studentId, subjectId, termId);
+                assignment = assignmentService.addAssignment(assignment, classId, termId);
             else
-                assignment = assignmentService.addAssignment(assignment, studentId, subjectId);
+                assignment = assignmentService.addAssignment(assignment, classId);
             assignment.addLink(resourceLinks.self(assignment.getId()));
-            if(assignment.getStudent() != null)
-                assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
-            if(assignment.getSubject() != null)
-                assignment.getSubject().addLink(subjectResourceLinks.self(assignment.getSubject().getId()));
+            if(assignment.get_class() != null)
+                assignment.get_class().addLink(classResourceLinks.self(assignment.get_class().getId()));
             return Response.status(Response.Status.CREATED).entity(assignment).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -112,19 +108,15 @@ public class AssignmentResource {
     public Response updateAssignmentById(@PathParam("assignmentId") long id, Assignment newAssignment) {
         try {
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
             Assignment assignment;
-
             if(termId > 0)
-                assignment = assignmentService.updateAssignmentById(id, newAssignment, studentId, subjectId, termId);
+                assignment = assignmentService.updateAssignmentById(id, newAssignment, classId, termId);
             else
-                assignment = assignmentService.updateAssignmentById(id, newAssignment, studentId, subjectId);
+                assignment = assignmentService.updateAssignmentById(id, newAssignment, classId);
             assignment.addLink(resourceLinks.self(assignment.getId()));
-            if(assignment.getStudent() != null)
-                assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
-            if(assignment.getSubject() != null)
-                assignment.getSubject().addLink(subjectResourceLinks.self(assignment.getSubject().getId()));
+            if(assignment.get_class() != null)
+                assignment.get_class().addLink(classResourceLinks.self(assignment.get_class().getId()));
             return Response.status(Response.Status.OK).entity(assignment).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -138,20 +130,24 @@ public class AssignmentResource {
     public Response deleteAssignmentById(@PathParam("assignmentId") long id) {
         try {
             AssignmentResourceLinks resourceLinks = new AssignmentResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Assignment assignment = assignmentService.deleteAssignmentById(id);
             assignment.addLink(resourceLinks.self(assignment.getId()));
-            if(assignment.getStudent() != null)
-                assignment.getStudent().addLink(studentResourceLinks.self(assignment.getStudent().getId()));
-            if(assignment.getSubject() != null)
-                assignment.getSubject().addLink(subjectResourceLinks.self(assignment.getSubject().getId()));
+            if(assignment.get_class() != null)
+                assignment.get_class().addLink(classResourceLinks.self(assignment.get_class().getId()));
             return Response.status(Response.Status.OK).entity(assignment).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
+    }
+
+    @Path("{assignmentId}/result")
+    public AssignmentResultResource assignmentResultResource() {
+        assignmentResultResource.setStudentId(studentId);
+        assignmentResultResource.setUriInfo(uriInfo);
+        return assignmentResultResource;
     }
 }

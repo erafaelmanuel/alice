@@ -3,9 +3,8 @@ package com.remswork.project.alice.resource;
 import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Recitation;
 import com.remswork.project.alice.model.support.Message;
+import com.remswork.project.alice.resource.links.ClassResourceLinks;
 import com.remswork.project.alice.resource.links.RecitationResourceLinks;
-import com.remswork.project.alice.resource.links.StudentResourceLinks;
-import com.remswork.project.alice.resource.links.SubjectResourceLinks;
 import com.remswork.project.alice.service.impl.RecitationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,29 +21,28 @@ public class RecitationResource {
 
     @Autowired
     private RecitationServiceImpl recitationService;
+    @Autowired
+    private RecitationResultResource recitationResultResource;
     @Context
     private UriInfo uriInfo;
-    @QueryParam("studentId")
-    private long studentId;
-    @QueryParam("subjectId")
-    private long subjectId;
+    @QueryParam("classId")
+    private long classId;
     @QueryParam("termId")
     private long termId;
+    @QueryParam("studentId")
+    private long studentId;
 
     @GET
     @Path("{recitationId}")
     public Response getRecitationById(@PathParam("recitationId") long id) {
         try {
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Recitation recitation = recitationService.getRecitationById(id);
             recitation.addLink(resourceLinks.self(id));
-            if(recitation.getStudent() != null)
-                recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
-            if(recitation.getSubject() != null)
-                recitation.getSubject().addLink(subjectResourceLinks.self(recitation.getSubject().getId()));
+            if(recitation.get_class() != null)
+                recitation.get_class().addLink(classResourceLinks.self(recitation.get_class().getId()));
             return Response.status(Response.Status.OK).entity(recitation).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -58,21 +56,22 @@ public class RecitationResource {
         try {
             List<Recitation> recitationList;
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
-            if(studentId != 0 && subjectId != 0 && termId != 0)
-                recitationList = recitationService.getRecitationListByStudentAndSubjectId(studentId, subjectId, termId);
-            else if(studentId != 0 && subjectId != 0)
-                recitationList = recitationService.getRecitationListByStudentAndSubjectId(studentId, subjectId);
+            if(classId != 0 && termId != 0)
+                recitationList = recitationService.getRecitationListByClassId(classId, termId);
+            else if(classId != 0)
+                recitationList = recitationService.getRecitationListByClassId(classId);
+            if(studentId != 0 && termId != 0)
+                recitationList = recitationService.getRecitationListByStudentId(studentId, termId);
+            else if(studentId != 0)
+                recitationList = recitationService.getRecitationListByStudentId(studentId);
             else
                 recitationList = recitationService.getRecitationList();
             for(Recitation recitation : recitationList) {
                 recitation.addLink(resourceLinks.self(recitation.getId()));
-                if(recitation.getStudent() != null)
-                    recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
-                if(recitation.getSubject() != null)
-                    recitation.getSubject().addLink(subjectResourceLinks.self(recitation.getSubject().getId()));
+                if(recitation.get_class() != null)
+                    recitation.get_class().addLink(classResourceLinks.self(recitation.get_class().getId()));
             }
             GenericEntity<List<Recitation>> entity = new GenericEntity<List<Recitation>>(recitationList){};
             return Response.status(Response.Status.OK).entity(entity).build();
@@ -87,18 +86,15 @@ public class RecitationResource {
     public Response addRecitation(Recitation recitation) {
         try {
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             if(termId > 0)
-                recitation = recitationService.addRecitation(recitation, studentId, subjectId, termId);
+                recitation = recitationService.addRecitation(recitation, classId, termId);
             else
-                recitation = recitationService.addRecitation(recitation, studentId, subjectId);
+                recitation = recitationService.addRecitation(recitation, classId);
             recitation.addLink(resourceLinks.self(recitation.getId()));
-            if(recitation.getStudent() != null)
-                recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
-            if(recitation.getSubject() != null)
-                recitation.getSubject().addLink(subjectResourceLinks.self(recitation.getSubject().getId()));
+            if(recitation.get_class() != null)
+                recitation.get_class().addLink(classResourceLinks.self(recitation.get_class().getId()));
             return Response.status(Response.Status.CREATED).entity(recitation).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -112,19 +108,15 @@ public class RecitationResource {
     public Response updateRecitationById(@PathParam("recitationId") long id, Recitation newRecitation) {
         try {
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
             Recitation recitation;
-
             if(termId > 0)
-                recitation = recitationService.updateRecitationById(id, newRecitation, studentId, subjectId, termId);
+                recitation = recitationService.updateRecitationById(id, newRecitation, classId, termId);
             else
-                recitation = recitationService.updateRecitationById(id, newRecitation, studentId, subjectId);
+                recitation = recitationService.updateRecitationById(id, newRecitation, classId);
             recitation.addLink(resourceLinks.self(recitation.getId()));
-            if(recitation.getStudent() != null)
-                recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
-            if(recitation.getSubject() != null)
-                recitation.getSubject().addLink(subjectResourceLinks.self(recitation.getSubject().getId()));
+            if(recitation.get_class() != null)
+                recitation.get_class().addLink(classResourceLinks.self(recitation.get_class().getId()));
             return Response.status(Response.Status.OK).entity(recitation).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -138,20 +130,24 @@ public class RecitationResource {
     public Response deleteRecitationById(@PathParam("recitationId") long id) {
         try {
             RecitationResourceLinks resourceLinks = new RecitationResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Recitation recitation = recitationService.deleteRecitationById(id);
             recitation.addLink(resourceLinks.self(recitation.getId()));
-            if(recitation.getStudent() != null)
-                recitation.getStudent().addLink(studentResourceLinks.self(recitation.getStudent().getId()));
-            if(recitation.getSubject() != null)
-                recitation.getSubject().addLink(subjectResourceLinks.self(recitation.getSubject().getId()));
+            if(recitation.get_class() != null)
+                recitation.get_class().addLink(classResourceLinks.self(recitation.get_class().getId()));
             return Response.status(Response.Status.OK).entity(recitation).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
+    }
+
+    @Path("{recitationId}/result")
+    public RecitationResultResource recitationResultResource() {
+        recitationResultResource.setStudentId(studentId);
+        recitationResultResource.setUriInfo(uriInfo);
+        return recitationResultResource;
     }
 }

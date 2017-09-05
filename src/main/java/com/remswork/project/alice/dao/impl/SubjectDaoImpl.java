@@ -215,16 +215,9 @@ public class SubjectDaoImpl implements SubjectDao {
        Session session = sessionFactory.openSession();
        session.beginTransaction();
        try {
-           String[] table = new String[9];
+           String[] table = new String[2];
            table[0] = Class.class.getSimpleName();
-           table[1] = Activity.class.getSimpleName();
-           table[2] = Assignment.class.getSimpleName();
-           table[3] = Attendance.class.getSimpleName();
-           table[4] = Exam.class.getSimpleName();
-           table[5] = Project.class.getSimpleName();
-           table[6] = Quiz.class.getSimpleName();
-           table[7] = Recitation.class.getSimpleName();
-           table[8] = Formula.class.getSimpleName();
+           table[1] = Formula.class.getSimpleName();
 
            Subject subject = session.get(Subject.class, id);
            if(subject == null)

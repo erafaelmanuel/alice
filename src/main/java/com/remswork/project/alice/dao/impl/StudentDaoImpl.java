@@ -158,22 +158,21 @@ public class StudentDaoImpl implements StudentDao {
         session.beginTransaction();
         try {
             Student student = session.get(Student.class, id);
-            String[] table = new String[7];
-            table[0] = Activity.class.getSimpleName();
-            table[1] = Assignment.class.getSimpleName();
-            table[2] = Attendance.class.getSimpleName();
-            table[3] = Exam.class.getSimpleName();
-            table[4] = Project.class.getSimpleName();
-            table[5] = Quiz.class.getSimpleName();
-            table[6] = Recitation.class.getSimpleName();
+            String[] table = new String[6];
+            table[0] = ActivityResult.class.getSimpleName();
+            table[1] = AssignmentResult.class.getSimpleName();
+            table[2] = ExamResult.class.getSimpleName();
+            table[3] = ProjectResult.class.getSimpleName();
+            table[4] = QuizResult.class.getSimpleName();
+            table[5] = RecitationResult.class.getSimpleName();
 
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");
 
             for(String cell : table) {
-                String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
+                String hql = "delete from ".concat(cell).concat(" where student.id = :studentId");
                 Query query = session.createQuery(hql);
-                query.setParameter("subjectId", id);
+                query.setParameter("studentId", id);
                 query.executeUpdate();
             }
             student.setSection(null);

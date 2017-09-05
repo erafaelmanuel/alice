@@ -18,14 +18,9 @@ public class Activity {
     private String title;
     private String date;
     private int itemTotal;
-    private int score;
-    @ManyToMany
-    @JoinTable(name="tblactivitylist", joinColumns = @JoinColumn(name = "activityId"),
-            inverseJoinColumns = @JoinColumn(name = "studentId"))
-    private List<Student> studentList;
     @ManyToOne
-    @JoinColumn(name = "subjectId")
-    private Subject subject;
+    @JoinColumn(name = "classId")
+    private Class _class;
     @ManyToOne
     @JoinColumn(name = "termId")
     private Term term;
@@ -34,18 +29,16 @@ public class Activity {
 
     public  Activity() {
         links = new ArrayList<>();
-        studentList = new ArrayList<>();
     }
 
-    public Activity(String title, String date, int itemTotal, int score) {
+    public Activity(String title, String date, int itemTotal) {
         this.title = title;
         this.date = date;
         this.itemTotal = itemTotal;
-        this.score = score;
     }
 
-    public Activity(long id, String title, String date, int itemTotal, int score) {
-        this(title, date, itemTotal, score);
+    public Activity(long id, String title, String date, int itemTotal) {
+        this(title, date, itemTotal);
         this.id = id;
     }
 
@@ -81,36 +74,20 @@ public class Activity {
         this.itemTotal = itemTotal;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public List<Student> getStudentList() {
-        return studentList;
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
     public Term getTerm() {
         return term;
     }
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public Class get_class() {
+        return _class;
+    }
+
+    public void set_class(Class _class) {
+        this._class = _class;
     }
 
     public List<Link> getLinks() {

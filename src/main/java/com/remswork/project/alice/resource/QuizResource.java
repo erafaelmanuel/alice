@@ -4,8 +4,7 @@ import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Quiz;
 import com.remswork.project.alice.model.support.Message;
 import com.remswork.project.alice.resource.links.QuizResourceLinks;
-import com.remswork.project.alice.resource.links.StudentResourceLinks;
-import com.remswork.project.alice.resource.links.SubjectResourceLinks;
+import com.remswork.project.alice.resource.links.ClassResourceLinks;
 import com.remswork.project.alice.service.impl.QuizServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,29 +21,28 @@ public class QuizResource {
 
     @Autowired
     private QuizServiceImpl quizService;
+    @Autowired
+    private QuizResultResource quizResultResource;
     @Context
     private UriInfo uriInfo;
-    @QueryParam("studentId")
-    private long studentId;
-    @QueryParam("subjectId")
-    private long subjectId;
+    @QueryParam("classId")
+    private long classId;
     @QueryParam("termId")
     private long termId;
+    @QueryParam("studentId")
+    private long studentId;
 
     @GET
     @Path("{quizId}")
     public Response getQuizById(@PathParam("quizId") long id) {
         try {
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Quiz quiz = quizService.getQuizById(id);
             quiz.addLink(resourceLinks.self(id));
-            if(quiz.getStudent() != null)
-                quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
-            if(quiz.getSubject() != null)
-                quiz.getSubject().addLink(subjectResourceLinks.self(quiz.getSubject().getId()));
+            if(quiz.get_class() != null)
+                quiz.get_class().addLink(classResourceLinks.self(quiz.get_class().getId()));
             return Response.status(Response.Status.OK).entity(quiz).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -58,21 +56,22 @@ public class QuizResource {
         try {
             List<Quiz> quizList;
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
-            if(studentId != 0 && subjectId != 0 && termId != 0)
-                quizList = quizService.getQuizListByStudentAndSubjectId(studentId, subjectId, termId);
-            else if(studentId != 0 && subjectId != 0)
-                quizList = quizService.getQuizListByStudentAndSubjectId(studentId, subjectId);
+            if(classId != 0 && termId != 0)
+                quizList = quizService.getQuizListByClassId(classId, termId);
+            else if(classId != 0)
+                quizList = quizService.getQuizListByClassId(classId);
+            if(studentId != 0 && termId != 0)
+                quizList = quizService.getQuizListByStudentId(studentId, termId);
+            else if(studentId != 0)
+                quizList = quizService.getQuizListByStudentId(studentId);
             else
                 quizList = quizService.getQuizList();
             for(Quiz quiz : quizList) {
                 quiz.addLink(resourceLinks.self(quiz.getId()));
-                if(quiz.getStudent() != null)
-                    quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
-                if(quiz.getSubject() != null)
-                    quiz.getSubject().addLink(subjectResourceLinks.self(quiz.getSubject().getId()));
+                if(quiz.get_class() != null)
+                    quiz.get_class().addLink(classResourceLinks.self(quiz.get_class().getId()));
             }
             GenericEntity<List<Quiz>> entity = new GenericEntity<List<Quiz>>(quizList){};
             return Response.status(Response.Status.OK).entity(entity).build();
@@ -87,18 +86,15 @@ public class QuizResource {
     public Response addQuiz(Quiz quiz) {
         try {
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             if(termId > 0)
-                quiz = quizService.addQuiz(quiz, studentId, subjectId, termId);
+                quiz = quizService.addQuiz(quiz, classId, termId);
             else
-                quiz = quizService.addQuiz(quiz, studentId, subjectId);
+                quiz = quizService.addQuiz(quiz, classId);
             quiz.addLink(resourceLinks.self(quiz.getId()));
-            if(quiz.getStudent() != null)
-                quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
-            if(quiz.getSubject() != null)
-                quiz.getSubject().addLink(subjectResourceLinks.self(quiz.getSubject().getId()));
+            if(quiz.get_class() != null)
+                quiz.get_class().addLink(classResourceLinks.self(quiz.get_class().getId()));
             return Response.status(Response.Status.CREATED).entity(quiz).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -112,19 +108,15 @@ public class QuizResource {
     public Response updateQuizById(@PathParam("quizId") long id, Quiz newQuiz) {
         try {
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
             Quiz quiz;
-
             if(termId > 0)
-                quiz = quizService.updateQuizById(id, newQuiz, studentId, subjectId,termId);
+                quiz = quizService.updateQuizById(id, newQuiz, classId, termId);
             else
-                quiz = quizService.updateQuizById(id, newQuiz, studentId, subjectId);
+                quiz = quizService.updateQuizById(id, newQuiz, classId);
             quiz.addLink(resourceLinks.self(quiz.getId()));
-            if(quiz.getStudent() != null)
-                quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
-            if(quiz.getSubject() != null)
-                quiz.getSubject().addLink(subjectResourceLinks.self(quiz.getSubject().getId()));
+            if(quiz.get_class() != null)
+                quiz.get_class().addLink(classResourceLinks.self(quiz.get_class().getId()));
             return Response.status(Response.Status.OK).entity(quiz).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -138,20 +130,24 @@ public class QuizResource {
     public Response deleteQuizById(@PathParam("quizId") long id) {
         try {
             QuizResourceLinks resourceLinks = new QuizResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Quiz quiz = quizService.deleteQuizById(id);
             quiz.addLink(resourceLinks.self(quiz.getId()));
-            if(quiz.getStudent() != null)
-                quiz.getStudent().addLink(studentResourceLinks.self(quiz.getStudent().getId()));
-            if(quiz.getSubject() != null)
-                quiz.getSubject().addLink(subjectResourceLinks.self(quiz.getSubject().getId()));
+            if(quiz.get_class() != null)
+                quiz.get_class().addLink(classResourceLinks.self(quiz.get_class().getId()));
             return Response.status(Response.Status.OK).entity(quiz).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
+    }
+
+    @Path("{quizId}/result")
+    public QuizResultResource quizResultResource() {
+        quizResultResource.setStudentId(studentId);
+        quizResultResource.setUriInfo(uriInfo);
+        return quizResultResource;
     }
 }

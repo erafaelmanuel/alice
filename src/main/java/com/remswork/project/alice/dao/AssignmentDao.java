@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao;
 
 import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Assignment;
+import com.remswork.project.alice.model.AssignmentResult;
 
 import java.util.List;
 
@@ -11,22 +12,36 @@ public interface AssignmentDao {
 
     List<Assignment> getAssignmentList() throws GradingFactorException;
 
-    List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId)
+    List<Assignment> getAssignmentListByClassId(long classId) throws GradingFactorException;
+
+    List<Assignment> getAssignmentListByClassId(long classId, long termId) throws GradingFactorException;
+
+    List<Assignment> getAssignmentListByStudentId(long studentId) throws GradingFactorException;
+
+    List<Assignment> getAssignmentListByStudentId(long studentId, long termId) throws GradingFactorException;
+
+    AssignmentResult getAssignmentResultById(long id) throws GradingFactorException;
+
+    AssignmentResult getAssignmentResultByAssignmentAndStudentId(long assignmentId, long studentId)
             throws GradingFactorException;
 
-    List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+    Assignment addAssignment(Assignment assignment, long classId) throws GradingFactorException;
+
+    Assignment addAssignment(Assignment assignment, long classId, long termId) throws GradingFactorException;
+
+    AssignmentResult addAssignmentResult(int score, long assignmentId, long studentId) throws GradingFactorException;
+
+    Assignment updateAssignmentById(long id, Assignment newAssignment, long classId)
             throws GradingFactorException;
 
-    Assignment addAssignment(Assignment assignment, long studentId, long subjectId) throws GradingFactorException;
-
-    Assignment addAssignment(Assignment assignment, long studentId, long subjectId, long termId)
+    Assignment updateAssignmentById(long id, Assignment newAssignment, long classId, long termId)
             throws GradingFactorException;
 
-    Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId)
+    AssignmentResult updateAssignmentResultByAssignmentAndStudentId(int score, long assignmentId, long studentId)
             throws GradingFactorException;
 
-    Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId, long termId)
-            throws GradingFactorException;
+    Assignment deleteAssignmentById(long assignmentId) throws GradingFactorException;
 
-    Assignment deleteAssignmentById(long id) throws GradingFactorException;
+    AssignmentResult deleteAssignmentResultByAssignmentAndStudentId(long assignmentId, long studentId)
+            throws GradingFactorException;
 }

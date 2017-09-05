@@ -3,9 +3,8 @@ package com.remswork.project.alice.resource;
 import com.remswork.project.alice.exception.GradingFactorException;
 import com.remswork.project.alice.model.Project;
 import com.remswork.project.alice.model.support.Message;
+import com.remswork.project.alice.resource.links.ClassResourceLinks;
 import com.remswork.project.alice.resource.links.ProjectResourceLinks;
-import com.remswork.project.alice.resource.links.StudentResourceLinks;
-import com.remswork.project.alice.resource.links.SubjectResourceLinks;
 import com.remswork.project.alice.service.impl.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,29 +21,28 @@ public class ProjectResource {
 
     @Autowired
     private ProjectServiceImpl projectService;
+    @Autowired
+    private ProjectResultResource projectResultResource;
     @Context
     private UriInfo uriInfo;
-    @QueryParam("studentId")
-    private long studentId;
-    @QueryParam("subjectId")
-    private long subjectId;
+    @QueryParam("classId")
+    private long classId;
     @QueryParam("termId")
     private long termId;
+    @QueryParam("studentId")
+    private long studentId;
 
     @GET
     @Path("{projectId}")
     public Response getProjectById(@PathParam("projectId") long id) {
         try {
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Project project = projectService.getProjectById(id);
             project.addLink(resourceLinks.self(id));
-            if(project.getStudent() != null)
-                project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
-            if(project.getSubject() != null)
-                project.getSubject().addLink(subjectResourceLinks.self(project.getSubject().getId()));
+            if(project.get_class() != null)
+                project.get_class().addLink(classResourceLinks.self(project.get_class().getId()));
             return Response.status(Response.Status.OK).entity(project).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -58,21 +56,22 @@ public class ProjectResource {
         try {
             List<Project> projectList;
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
-            if(studentId != 0 && subjectId != 0 && termId != 0)
-                projectList = projectService.getProjectListByStudentAndSubjectId(studentId, subjectId, termId);
-            else if(studentId != 0 && subjectId != 0)
-                projectList = projectService.getProjectListByStudentAndSubjectId(studentId, subjectId);
+            if(classId != 0 && termId != 0)
+                projectList = projectService.getProjectListByClassId(classId, termId);
+            else if(classId != 0)
+                projectList = projectService.getProjectListByClassId(classId);
+            if(studentId != 0 && termId != 0)
+                projectList = projectService.getProjectListByStudentId(studentId, termId);
+            else if(studentId != 0)
+                projectList = projectService.getProjectListByStudentId(studentId);
             else
                 projectList = projectService.getProjectList();
             for(Project project : projectList) {
                 project.addLink(resourceLinks.self(project.getId()));
-                if(project.getStudent() != null)
-                    project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
-                if(project.getSubject() != null)
-                    project.getSubject().addLink(subjectResourceLinks.self(project.getSubject().getId()));
+                if(project.get_class() != null)
+                    project.get_class().addLink(classResourceLinks.self(project.get_class().getId()));
             }
             GenericEntity<List<Project>> entity = new GenericEntity<List<Project>>(projectList){};
             return Response.status(Response.Status.OK).entity(entity).build();
@@ -87,18 +86,15 @@ public class ProjectResource {
     public Response addProject(Project project) {
         try {
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             if(termId > 0)
-                project = projectService.addProject(project, studentId, subjectId, termId);
+                project = projectService.addProject(project, classId, termId);
             else
-                project = projectService.addProject(project, studentId, subjectId);
+                project = projectService.addProject(project, classId);
             project.addLink(resourceLinks.self(project.getId()));
-            if(project.getStudent() != null)
-                project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
-            if(project.getSubject() != null)
-                project.getSubject().addLink(subjectResourceLinks.self(project.getSubject().getId()));
+            if(project.get_class() != null)
+                project.get_class().addLink(classResourceLinks.self(project.get_class().getId()));
             return Response.status(Response.Status.CREATED).entity(project).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -112,19 +108,15 @@ public class ProjectResource {
     public Response updateProjectById(@PathParam("projectId") long id, Project newProject) {
         try {
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
             Project project;
-
             if(termId > 0)
-                project = projectService.updateProjectById(id, newProject, studentId, subjectId, termId);
+                project = projectService.updateProjectById(id, newProject, classId, termId);
             else
-                project = projectService.updateProjectById(id, newProject, studentId, subjectId);
+                project = projectService.updateProjectById(id, newProject, classId);
             project.addLink(resourceLinks.self(project.getId()));
-            if(project.getStudent() != null)
-                project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
-            if(project.getSubject() != null)
-                project.getSubject().addLink(subjectResourceLinks.self(project.getSubject().getId()));
+            if(project.get_class() != null)
+                project.get_class().addLink(classResourceLinks.self(project.get_class().getId()));
             return Response.status(Response.Status.OK).entity(project).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
@@ -138,20 +130,24 @@ public class ProjectResource {
     public Response deleteProjectById(@PathParam("projectId") long id) {
         try {
             ProjectResourceLinks resourceLinks = new ProjectResourceLinks(uriInfo);
-            StudentResourceLinks studentResourceLinks = new StudentResourceLinks(uriInfo);
-            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            ClassResourceLinks classResourceLinks = new ClassResourceLinks(uriInfo);
 
             Project project = projectService.deleteProjectById(id);
             project.addLink(resourceLinks.self(project.getId()));
-            if(project.getStudent() != null)
-                project.getStudent().addLink(studentResourceLinks.self(project.getStudent().getId()));
-            if(project.getSubject() != null)
-                project.getSubject().addLink(subjectResourceLinks.self(project.getSubject().getId()));
+            if(project.get_class() != null)
+                project.get_class().addLink(classResourceLinks.self(project.get_class().getId()));
             return Response.status(Response.Status.OK).entity(project).build();
         }catch (GradingFactorException e) {
             e.printStackTrace();
             Message message = new Message(400, "Bad Request", e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
+    }
+
+    @Path("{projectId}/result")
+    public ProjectResultResource projectResultResource() {
+        projectResultResource.setStudentId(studentId);
+        projectResultResource.setUriInfo(uriInfo);
+        return projectResultResource;
     }
 }

@@ -18,13 +18,9 @@ public class Recitation {
     private String title;
     private String date;
     private int itemTotal;
-    private int score;
     @ManyToOne
-    @JoinColumn(name = "studentId")
-    private Student student;
-    @ManyToOne
-    @JoinColumn(name = "subjectId")
-    private Subject subject;
+    @JoinColumn(name = "classId")
+    private Class _class;
     @ManyToOne
     @JoinColumn(name = "termId")
     private Term term;
@@ -35,15 +31,14 @@ public class Recitation {
         links = new ArrayList<>();
     }
 
-    public Recitation(String title, String date, int itemTotal, int score) {
+    public Recitation(String title, String date, int itemTotal) {
         this.title = title;
         this.date = date;
         this.itemTotal = itemTotal;
-        this.score = score;
     }
 
-    public Recitation(long id, String title, String date, int itemTotal, int score) {
-        this(title, date, itemTotal, score);
+    public Recitation(long id, String title, String date, int itemTotal) {
+        this(title, date, itemTotal);
         this.id = id;
     }
 
@@ -79,36 +74,20 @@ public class Recitation {
         this.itemTotal = itemTotal;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
     public Term getTerm() {
         return term;
     }
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public Class get_class() {
+        return _class;
+    }
+
+    public void set_class(Class _class) {
+        this._class = _class;
     }
 
     public List<Link> getLinks() {

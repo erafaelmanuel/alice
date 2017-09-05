@@ -2,6 +2,7 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.ClassDao;
 import com.remswork.project.alice.dao.exception.ClassDaoException;
+import com.remswork.project.alice.dao.exception.SubjectDaoException;
 import com.remswork.project.alice.exception.*;
 import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.*;
@@ -335,6 +336,9 @@ public class ClassDaoImpl implements ClassDao {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
+            String[] table = new String[1];
+            table[0] = Activity.class.getSimpleName();
+
             Class _class = session.get(Class.class, id);
             if (_class == null)
                 throw new ClassDaoException("Class with id : " + id + " does not exist");
@@ -344,6 +348,13 @@ public class ClassDaoImpl implements ClassDao {
             _class.setScheduleList(null);
             _class.setSection(null);
             _class.setStudentList(null);
+
+            for(String cell : table) {
+                String hql = "delete from ".concat(cell).concat(" where _class.id = :classId");
+                Query query = session.createQuery(hql);
+                query.setParameter("classId", id);
+                query.executeUpdate();
+            }
 
             session.delete(_class);
             session.getTransaction().commit();

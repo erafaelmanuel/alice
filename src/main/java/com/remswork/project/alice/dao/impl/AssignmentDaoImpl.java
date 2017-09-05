@@ -3,10 +3,8 @@ package com.remswork.project.alice.dao.impl;
 import com.remswork.project.alice.dao.AssignmentDao;
 import com.remswork.project.alice.dao.exception.GradingFactorDaoException;
 import com.remswork.project.alice.exception.GradingFactorException;
-import com.remswork.project.alice.model.Assignment;
-import com.remswork.project.alice.model.Student;
-import com.remswork.project.alice.model.Subject;
-import com.remswork.project.alice.model.Term;
+import com.remswork.project.alice.model.*;
+import com.remswork.project.alice.model.Class;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class AssignmentDaoImpl implements AssignmentDao{
+public class AssignmentDaoImpl implements AssignmentDao {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -58,16 +56,15 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId)
+    public List<Assignment> getAssignmentListByClassId(long classId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             List<Assignment> assignmentList = new ArrayList<>();
-            Query query =
-                    session.createQuery("from Assignment where student.id = :studentId and subject.id = :subjectId");
-            query.setParameter("studentId", studentId);
-            query.setParameter("subjectId", subjectId);
+
+            Query query = session.createQuery("from Assignment where _class.id = :classId");
+            query.setParameter("classId", classId);
             for (Object objAssignment : query.list())
                 assignmentList.add((Assignment) objAssignment);
             session.getTransaction().commit();
@@ -80,18 +77,18 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public List<Assignment> getAssignmentListByStudentAndSubjectId(long studentId, long subjectId, long termId)
+    public List<Assignment> getAssignmentListByClassId(long classId, long termId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             List<Assignment> assignmentList = new ArrayList<>();
-            String hql =
-                    "from Assignment where student.id = :studentId and subject.id = :subjectId and term.id = :termId";
+            String hql = "from Assignment where _class.id = :classId and term.id = :termId";
+
             Query query = session.createQuery(hql);
-            query.setParameter("studentId", studentId);
-            query.setParameter("subjectId", subjectId);
+            query.setParameter("classId", classId);
             query.setParameter("termId", termId);
+
             for (Object objAssignment : query.list())
                 assignmentList.add((Assignment) objAssignment);
             session.getTransaction().commit();
@@ -104,39 +101,135 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public Assignment addAssignment(Assignment assignment, long studentId, long subjectId) throws GradingFactorException {
+    public List<Assignment> getAssignmentListByStudentId(long studentId) throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, subjectId);
+            List<Assignment> assignmentList = new ArrayList<>();
+            String hql = "from AssignmentResult as R join R.assignment where R.student.id = :studentId";
+
+            if (student == null)
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+            for (Object object : query.list())
+                assignmentList.add((Assignment) ((Object[]) object)[1]);
+            session.getTransaction().commit();
+            session.close();
+            return assignmentList;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Assignment> getAssignmentListByStudentId(long studentId, long termId) throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Student student = session.get(Student.class, studentId);
+            Term term = session.get(Term.class, termId);
+            List<Assignment> assignmentList = new ArrayList<>();
+            String hql = "from AssignmentResult as R join R.assignment as A where R.student.id = :studentId and " +
+                    "A.term.id = :termId";
+
+            if (term == null)
+                throw new GradingFactorDaoException("Assignment's term with id : " + termId + " does not exist");
+            if (student == null)
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+            query.setParameter("termId", termId);
+
+            for (Object object : query.list())
+                assignmentList.add((Assignment) ((Object[]) object)[1]);
+            session.getTransaction().commit();
+            session.close();
+            return assignmentList;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public AssignmentResult getAssignmentResultById(long id) throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            AssignmentResult result = session.get(AssignmentResult.class, id);
+            if(result == null)
+                throw new GradingFactorDaoException("AssignmentResult with id : " + id + " does not exist");
+            session.getTransaction().commit();
+            session.close();
+            return result;
+        }catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public AssignmentResult getAssignmentResultByAssignmentAndStudentId(long assignmentId, long studentId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Assignment assignment = session.get(Assignment.class, assignmentId);
+            Student student = session.get(Student.class, studentId);
+            String hql = "from AssignmentResult as R where R.assignment.id = :assignmentId and R.student.id = :studentId";
+
+            Query query = session.createQuery(hql);
+            query.setParameter("assignmentId", assignmentId);
+            query.setParameter("studentId", studentId);
 
             if (assignment == null)
-                throw new GradingFactorException("You tried to add class with a null value");
-            if (studentId == 0)
-                throw new GradingFactorException("Query param : studentId is required");
-            if (subjectId == 0)
-                throw new GradingFactorException("Query param : subjectId is required");
+                throw new GradingFactorDaoException("Assignment with id : " + assignmentId + " does not exist");
             if (student == null)
-                throw new GradingFactorException("Assignment's student with id : " + studentId + " does not exist");
-            if (subject == null)
-                throw new GradingFactorException("Assignment's subject with id : " + subjectId + " does not exist");
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+            if (query.list().size() < 1)
+                throw new GradingFactorDaoException("No AssignmentResult found. Try use query param " +
+                        "(ex. studentId=[id])");
+
+            AssignmentResult result = (AssignmentResult) query.list().get(0);
+            session.getTransaction().commit();
+            session.close();
+            return result;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Assignment addAssignment(Assignment assignment, long classId) throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Class _class = session.get(Class.class, classId);
+
+            if (assignment == null)
+                throw new GradingFactorDaoException("You tried to add class with a null value");
+            if (classId == 0)
+                throw new GradingFactorDaoException("Query param : classId is required");
+            if (_class == null)
+                throw new GradingFactorDaoException("Assignment's class with id : " + classId + " does not exist");
             if (assignment.getTitle() == null)
-                throw new GradingFactorException("Assignment's title is required");
+                throw new GradingFactorDaoException("Assignment's title is required");
             if (assignment.getTitle().trim().equals(""))
-                throw new GradingFactorException("Assignment can't have an empty title");
+                throw new GradingFactorDaoException("Assignment can't have an empty title");
             if (assignment.getDate() == null)
-                throw new GradingFactorException("Assignment's date is required");
+                throw new GradingFactorDaoException("Assignment's date is required");
             if (assignment.getDate().trim().equals(""))
-                throw new GradingFactorException("Assignment can't have an empty date");
+                throw new GradingFactorDaoException("Assignment can't have an empty date");
             if(assignment.getItemTotal() < 0)
-                throw new GradingFactorException("Assignment's itemTotal is invalid");
-            if(assignment.getScore() < 0 && assignment.getScore() > assignment.getItemTotal())
-                throw new GradingFactorException("Assignment's score is invalid");
+                throw new GradingFactorDaoException("Assignment's itemTotal is invalid");
 
-            assignment.setStudent(student);
-            assignment.setSubject(subject);
-
+            assignment.set_class(_class);
             session.persist(assignment);
             session.getTransaction().commit();
             session.close();
@@ -148,44 +241,34 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public Assignment addAssignment(Assignment assignment, long studentId, long subjectId, long termId)
+    public Assignment addAssignment(Assignment assignment, long classId, long termId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
-            Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, subjectId);
+            Class _class = session.get(Class.class, classId);
             Term term = session.get(Term.class, termId);
 
             if (assignment == null)
-                throw new GradingFactorException("You tried to add class with a null value");
-            if (studentId == 0)
-                throw new GradingFactorException("Query param : studentId is required");
-            if (subjectId == 0)
-                throw new GradingFactorException("Query param : subjectId is required");
+                throw new GradingFactorDaoException("You tried to add class with a null value");
             if (termId < 1)
-                throw new GradingFactorException("Query param : termId has in invalid");
-            if (student == null)
-                throw new GradingFactorException("Assignment's student with id : " + studentId + " does not exist");
-            if (subject == null)
-                throw new GradingFactorException("Assignment's subject with id : " + subjectId + " does not exist");
+                throw new GradingFactorDaoException("Query param : termId has an invalid input");
+            if (_class == null)
+                throw new GradingFactorDaoException("Assignment's class with id : " + classId + " does not exist");
             if (term == null)
-                throw new GradingFactorException("Assignment's term with id : " + termId + " does not exist");
+                throw new GradingFactorDaoException("Assignment's term with id : " + termId + " does not exist");
             if (assignment.getTitle() == null)
-                throw new GradingFactorException("Assignment's title is required");
+                throw new GradingFactorDaoException("Assignment's title is required");
             if (assignment.getTitle().trim().equals(""))
-                throw new GradingFactorException("Assignment can't have an empty title");
+                throw new GradingFactorDaoException("Assignment can't have an empty title");
             if (assignment.getDate() == null)
-                throw new GradingFactorException("Assignment's date is required");
+                throw new GradingFactorDaoException("Assignment's date is required");
             if (assignment.getDate().trim().equals(""))
-                throw new GradingFactorException("Assignment can't have an empty date");
+                throw new GradingFactorDaoException("Assignment can't have an empty date");
             if(assignment.getItemTotal() < 0)
-                throw new GradingFactorException("Assignment's itemTotal is invalid");
-            if(assignment.getScore() < 0 && assignment.getScore() > assignment.getItemTotal())
-                throw new GradingFactorException("Assignment's score is invalid");
+                throw new GradingFactorDaoException("Assignment's itemTotal is invalid");
 
-            assignment.setStudent(student);
-            assignment.setSubject(subject);
+            assignment.set_class(_class);
             assignment.setTerm(term);
 
             session.persist(assignment);
@@ -199,36 +282,69 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId)
+    public AssignmentResult addAssignmentResult(int score, long assignmentId, long studentId) throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Assignment assignment = session.get(Assignment.class, assignmentId);
+            Student student = session.get(Student.class, studentId);
+            AssignmentResult result = new AssignmentResult();
+            String hql = "from AssignmentResult as R where R.assignment.id = :assignmentId and R.student.id = :studentId";
+            Query query = session.createQuery(hql);
+            query.setParameter("assignmentId", assignmentId);
+            query.setParameter("studentId", studentId);
+
+            if (assignment == null)
+                throw new GradingFactorDaoException("Assignment's assignment with id : " + assignmentId + " does not exist");
+            if (student == null)
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+            if (assignmentId < 1)
+                throw new GradingFactorDaoException("Query param : assignmentId is required");
+            if (studentId < 1)
+                throw new GradingFactorDaoException("Query param : studentId is required");
+            if(score < 0 && score > assignment.getItemTotal())
+                throw new GradingFactorDaoException("AssignmentResult's score is invalid");
+            if(query.list().size() > 0)
+                throw new GradingFactorDaoException("AssignmentResult's  student with id : " + studentId +
+                        " already exist");
+
+            result.setScore(score);
+            result.setAssignment(assignment);
+            result.setStudent(student);
+
+            session.persist(result);
+            session.getTransaction().commit();
+            session.close();
+            return result;
+        }catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Assignment updateAssignmentById(long id, Assignment newAssignment, long classId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             Assignment assignment = session.get(Assignment.class, id);
-            Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, subjectId);
+            Class _class = session.get(Class.class, classId);
 
             if(newAssignment == null)
                 newAssignment = new Assignment();
             if(assignment == null)
-                throw new GradingFactorException("Assignment with id : " + id + " does not exist");
-            if (student == null && studentId != 0)
-                throw new GradingFactorException("Assignment's student with id : " + studentId + " does not exist");
-            if (subject == null && subjectId != 0)
-                throw new GradingFactorException("Assignment's subject with id : " + subjectId + " does not exist");
+                throw new GradingFactorDaoException("Assignment with id : " + id + " does not exist");
+            if (_class == null && classId != 0)
+                throw new GradingFactorDaoException("Assignment's class with id : " + classId + " does not exist");
             if(!(newAssignment.getTitle() != null ? newAssignment.getTitle() : "").trim().isEmpty())
                 assignment.setTitle(newAssignment.getTitle());
             if(!(newAssignment.getDate() != null ? newAssignment.getDate() : "").trim().isEmpty())
                 assignment.setDate(newAssignment.getDate());
-            if(studentId > 0) {
-                if(studentId == (assignment.getStudent() != null ? assignment.getStudent().getId() : 0))
-                    throw new GradingFactorException("Assignment's  student with id : " + id + " already exist");
-                assignment.setStudent(student);
-            }
-            if(subjectId > 0) {
-                if(subjectId == (assignment.getSubject() != null ? assignment.getSubject().getId() : 0))
-                    throw new GradingFactorException("Assignment's  student with id : " + id + " already exist");
-                assignment.setSubject(subject);
+            if(classId > 0) {
+                if(classId == (assignment.get_class() != null ? assignment.get_class().getId() : 0))
+                    throw new GradingFactorDaoException("Assignment's  class with id : " + classId + " already exist");
+                assignment.set_class(_class);
             }
             session.getTransaction().commit();
             session.close();
@@ -240,39 +356,31 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
-    public Assignment updateAssignmentById(long id, Assignment newAssignment, long studentId, long subjectId,
-                                           long termId) throws GradingFactorException {
+    public Assignment updateAssignmentById(long id, Assignment newAssignment, long classId, long termId)
+            throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             Assignment assignment = session.get(Assignment.class, id);
-            Student student = session.get(Student.class, studentId);
-            Subject subject = session.get(Subject.class, subjectId);
+            Class _class = session.get(Class.class, classId);
             Term term = session.get(Term.class, termId);
 
             if(newAssignment == null)
                 newAssignment = new Assignment();
             if(assignment == null)
-                throw new GradingFactorException("Assignment with id : " + id + " does not exist");
-            if (student == null && studentId != 0)
-                throw new GradingFactorException("Assignment's student with id : " + studentId + " does not exist");
-            if (subject == null && subjectId != 0)
-                throw new GradingFactorException("Assignment's subject with id : " + subjectId + " does not exist");
+                throw new GradingFactorDaoException("Assignment with id : " + id + " does not exist");
+            if (_class == null && classId != 0)
+                throw new GradingFactorDaoException("Assignment's class with id : " + classId + " does not exist");
             if (term == null && termId > 0)
-                throw new GradingFactorException("Assignment's term with id : " + termId + " does not exist");
+                throw new GradingFactorDaoException("Assignment's term with id : " + termId + " does not exist");
             if(!(newAssignment.getTitle() != null ? newAssignment.getTitle() : "").trim().isEmpty())
                 assignment.setTitle(newAssignment.getTitle());
             if(!(newAssignment.getDate() != null ? newAssignment.getDate() : "").trim().isEmpty())
                 assignment.setDate(newAssignment.getDate());
-            if(studentId > 0) {
-                if(studentId == (assignment.getStudent() != null ? assignment.getStudent().getId() : 0))
-                    throw new GradingFactorException("Assignment's  student with id : " + id + " already exist");
-                assignment.setStudent(student);
-            }
-            if(subjectId > 0) {
-                if(subjectId == (assignment.getSubject() != null ? assignment.getSubject().getId() : 0))
-                    throw new GradingFactorException("Assignment's  student with id : " + id + " already exist");
-                assignment.setSubject(subject);
+            if(classId > 0) {
+                if(classId == (assignment.get_class() != null ? assignment.get_class().getId() : 0))
+                    throw new GradingFactorDaoException("Assignment's  class with id : " + classId + " already exist");
+                assignment.set_class(_class);
             }
             if(termId > 0) {
                 if(termId != (assignment.getTerm() != null ? assignment.getTerm().getId() : 0))
@@ -288,17 +396,98 @@ public class AssignmentDaoImpl implements AssignmentDao{
     }
 
     @Override
+    public AssignmentResult updateAssignmentResultByAssignmentAndStudentId(int score, long assignmentId, long studentId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Assignment assignment = session.get(Assignment.class, assignmentId);
+            Student student = session.get(Student.class, studentId);
+
+            String hql = "from AssignmentResult as R where R.assignment.id = :assignmentId and R.student.id = :studentId";
+            Query query = session.createQuery(hql);
+            query.setParameter("assignmentId", assignmentId);
+            query.setParameter("studentId", studentId);
+
+            if (assignment == null)
+                throw new GradingFactorDaoException("Assignment's assignment with id : " + assignmentId + " does not exist");
+            if (student == null)
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+            if (assignmentId < 1)
+                throw new GradingFactorDaoException("Query param : assignmentId is required");
+            if (studentId < 1)
+                throw new GradingFactorDaoException("Query param : studentId is required");
+            if(query.list().size() < 1)
+                throw new GradingFactorDaoException("No result to delete");
+            AssignmentResult result = (AssignmentResult) query.list().get(0);
+
+            result.setScore(score);
+            session.getTransaction().commit();
+            session.close();
+            return result;
+        } catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
     public Assignment deleteAssignmentById(long id) throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
+            String[] table = new String[1];
+            table[0] = AssignmentResult.class.getSimpleName();
+
             Assignment assignment = session.get(Assignment.class, id);
             if(assignment == null)
                 throw new GradingFactorDaoException("Assignment with id : " + id + " does not exist");
+            for(String cell : table) {
+                String hql = "delete from ".concat(cell).concat(" where assignment.id = :assignmentId");
+                Query query = session.createQuery(hql);
+                query.setParameter("assignmentId", id);
+                query.executeUpdate();
+            }
             session.delete(assignment);
             session.getTransaction().commit();
             session.close();
             return assignment;
+        }catch (GradingFactorDaoException e) {
+            session.close();
+            throw new GradingFactorException(e.getMessage());
+        }
+    }
+
+    @Override
+    public AssignmentResult deleteAssignmentResultByAssignmentAndStudentId(long assignmentId, long studentId)
+            throws GradingFactorException {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Assignment assignment = session.get(Assignment.class, assignmentId);
+            Student student = session.get(Student.class, studentId);
+
+            String hql = "from AssignmentResult as R where R.assignment.id = :assignmentId and R.student.id = :studentId";
+            Query query = session.createQuery(hql);
+            query.setParameter("assignmentId", assignmentId);
+            query.setParameter("studentId", studentId);
+
+            if (assignment == null)
+                throw new GradingFactorDaoException("Assignment's assignment with id : " + assignmentId + " does not exist");
+            if (student == null)
+                throw new GradingFactorDaoException("Assignment's student with id : " + studentId + " does not exist");
+            if (assignmentId < 1)
+                throw new GradingFactorDaoException("Query param : assignmentId is required");
+            if (studentId < 1)
+                throw new GradingFactorDaoException("Query param : studentId is required");
+            if(query.list().size() < 1)
+                throw new GradingFactorDaoException("No result to delete");
+            AssignmentResult result = (AssignmentResult) query.list().get(0);
+
+            session.delete(result);
+            session.getTransaction().commit();
+            session.close();
+            return result;
         }catch (GradingFactorDaoException e) {
             session.close();
             throw new GradingFactorException(e.getMessage());
