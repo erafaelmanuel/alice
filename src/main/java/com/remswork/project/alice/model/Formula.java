@@ -28,6 +28,9 @@ public class Formula {
     @ManyToOne
     @JoinColumn(name = "teacherId")
     private Teacher teacher;
+    @ManyToOne
+    @JoinColumn(name = "termId")
+    private Term term;
     @Transient
     private List<Link> links;
 
@@ -134,6 +137,14 @@ public class Formula {
 
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
+    }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
     }
 
     public List<Link> getLinks() {

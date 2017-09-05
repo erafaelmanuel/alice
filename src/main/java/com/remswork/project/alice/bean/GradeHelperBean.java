@@ -11,8 +11,8 @@ public class GradeHelperBean {
         super();
     }
 
-    public GradeHelperBean add(double percent) {
-        total += (percent * 100);
+    public GradeHelperBean add(int percent) {
+        total += percent;
         return this;
     }
 

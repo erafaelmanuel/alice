@@ -1,6 +1,5 @@
 package com.remswork.project.alice.service;
 
-import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.exception.SubjectException;
 import com.remswork.project.alice.model.Subject;
 

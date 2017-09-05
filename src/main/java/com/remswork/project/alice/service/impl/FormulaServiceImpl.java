@@ -21,8 +21,9 @@ public class FormulaServiceImpl implements FormulaService {
     }
 
     @Override
-    public Formula getFormulaBySubjectAndTeacherId(long subjectId, long teacherId) throws GradingFactorException {
-        return formulaDao.getFormulaBySubjectAndTeacherId(subjectId, teacherId);
+    public Formula getFormulaBySubjectAndTeacherId(long subjectId, long teacherId, long termId)
+            throws GradingFactorException {
+        return formulaDao.getFormulaBySubjectAndTeacherId(subjectId, teacherId, termId);
     }
 
     @Override
@@ -41,9 +42,15 @@ public class FormulaServiceImpl implements FormulaService {
     }
 
     @Override
-    public Formula updateFormulaById(long id, Formula newFormula, long subjectId, long teacherId)
+    public Formula addFormula(Formula formula, long subjectId, long teacherId, long termId)
             throws GradingFactorException {
-        return formulaDao.updateFormulaById(id, newFormula, subjectId, teacherId);
+        return formulaDao.addFormula(formula, subjectId, teacherId, termId);
+    }
+
+    @Override
+    public Formula updateFormulaById(long id, Formula newFormula, long subjectId, long teacherId, long termId)
+            throws GradingFactorException {
+        return formulaDao.updateFormulaById(id, newFormula, subjectId, teacherId, termId);
     }
 
     @Override

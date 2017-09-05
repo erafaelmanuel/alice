@@ -1,6 +1,5 @@
 package com.remswork.project.alice.dao;
 
-import com.remswork.project.alice.exception.ClassException;
 import com.remswork.project.alice.exception.ScheduleException;
 import com.remswork.project.alice.model.Schedule;
 

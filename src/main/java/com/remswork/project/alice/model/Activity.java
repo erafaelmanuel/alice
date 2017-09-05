@@ -19,9 +19,10 @@ public class Activity {
     private String date;
     private int itemTotal;
     private int score;
-    @ManyToOne
-    @JoinColumn(name = "studentId")
-    private Student student;
+    @ManyToMany
+    @JoinTable(name="tblactivitylist", joinColumns = @JoinColumn(name = "activityId"),
+            inverseJoinColumns = @JoinColumn(name = "studentId"))
+    private List<Student> studentList;
     @ManyToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
@@ -33,6 +34,7 @@ public class Activity {
 
     public  Activity() {
         links = new ArrayList<>();
+        studentList = new ArrayList<>();
     }
 
     public Activity(String title, String date, int itemTotal, int score) {
@@ -87,12 +89,12 @@ public class Activity {
         this.score = score;
     }
 
-    public Student getStudent() {
-        return student;
+    public List<Student> getStudentList() {
+        return studentList;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
     }
 
     public Subject getSubject() {

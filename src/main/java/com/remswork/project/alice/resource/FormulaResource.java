@@ -28,6 +28,8 @@ public class FormulaResource {
     private long subjectId;
     @QueryParam("teacherId")
     private long teacherId;
+    @QueryParam("termId")
+    private long termId;
 
     @GET
     @Path("{formulaId}")
@@ -39,6 +41,28 @@ public class FormulaResource {
 
             Formula formula = formulaService.getFormulaById(id);
             formula.addLink(resourceLinks.self(id));
+            if(formula.getSubject() != null)
+                formula.getSubject().addLink(subjectResourceLinks.self(formula.getSubject().getId()));
+            if(formula.getTeacher() != null)
+                formula.getTeacher().addLink(teacherResourceLinks.self(formula.getTeacher().getId()));
+            return Response.status(Response.Status.OK).entity(formula).build();
+        }catch (GradingFactorException e) {
+            e.printStackTrace();
+            Message message = new Message(404, "Not Found", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
+    }
+
+    @GET
+    @Path("0")
+    public Response getFormula() {
+        try {
+            FormulaResourceLinks resourceLinks = new FormulaResourceLinks(uriInfo);
+            SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
+            TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
+
+            Formula formula = formulaService.getFormulaBySubjectAndTeacherId(subjectId, teacherId, termId);
+            formula.addLink(resourceLinks.self(formula.getId()));
             if(formula.getSubject() != null)
                 formula.getSubject().addLink(subjectResourceLinks.self(formula.getSubject().getId()));
             if(formula.getTeacher() != null)
@@ -85,8 +109,10 @@ public class FormulaResource {
             FormulaResourceLinks resourceLinks = new FormulaResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
             TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
-
-            formula = formulaService.addFormula(formula, subjectId, teacherId);
+            if(termId > 0)
+                formula = formulaService.addFormula(formula, subjectId, teacherId, termId);
+            else
+                formula = formulaService.addFormula(formula, subjectId, teacherId);
             formula.addLink(resourceLinks.self(formula.getId()));
             if(formula.getTeacher() != null)
                 formula.getTeacher().addLink(teacherResourceLinks.self(formula.getTeacher().getId()));
@@ -107,7 +133,7 @@ public class FormulaResource {
             FormulaResourceLinks resourceLinks = new FormulaResourceLinks(uriInfo);
             SubjectResourceLinks subjectResourceLinks = new SubjectResourceLinks(uriInfo);
             TeacherResourceLinks teacherResourceLinks = new TeacherResourceLinks(uriInfo);
-            Formula formula = formulaService.updateFormulaById(id, newFormula, subjectId, teacherId);
+            Formula formula = formulaService.updateFormulaById(id, newFormula, subjectId, teacherId, termId);
 
             formula.addLink(resourceLinks.self(formula.getId()));
             if(formula.getTeacher() != null)
