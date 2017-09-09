@@ -5,7 +5,9 @@ import com.remswork.project.alice.dao.ScheduleDao;
 import com.remswork.project.alice.dao.exception.ClassDaoException;
 import com.remswork.project.alice.dao.exception.ScheduleDaoException;
 import com.remswork.project.alice.exception.ScheduleException;
+import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.Schedule;
+import com.remswork.project.alice.model.Student;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -156,6 +158,21 @@ public class ScheduleDaoImpl implements ScheduleDao {
             Schedule schedule = session.get(Schedule.class, id);
             if(schedule == null)
                 throw new ScheduleDaoException("Schedule with id : " + id + " does not exist");
+
+            Query classQuery = session.createQuery("from Class");
+            for(Object classObj : classQuery.list()){
+                Class _class = (Class) classObj;
+                _class = session.get(Class.class, _class.getId());
+                for(Schedule s : _class.getScheduleList()) {
+                    if(s == null)
+                        continue;
+                    if (s.getId() == id) {
+                        _class.getScheduleList().remove(s);
+                        break;
+                    }
+                }
+            }
+
             session.delete(schedule);
             session.getTransaction().commit();
             session.close();

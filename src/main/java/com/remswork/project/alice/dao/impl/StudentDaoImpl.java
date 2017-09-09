@@ -5,6 +5,7 @@ import com.remswork.project.alice.dao.exception.StudentDaoException;
 import com.remswork.project.alice.exception.SectionException;
 import com.remswork.project.alice.exception.StudentException;
 import com.remswork.project.alice.model.*;
+import com.remswork.project.alice.model.Class;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -175,6 +176,23 @@ public class StudentDaoImpl implements StudentDao {
                 query.setParameter("studentId", id);
                 query.executeUpdate();
             }
+
+            Query classQuery = session.createQuery("from Class");
+            for(Object classObj : classQuery.list()){
+                Class _class = (Class) classObj;
+                _class = session.get(Class.class, _class.getId());
+                for(Student s : _class.getStudentList()) {
+                    if(s == null)
+                        continue;
+                    if (s.getId() == id) {
+                        _class.getStudentList().remove(s);
+                        break;
+                    }
+                }
+            }
+
+            String hql = "";
+
             student.setSection(null);
             session.delete(student);
             session.getTransaction().commit();
