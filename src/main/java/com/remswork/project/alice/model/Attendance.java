@@ -15,14 +15,11 @@ public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    private String title;
     private String date;
-    private int status;
     @ManyToOne
-    @JoinColumn(name = "studentId")
-    private Student student;
-    @ManyToOne
-    @JoinColumn(name = "subjectId")
-    private Subject subject;
+    @JoinColumn(name = "classId")
+    private Class _class;
     @ManyToOne
     @JoinColumn(name = "termId")
     private Term term;
@@ -33,14 +30,14 @@ public class Attendance {
         links = new ArrayList<>();
     }
 
-    public Attendance(String date, int status) {
+    public Attendance(String title, String date) {
         this();
+        this.title = title;
         this.date = date;
-        this.status = status;
     }
 
-    public Attendance(long id, String date, int status) {
-        this(date, status);
+    public Attendance(long id, String title, String date) {
+        this(title, date);
         this.id = id;
     }
 
@@ -52,6 +49,14 @@ public class Attendance {
         this.id = id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDate() {
         return date;
     }
@@ -60,28 +65,12 @@ public class Attendance {
         this.date = date;
     }
 
-    public int getStatus() {
-        return status;
+    public Class get_class() {
+        return _class;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void set_class(Class _class) {
+        this._class = _class;
     }
 
     public Term getTerm() {
@@ -103,12 +92,12 @@ public class Attendance {
     public void addLink(Link link) {
         boolean isExist = false;
         for (Link eachLink : links) {
-            if(eachLink.getRel().equalsIgnoreCase(link.getRel())) {
+            if (eachLink.getRel().equalsIgnoreCase(link.getRel())) {
                 isExist = true;
                 break;
             }
         }
-        if(!isExist)
+        if (!isExist)
             links.add(link);
     }
 }

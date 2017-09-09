@@ -62,7 +62,7 @@ public class QuizResource {
                 quizList = quizService.getQuizListByClassId(classId, termId);
             else if(classId != 0)
                 quizList = quizService.getQuizListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 quizList = quizService.getQuizListByStudentId(studentId, termId);
             else if(studentId != 0)
                 quizList = quizService.getQuizListByStudentId(studentId);

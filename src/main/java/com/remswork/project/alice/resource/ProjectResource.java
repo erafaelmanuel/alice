@@ -62,7 +62,7 @@ public class ProjectResource {
                 projectList = projectService.getProjectListByClassId(classId, termId);
             else if(classId != 0)
                 projectList = projectService.getProjectListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 projectList = projectService.getProjectListByStudentId(studentId, termId);
             else if(studentId != 0)
                 projectList = projectService.getProjectListByStudentId(studentId);

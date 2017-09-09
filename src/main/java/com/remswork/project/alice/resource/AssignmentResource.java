@@ -62,7 +62,7 @@ public class AssignmentResource {
                 assignmentList = assignmentService.getAssignmentListByClassId(classId, termId);
             else if(classId != 0)
                 assignmentList = assignmentService.getAssignmentListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 assignmentList = assignmentService.getAssignmentListByStudentId(studentId, termId);
             else if(studentId != 0)
                 assignmentList = assignmentService.getAssignmentListByStudentId(studentId);

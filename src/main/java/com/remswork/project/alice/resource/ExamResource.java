@@ -62,7 +62,7 @@ public class ExamResource {
                 examList = examService.getExamListByClassId(classId, termId);
             else if(classId != 0)
                 examList = examService.getExamListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 examList = examService.getExamListByStudentId(studentId, termId);
             else if(studentId != 0)
                 examList = examService.getExamListByStudentId(studentId);

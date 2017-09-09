@@ -62,7 +62,7 @@ public class RecitationResource {
                 recitationList = recitationService.getRecitationListByClassId(classId, termId);
             else if(classId != 0)
                 recitationList = recitationService.getRecitationListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 recitationList = recitationService.getRecitationListByStudentId(studentId, termId);
             else if(studentId != 0)
                 recitationList = recitationService.getRecitationListByStudentId(studentId);

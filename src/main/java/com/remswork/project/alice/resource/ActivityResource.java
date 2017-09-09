@@ -62,7 +62,7 @@ public class ActivityResource {
                 activityList = activityService.getActivityListByClassId(classId, termId);
             else if(classId != 0)
                 activityList = activityService.getActivityListByClassId(classId);
-            if(studentId != 0 && termId != 0)
+            else if(studentId != 0 && termId != 0)
                 activityList = activityService.getActivityListByStudentId(studentId, termId);
             else if(studentId != 0)
                 activityList = activityService.getActivityListByStudentId(studentId);
