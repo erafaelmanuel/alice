@@ -166,6 +166,7 @@ public class StudentDaoImpl implements StudentDao {
             table[3] = ProjectResult.class.getSimpleName();
             table[4] = QuizResult.class.getSimpleName();
             table[5] = RecitationResult.class.getSimpleName();
+            table[6] = Grade.class.getSimpleName();
 
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");

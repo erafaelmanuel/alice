@@ -27,6 +27,8 @@ public class JerseyConfig extends ResourceConfig {
 		register(RecitationResource.class);
 		register(TermResource.class);
 		register(FormulaResource.class);
+		register(UserDetailResource.class);
+		register(GradeResource.class);
 	}
 
 }

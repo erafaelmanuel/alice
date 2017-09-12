@@ -2,10 +2,9 @@ package com.remswork.project.alice.dao.impl;
 
 import com.remswork.project.alice.dao.ClassDao;
 import com.remswork.project.alice.dao.exception.ClassDaoException;
-import com.remswork.project.alice.dao.exception.SubjectDaoException;
 import com.remswork.project.alice.exception.*;
-import com.remswork.project.alice.model.Class;
 import com.remswork.project.alice.model.*;
+import com.remswork.project.alice.model.Class;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -336,8 +335,6 @@ public class ClassDaoImpl implements ClassDao {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
-            String[] table = new String[1];
-            table[0] = Activity.class.getSimpleName();
 
             Class _class = session.get(Class.class, id);
             if (_class == null)
@@ -349,12 +346,73 @@ public class ClassDaoImpl implements ClassDao {
             _class.setSection(null);
             _class.setStudentList(null);
 
-            for(String cell : table) {
-                String hql = "delete from ".concat(cell).concat(" where _class.id = :classId");
+            for(Object object : session.createQuery("from Activity where _class.id = '" + id + "'").list()) {
+                Activity activity = (Activity) object;
+                String hql = "delete from ActivityResult where activity.id = :activityId";
                 Query query = session.createQuery(hql);
-                query.setParameter("classId", id);
+                query.setParameter("activityId", activity.getId());
                 query.executeUpdate();
+                session.delete(activity);
             }
+
+            for(Object object : session.createQuery("from Assignment where _class.id = '" + id + "'").list()) {
+                Assignment assignment = (Assignment) object;
+                String hql = "delete from AssignmentResult where assignment.id = :assignmentId";
+                Query query = session.createQuery(hql);
+                query.setParameter("assignmentId", assignment.getId());
+                query.executeUpdate();
+                session.delete(assignment);
+            }
+
+            for(Object object : session.createQuery("from Attendance where _class.id = '" + id + "'").list()) {
+                Attendance attendance = (Attendance) object;
+                String hql = "delete from AttendanceResult where attendance.id = :attendanceId";
+                Query query = session.createQuery(hql);
+                query.setParameter("attendanceId", attendance.getId());
+                query.executeUpdate();
+                session.delete(attendance);
+            }
+
+            for(Object object : session.createQuery("from Exam where _class.id = '" + id + "'").list()) {
+                Exam exam = (Exam) object;
+                String hql = "delete from ExamResult where exam.id = :examId";
+                Query query = session.createQuery(hql);
+                query.setParameter("examId", exam.getId());
+                query.executeUpdate();
+                session.delete(exam);
+            }
+
+            for(Object object : session.createQuery("from Project where _class.id = '" + id + "'").list()) {
+                Project project = (Project) object;
+                String hql = "delete from ProjectResult where project.id = :projectId";
+                Query query = session.createQuery(hql);
+                query.setParameter("projectId", project.getId());
+                query.executeUpdate();
+                session.delete(project);
+            }
+
+            for(Object object : session.createQuery("from Quiz where _class.id = '" + id + "'").list()) {
+                Quiz quiz = (Quiz) object;
+                String hql = "delete from QuizResult where quiz.id = :quizId";
+                Query query = session.createQuery(hql);
+                query.setParameter("quizId", quiz.getId());
+                query.executeUpdate();
+                session.delete(quiz);
+            }
+
+            for(Object object : session.createQuery("from Recitation where _class.id = '" + id + "'").list()) {
+                Recitation recitation = (Recitation) object;
+                String hql = "delete from RecitationResult where recitation.id = :recitationId";
+                Query query = session.createQuery(hql);
+                query.setParameter("recitationId", recitation.getId());
+                query.executeUpdate();
+                session.delete(recitation);
+            }
+
+            String hql = "delete from Grade as G where G.class.id = :classId";
+            Query query = session.createQuery(hql);
+            query.setParameter("classId", id);
+            query.executeUpdate();
 
             session.delete(_class);
             session.getTransaction().commit();

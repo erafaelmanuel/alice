@@ -117,12 +117,14 @@ public class TermDaoImpl implements TermDao {
             table[4] = Project.class.getSimpleName();
             table[5] = Quiz.class.getSimpleName();
             table[6] = Recitation.class.getSimpleName();
+            table[7] = Grade.class.getSimpleName();
+
             if(term == null)
                 throw new GradingFactorDaoException("Term with id : " + id + " does not exist");
             for(String cell : table) {
-                String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
+                String hql = "delete from ".concat(cell).concat(" where term.id = :termId");
                 Query query = session.createQuery(hql);
-                query.setParameter("subjectId", id);
+                query.setParameter("termId", id);
                 query.executeUpdate();
             }
             session.delete(term);

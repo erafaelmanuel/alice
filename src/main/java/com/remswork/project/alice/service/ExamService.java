@@ -1,8 +1,10 @@
 package com.remswork.project.alice.service;
 
 import com.remswork.project.alice.exception.GradingFactorException;
+import com.remswork.project.alice.exception.UserDetailException;
 import com.remswork.project.alice.model.Exam;
 import com.remswork.project.alice.model.ExamResult;
+import com.remswork.project.alice.model.UserDetail;
 
 import java.util.List;
 
@@ -44,4 +46,13 @@ public interface ExamService {
 
     ExamResult deleteExamResultByExamAndStudentId(long examId, long studentId)
             throws GradingFactorException;
+
+    interface UserDetailService {
+
+        UserDetail getUserDetailById(long id) throws UserDetailException;
+        List<UserDetail> getUserDetailList() throws UserDetailException;
+        UserDetail addUserDetail(UserDetail userDetail) throws UserDetailException;
+        UserDetail updateUserDetailById(long id, UserDetail newUserDetail) throws UserDetailException;
+        UserDetail deleteUserDetailById(long id) throws UserDetailException;
+    }
 }

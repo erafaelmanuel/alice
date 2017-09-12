@@ -419,7 +419,7 @@ public class ActivityDaoImpl implements ActivityDao{
             if (studentId < 1)
                 throw new GradingFactorDaoException("Query param : studentId is required");
             if(query.list().size() < 1)
-                throw new GradingFactorDaoException("No result to delete");
+                throw new GradingFactorDaoException("No result to update");
             ActivityResult result = (ActivityResult) query.list().get(0);
 
             result.setScore(score);

@@ -131,6 +131,8 @@ public class ScheduleDaoImpl implements ScheduleDao {
                 throw new ScheduleDaoException("You tried to update student with a null value");
             if(!(newSchedule.getDay() != null?newSchedule.getDay():"").trim().isEmpty())
                 schedule.setDay(newSchedule.getDay());
+            if(!(newSchedule.getRoom() != null?newSchedule.getRoom():"").trim().isEmpty())
+                schedule.setRoom(newSchedule.getRoom());
             if(!(newSchedule.getTime() != null?newSchedule.getTime():"").trim().isEmpty()) {
                 if(!timeHelperBean.isValid(newSchedule.getTime().trim()))
                     throw new ScheduleDaoException("Schedule's time is invalid");
