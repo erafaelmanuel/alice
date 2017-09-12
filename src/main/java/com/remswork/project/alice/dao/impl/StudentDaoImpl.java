@@ -159,14 +159,15 @@ public class StudentDaoImpl implements StudentDao {
         session.beginTransaction();
         try {
             Student student = session.get(Student.class, id);
-            String[] table = new String[6];
+            String[] table = new String[8];
             table[0] = ActivityResult.class.getSimpleName();
             table[1] = AssignmentResult.class.getSimpleName();
-            table[2] = ExamResult.class.getSimpleName();
-            table[3] = ProjectResult.class.getSimpleName();
-            table[4] = QuizResult.class.getSimpleName();
-            table[5] = RecitationResult.class.getSimpleName();
-            table[6] = Grade.class.getSimpleName();
+            table[2] = AttendanceResult.class.getSimpleName();
+            table[3] = ExamResult.class.getSimpleName();
+            table[4] = ProjectResult.class.getSimpleName();
+            table[5] = QuizResult.class.getSimpleName();
+            table[6] = RecitationResult.class.getSimpleName();
+            table[7] = Grade.class.getSimpleName();
 
             if (student == null)
                 throw new StudentDaoException("Student with id : " + id + " does not exist.");

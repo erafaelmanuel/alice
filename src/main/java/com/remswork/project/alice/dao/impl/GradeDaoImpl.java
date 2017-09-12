@@ -108,7 +108,7 @@ public class GradeDaoImpl implements GradeDao {
         session.beginTransaction();
         try {
             List<Grade> gradeList = new ArrayList<>();
-            String hql = "from Grade as G where G.class.id = :classId and G.student.id = :studentId";
+            String hql = "from Grade as G where G._class.id = :classId and G.student.id = :studentId";
             Query query = session.createQuery(hql);
             query.setParameter("classId", classId);
             query.setParameter("studentId", studentId);
@@ -130,7 +130,7 @@ public class GradeDaoImpl implements GradeDao {
         session.beginTransaction();
         try {
             List<Grade> gradeList = new ArrayList<>();
-            String hql = "from Grade as G where G.class.id = :classId and G.student.id = :studentId " +
+            String hql = "from Grade as G where G._class.id = :classId and G.student.id = :studentId " +
                     "and G.term.id = :termId";
             Query query = session.createQuery(hql);
             query.setParameter("classId", classId);
@@ -174,6 +174,10 @@ public class GradeDaoImpl implements GradeDao {
             if(term == null)
                 throw new GradingFactorDaoException("Term with id : " + termId + " doesn't exist.");
 
+            grade.set_class(_class);
+            grade.setStudent(student);
+            grade.setTerm(term);
+
             session.persist(grade);
             session.getTransaction().commit();
             session.close();
@@ -206,7 +210,7 @@ public class GradeDaoImpl implements GradeDao {
     }
 
     @Override
-    public Grade updateGradeByStudentId(long id, Grade newGrade, long classId, long studentId)
+    public Grade updateGrade(long id, Grade newGrade, long classId, long studentId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -219,13 +223,26 @@ public class GradeDaoImpl implements GradeDao {
                 newGrade = new Grade();
             if(grade == null)
                 throw new GradingFactorDaoException("Grade with id : " + id + " doesn't exist.");
-            if(_class == null)
+            if(_class == null && classId != 0)
                 throw new GradingFactorDaoException("Class with id : " + classId + " doesn't exist.");
-            if(student == null)
+            if(student == null && studentId != 0)
                 throw new GradingFactorDaoException("Student with id : " + studentId + " doesn't exist.");
+            if(classId < 0)
+                throw new GradingFactorDaoException("The class id is invalid");
+            if(studentId < 0)
+                throw new GradingFactorDaoException("The student id is invalid");
             if(newGrade.getScore() > 0)
                 grade.setScore(newGrade.getScore());
-
+            if(classId > 0) {
+                if((grade.get_class() != null ? grade.get_class().getId() : 0) == classId)
+                    throw new GradingFactorDaoException("The class id is already exist");
+                grade.set_class(_class);
+            }
+            if(studentId > 0) {
+                if((grade.getStudent() != null ? grade.getStudent().getId() : 0) == studentId)
+                    throw new GradingFactorDaoException("The student id is already exist");
+                grade.setStudent(student);
+            }
             grade.set_class(_class);
             grade.setStudent(student);
             session.getTransaction().commit();
@@ -238,7 +255,7 @@ public class GradeDaoImpl implements GradeDao {
     }
 
     @Override
-    public Grade updateGradeByClass(long id, Grade newGrade, long classId, long studentId, long termId)
+    public Grade updateGrade(long id, Grade newGrade, long classId, long studentId, long termId)
             throws GradingFactorException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -252,18 +269,36 @@ public class GradeDaoImpl implements GradeDao {
                 newGrade = new Grade();
             if(grade == null)
                 throw new GradingFactorDaoException("Grade with id : " + id + " doesn't exist.");
-            if(_class == null)
+            if(_class == null && classId != 0)
                 throw new GradingFactorDaoException("Class with id : " + classId + " doesn't exist.");
-            if(student == null)
+            if(student == null && studentId != 0)
                 throw new GradingFactorDaoException("Student with id : " + studentId + " doesn't exist.");
-            if(term == null)
+            if(term == null && termId != 0)
                 throw new GradingFactorDaoException("Term with id : " + termId + " doesn't exist.");
+            if(classId < 0)
+                throw new GradingFactorDaoException("The class id is invalid");
+            if(studentId < 0)
+                throw new GradingFactorDaoException("The student id is invalid");
+            if(termId < 0)
+                throw new GradingFactorDaoException("The term id is invalid");
             if(newGrade.getScore() > 0)
                 grade.setScore(newGrade.getScore());
+            if(classId > 0) {
+                if((grade.get_class() != null ? grade.get_class().getId() : 0) == classId)
+                    throw new GradingFactorDaoException("The class id is already exist");
+                grade.set_class(_class);
+            }
+            if(studentId > 0) {
+                if((grade.getStudent() != null ? grade.getStudent().getId() : 0) == studentId)
+                    throw new GradingFactorDaoException("The student id is already exist");
+                grade.setStudent(student);
+            }
+            if(termId > 0) {
+                if((grade.getTerm() != null ? grade.getTerm().getId() : 0) == termId)
+                    throw new GradingFactorDaoException("The term id is already exist");
+                grade.setTerm(term);
+            }
 
-            grade.set_class(_class);
-            grade.setStudent(student);
-            grade.setTerm(term);
             session.getTransaction().commit();
             session.close();
             return grade;

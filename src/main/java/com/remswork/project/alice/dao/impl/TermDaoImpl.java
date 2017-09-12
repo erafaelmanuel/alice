@@ -109,7 +109,7 @@ public class TermDaoImpl implements TermDao {
         session.beginTransaction();
         try {
             Term term = session.get(Term.class, id);
-            String[] table = new String[7];
+            String[] table = new String[8];
             table[0] = Activity.class.getSimpleName();
             table[1] = Assignment.class.getSimpleName();
             table[2] = Attendance.class.getSimpleName();

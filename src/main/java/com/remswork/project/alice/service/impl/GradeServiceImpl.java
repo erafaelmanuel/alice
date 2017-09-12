@@ -56,14 +56,14 @@ public class GradeServiceImpl implements GradeService{
     }
 
     @Override
-    public Grade updateGradeByStudentId(long id, Grade newGrade, long classId, long studentId) throws GradingFactorException {
-        return gradeDao.updateGradeByStudentId(id, newGrade, classId, studentId);
+    public Grade updateGrade(long id, Grade newGrade, long classId, long studentId) throws GradingFactorException {
+        return gradeDao.updateGrade(id, newGrade, classId, studentId);
     }
 
     @Override
-    public Grade updateGradeByClass(long id, Grade newGrade, long classId, long studentId, long termId)
+    public Grade updateGrade(long id, Grade newGrade, long classId, long studentId, long termId)
             throws GradingFactorException {
-        return gradeDao.updateGradeByClass(id, newGrade, classId, studentId, termId);
+        return gradeDao.updateGrade(id, newGrade, classId, studentId, termId);
     }
 
     @Override

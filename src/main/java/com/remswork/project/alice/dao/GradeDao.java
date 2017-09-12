@@ -23,9 +23,9 @@ public interface GradeDao {
 
     Grade updateGradeById(long id, Grade newGrade) throws GradingFactorException;
 
-    Grade updateGradeByStudentId(long id, Grade newGrade, long classId, long studentId) throws GradingFactorException;
+    Grade updateGrade(long id, Grade newGrade, long classId, long studentId) throws GradingFactorException;
 
-    Grade updateGradeByClass(long id, Grade newGrade, long classId, long studentId, long termId)
+    Grade updateGrade(long id, Grade newGrade, long classId, long studentId, long termId)
             throws GradingFactorException;
 
     Grade deleteGradeById(long id) throws GradingFactorException;

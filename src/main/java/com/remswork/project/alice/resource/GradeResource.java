@@ -83,9 +83,11 @@ public class GradeResource {
         try {
             Grade grade;
             if (classId != 0)
-                grade = gradeService.updateGradeByClass(gradeId, newGrade, classId, studentId, termId);
+                grade = gradeService.updateGrade(gradeId, newGrade, classId, studentId, termId);
             else if (studentId != 0)
-                grade = gradeService.updateGradeByStudentId(gradeId, newGrade, studentId, termId);
+                grade = gradeService.updateGrade(gradeId, newGrade, studentId, termId);
+            else if (termId != 0)
+                grade = gradeService.updateGrade(gradeId, newGrade, 0,0, termId);
             else
                 grade = gradeService.updateGradeById(gradeId, newGrade);
             return Response.status(Response.Status.OK).entity(grade).build();

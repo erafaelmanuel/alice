@@ -409,7 +409,7 @@ public class ClassDaoImpl implements ClassDao {
                 session.delete(recitation);
             }
 
-            String hql = "delete from Grade as G where G.class.id = :classId";
+            String hql = "delete from Grade as G where G._class.id = :classId";
             Query query = session.createQuery(hql);
             query.setParameter("classId", id);
             query.executeUpdate();
