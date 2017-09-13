@@ -158,9 +158,21 @@ public class GradeDaoImpl implements GradeDao {
             Term term = session.get(Term.class, termId);
 
             if(grade == null)
-                throw new GradingFactorDaoException("You tried to add department with a null value");
-            if(grade.getScore() == 0)
-                throw new GradingFactorDaoException("Grade's score is not valid");
+                throw new GradingFactorDaoException("You tried to add grade with a null value");
+            if(grade.getTotalScore() < 0)
+                throw new GradingFactorDaoException("Grade's total score is not valid");
+            if(grade.getActivityScore() < 0)
+                throw new GradingFactorDaoException("Grade's activity score is not valid");
+            if(grade.getAssignmentScore() < 0)
+                throw new GradingFactorDaoException("Grade's assignment score is not valid");
+            if(grade.getAttendanceScore() < 0)
+                throw new GradingFactorDaoException("Grade's attendance score is not valid");
+            if(grade.getExamScore() < 0)
+                throw new GradingFactorDaoException("Grade's exam score is not valid");
+            if(grade.getProjectScore() < 0)
+                throw new GradingFactorDaoException("Grade's project score is not valid");
+            if(grade.getQuizScore() < 0)
+                throw new GradingFactorDaoException("Grade's quiz score is not valid");
             if(classId < 1)
                 throw new GradingFactorDaoException("Query param : classId is required.");
             if(studentId < 1)
@@ -198,8 +210,20 @@ public class GradeDaoImpl implements GradeDao {
                 newGrade = new Grade();
             if(grade == null)
                 throw new GradingFactorDaoException("Grade with id : " + id + " doesn't exist.");
-            if(newGrade.getScore() > 0)
-                grade.setScore(newGrade.getScore());
+            if(newGrade.getTotalScore() >= 0 && grade.getTotalScore() > 0)
+                grade.setTotalScore(newGrade.getTotalScore());
+            if(newGrade.getActivityScore() > 0 && grade.getActivityScore() > 0)
+                grade.setActivityScore(newGrade.getActivityScore());
+            if(newGrade.getAssignmentScore() > 0 && grade.getAssignmentScore() > 0)
+                grade.setAssignmentScore(newGrade.getAssignmentScore());
+            if(newGrade.getAttendanceScore() > 0 && grade.getAttendanceScore() > 0)
+                grade.setAttendanceScore(newGrade.getAttendanceScore());
+            if(newGrade.getExamScore() > 0 && grade.getExamScore() > 0)
+                grade.setExamScore(newGrade.getExamScore());
+            if(newGrade.getProjectScore() > 0 && grade.getProjectScore() > 0)
+                grade.setProjectScore(newGrade.getProjectScore());
+            if(newGrade.getQuizScore() > 0 && grade.getQuizScore() > 0)
+                grade.setQuizScore(newGrade.getQuizScore());
             session.getTransaction().commit();
             session.close();
             return grade;
@@ -231,8 +255,20 @@ public class GradeDaoImpl implements GradeDao {
                 throw new GradingFactorDaoException("The class id is invalid");
             if(studentId < 0)
                 throw new GradingFactorDaoException("The student id is invalid");
-            if(newGrade.getScore() > 0)
-                grade.setScore(newGrade.getScore());
+            if(newGrade.getTotalScore() >= 0 && grade.getTotalScore() > 0)
+                grade.setTotalScore(newGrade.getTotalScore());
+            if(newGrade.getActivityScore() > 0 && grade.getActivityScore() > 0)
+                grade.setActivityScore(newGrade.getActivityScore());
+            if(newGrade.getAssignmentScore() > 0 && grade.getAssignmentScore() > 0)
+                grade.setAssignmentScore(newGrade.getAssignmentScore());
+            if(newGrade.getAttendanceScore() > 0 && grade.getAttendanceScore() > 0)
+                grade.setAttendanceScore(newGrade.getAttendanceScore());
+            if(newGrade.getExamScore() > 0 && grade.getExamScore() > 0)
+                grade.setExamScore(newGrade.getExamScore());
+            if(newGrade.getProjectScore() > 0 && grade.getProjectScore() > 0)
+                grade.setProjectScore(newGrade.getProjectScore());
+            if(newGrade.getQuizScore() > 0 && grade.getQuizScore() > 0)
+                grade.setQuizScore(newGrade.getQuizScore());
             if(classId > 0) {
                 if((grade.get_class() != null ? grade.get_class().getId() : 0) == classId)
                     throw new GradingFactorDaoException("The class id is already exist");
@@ -281,8 +317,20 @@ public class GradeDaoImpl implements GradeDao {
                 throw new GradingFactorDaoException("The student id is invalid");
             if(termId < 0)
                 throw new GradingFactorDaoException("The term id is invalid");
-            if(newGrade.getScore() > 0)
-                grade.setScore(newGrade.getScore());
+            if(newGrade.getTotalScore() >= 0 && grade.getTotalScore() > 0)
+                grade.setTotalScore(newGrade.getTotalScore());
+            if(newGrade.getActivityScore() > 0 && grade.getActivityScore() > 0)
+                grade.setActivityScore(newGrade.getActivityScore());
+            if(newGrade.getAssignmentScore() > 0 && grade.getAssignmentScore() > 0)
+                grade.setAssignmentScore(newGrade.getAssignmentScore());
+            if(newGrade.getAttendanceScore() > 0 && grade.getAttendanceScore() > 0)
+                grade.setAttendanceScore(newGrade.getAttendanceScore());
+            if(newGrade.getExamScore() > 0 && grade.getExamScore() > 0)
+                grade.setExamScore(newGrade.getExamScore());
+            if(newGrade.getProjectScore() > 0 && grade.getProjectScore() > 0)
+                grade.setProjectScore(newGrade.getProjectScore());
+            if(newGrade.getQuizScore() > 0 && grade.getQuizScore() > 0)
+                grade.setQuizScore(newGrade.getQuizScore());
             if(classId > 0) {
                 if((grade.get_class() != null ? grade.get_class().getId() : 0) == classId)
                     throw new GradingFactorDaoException("The class id is already exist");

@@ -15,7 +15,13 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private double score;
+    private double totalScore;
+    private double activityScore;
+    private double assignmentScore;
+    private double attendanceScore;
+    private double examScore;
+    private double projectScore;
+    private double quizScore;
     @OneToOne
     @JoinColumn(name = "termId")
     private Term term;
@@ -32,15 +38,29 @@ public class Grade {
         links = new ArrayList<>();
     }
 
-
-    public Grade(double score) {
+    public Grade(double totalScore, double activityScore, double assignmentScore, double attendanceScore,
+                 double examScore, double projectScore, double quizScore) {
         this();
-        this.score = score;
+        this.totalScore = totalScore;
+        this.activityScore = activityScore;
+        this.assignmentScore = assignmentScore;
+        this.attendanceScore = attendanceScore;
+        this.examScore = examScore;
+        this.projectScore = projectScore;
+        this.quizScore = quizScore;
     }
-    public Grade(long id, double score) {
+
+    public Grade(long id, double totalScore, double activityScore, double assignmentScore, double attendanceScore,
+                 double examScore, double projectScore, double quizScore) {
         this();
         this.id = id;
-        this.score = score;
+        this.totalScore = totalScore;
+        this.activityScore = activityScore;
+        this.assignmentScore = assignmentScore;
+        this.attendanceScore = attendanceScore;
+        this.examScore = examScore;
+        this.projectScore = projectScore;
+        this.quizScore = quizScore;
     }
 
     public long getId() {
@@ -51,12 +71,60 @@ public class Grade {
         this.id = id;
     }
 
-    public double getScore() {
-        return score;
+    public double getTotalScore() {
+        return totalScore;
     }
 
-    public void setScore(double score) {
-        this.score = score;
+    public void setTotalScore(double totalScore) {
+        this.totalScore = totalScore;
+    }
+
+    public double getActivityScore() {
+        return activityScore;
+    }
+
+    public void setActivityScore(double activityScore) {
+        this.activityScore = activityScore;
+    }
+
+    public double getAssignmentScore() {
+        return assignmentScore;
+    }
+
+    public void setAssignmentScore(double assignmentScore) {
+        this.assignmentScore = assignmentScore;
+    }
+
+    public double getAttendanceScore() {
+        return attendanceScore;
+    }
+
+    public void setAttendanceScore(double attendanceScore) {
+        this.attendanceScore = attendanceScore;
+    }
+
+    public double getExamScore() {
+        return examScore;
+    }
+
+    public void setExamScore(double examScore) {
+        this.examScore = examScore;
+    }
+
+    public double getProjectScore() {
+        return projectScore;
+    }
+
+    public void setProjectScore(double projectScore) {
+        this.projectScore = projectScore;
+    }
+
+    public double getQuizScore() {
+        return quizScore;
+    }
+
+    public void setQuizScore(double quizScore) {
+        this.quizScore = quizScore;
     }
 
     public Term getTerm() {
