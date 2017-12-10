@@ -30,18 +30,18 @@ public class ClassController {
         return classRepository.findAll();
     }
 
-    @PostMapping("class")
+    @PostMapping("class/add")
     public Class add(Class _class) {
         return classRepository.save(_class);
     }
 
-    @PutMapping("class/{classId}")
+    @PutMapping("class/update/{classId}")
     public Class updateById(@PathVariable("classId") Long classId, Class new_class) {
         Class _class = classRepository.findOne(classId);
         return classRepository.save(_class);
     }
 
-    @DeleteMapping("class/{classId}")
+    @DeleteMapping("class/delete/{classId}")
     public Class deleteById(@PathVariable("classId") Long classId) {
         Class _class = classRepository.findOne(classId);
         _class.getStudents().clear();
