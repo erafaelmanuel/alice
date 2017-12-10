@@ -1,6 +1,6 @@
 package io.ermdev.alice.controller;
 
-import io.ermdev.alice.model.Class;
+import io.ermdev.alice.entity.Class;
 import io.ermdev.alice.repository.ClassRepository;
 import io.ermdev.alice.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;

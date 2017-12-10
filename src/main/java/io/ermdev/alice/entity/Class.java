@@ -1,4 +1,4 @@
-package io.ermdev.alice.model;
+package io.ermdev.alice.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class Class {
 
     @ManyToMany
     @JoinTable(name = "tblclass_student", joinColumns = @JoinColumn(name = "classId"),
-    inverseJoinColumns = @JoinColumn(name = "studentId"))
+            inverseJoinColumns = @JoinColumn(name = "studentId"))
     private List<Student> students = new ArrayList<>();
 
     public Class(){}

@@ -1,4 +1,4 @@
-package io.ermdev.alice.model;
+package io.ermdev.alice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
