@@ -19,7 +19,7 @@ public class Student {
 
     private String lastName;
 
-    @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Class> classes = new ArrayList<>();
 
     public Student(){}

@@ -44,7 +44,7 @@ public class ClassController {
     @DeleteMapping("class/delete/{classId}")
     public Class deleteById(@PathVariable("classId") Long classId) {
         Class _class = classRepository.findOne(classId);
-        _class.getStudents().clear();
+        _class.setStudent(null);
 
         classRepository.save(_class);
         classRepository.delete(classId);

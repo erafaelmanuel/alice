@@ -1,6 +1,9 @@
 package io.ermdev.alice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,8 @@ public class Role {
         this.name = name;
     }
 
+    @JsonIgnore
+    @XmlTransient
     public List<User> getUsers() {
         return users;
     }

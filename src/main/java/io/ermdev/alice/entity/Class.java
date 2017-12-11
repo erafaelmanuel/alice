@@ -1,8 +1,6 @@
 package io.ermdev.alice.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name="tblclass")
 @Entity
@@ -12,10 +10,9 @@ public class Class {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "tblclass_student", joinColumns = @JoinColumn(name = "classId"),
-            inverseJoinColumns = @JoinColumn(name = "studentId"))
-    private List<Student> students = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "studentId")
+    private Student student;
 
     public Class(){}
 
@@ -27,11 +24,11 @@ public class Class {
         this.id = id;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

@@ -1,6 +1,9 @@
 package io.ermdev.alice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class User {
     private String username;
     private String password;
     @ManyToMany
-    @JoinTable(name = "tblstudent_role", joinColumns = @JoinColumn(name = "userId"),
+    @JoinTable(name = "tbluser_role", joinColumns = @JoinColumn(name = "userId"),
     inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles = new ArrayList<>();
 
