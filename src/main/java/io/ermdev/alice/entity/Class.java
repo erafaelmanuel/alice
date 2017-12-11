@@ -35,4 +35,12 @@ public class Class {
     public void setStudent(Student student) {
         this.student = student;
     }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
 }

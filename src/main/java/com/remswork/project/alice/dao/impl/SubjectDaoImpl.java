@@ -27,7 +27,7 @@ public class SubjectDaoImpl implements SubjectDao {
         try {
             Subject subject = session.get(Subject.class, id);
             if(subject == null)
-                throw new SubjectDaoException("Subject with id : " + id + " does not exist");
+                throw new SubjectDaoException("SubjectDto with id : " + id + " does not exist");
             session.getTransaction().commit();
             session.close();
             return subject;
@@ -88,7 +88,7 @@ public class SubjectDaoImpl implements SubjectDao {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
-            Query query = session.createQuery("from Subject");
+            Query query = session.createQuery("from SubjectDto");
             for(Object subjectObj : query.list())
                 subjectList.add((Subject) subjectObj);
             session.getTransaction().commit();
@@ -154,21 +154,21 @@ public class SubjectDaoImpl implements SubjectDao {
             if (subject == null)
                 throw new SubjectDaoException("You tried to add subject with a null value");
             if (subject.getName() == null)
-                throw new SubjectDaoException("Subject's name is required");
+                throw new SubjectDaoException("SubjectDto's name is required");
             if (subject.getName().trim().equals(""))
-                throw new SubjectDaoException("Subject can't have an empty name");
+                throw new SubjectDaoException("SubjectDto can't have an empty name");
             if (subject.getDescription() == null)
-                throw new SubjectDaoException("Subject's description is required");
+                throw new SubjectDaoException("SubjectDto's description is required");
             if (subject.getDescription().trim().equals(""))
-                throw new SubjectDaoException("Subject can't have an empty description");
+                throw new SubjectDaoException("SubjectDto can't have an empty description");
             if (subject.getCode() == null)
-                throw new SubjectDaoException("Subject's code is required");
+                throw new SubjectDaoException("SubjectDto's code is required");
             if (subject.getCode().trim().equals(""))
-                throw new SubjectDaoException("Subject can't have an empty code");
+                throw new SubjectDaoException("SubjectDto can't have an empty code");
             if (subject.getUnit() == 0)
-                throw new SubjectDaoException("Subject's unit is required");
+                throw new SubjectDaoException("SubjectDto's unit is required");
             if (subject.getUnit() < 0)
-                throw new SubjectDaoException("Subject's unit is invalid");
+                throw new SubjectDaoException("SubjectDto's unit is invalid");
 
             session.persist(subject);
             session.getTransaction().commit();
@@ -189,7 +189,7 @@ public class SubjectDaoImpl implements SubjectDao {
             if(newSubject == null)
                 throw new SubjectDaoException("You tried to update subject with a null value");
             if(subject == null)
-                throw new SubjectDaoException("Subject with id : " + id + " does not exist");
+                throw new SubjectDaoException("SubjectDto with id : " + id + " does not exist");
             if (!(newSubject.getName() != null ? newSubject.getName() : "").trim().isEmpty())
                 subject.setName(newSubject.getName());
             if (!(newSubject.getDescription() != null ? newSubject.getDescription() : "").trim().isEmpty())
@@ -198,7 +198,7 @@ public class SubjectDaoImpl implements SubjectDao {
                 subject.setCode(newSubject.getCode());
             if (newSubject.getUnit() != 0) {
                 if(newSubject.getUnit() < 0)
-                    throw new SubjectDaoException("Subject's unit is invalid");
+                    throw new SubjectDaoException("SubjectDto's unit is invalid");
                 subject.setUnit(newSubject.getUnit());
             }
             session.getTransaction().commit();
@@ -221,7 +221,7 @@ public class SubjectDaoImpl implements SubjectDao {
 
            Subject subject = session.get(Subject.class, id);
            if(subject == null)
-               throw new SubjectDaoException("Subject with id : " + id + " does not exist");
+               throw new SubjectDaoException("SubjectDto with id : " + id + " does not exist");
 
            for(String cell : table) {
                String hql = "delete from ".concat(cell).concat(" as a where a.subject.id = :subjectId");
