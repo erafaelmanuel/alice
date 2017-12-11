@@ -1,5 +1,7 @@
 package io.ermdev.alice.dto;
 
+import io.ermdev.alice.entity.Term;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ public class SubjectDto {
     private String name;
     private String description;
     private Integer unit;
+    private List<TermDto> terms = new ArrayList<>();
     private List<ClassDto> classes = new ArrayList<>();
 
     public SubjectDto() {}
@@ -20,6 +23,14 @@ public class SubjectDto {
         this.name = name;
         this.description = description;
         this.unit = unit;
+    }
+
+    public SubjectDto(Long id, String name, String description, Integer unit, List<TermDto> terms) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.unit = unit;
+        this.terms = terms;
     }
 
     public Long getId() {
@@ -52,6 +63,14 @@ public class SubjectDto {
 
     public void setUnit(Integer unit) {
         this.unit = unit;
+    }
+
+    public List<TermDto> getTerms() {
+        return terms;
+    }
+
+    public void setTerms(List<TermDto> terms) {
+        this.terms = terms;
     }
 
     public List<ClassDto> getClasses() {

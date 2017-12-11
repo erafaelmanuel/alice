@@ -11,6 +11,11 @@ public class ClassDto {
 
     public ClassDto() {}
 
+    public ClassDto(Long id, StudentDto student) {
+        this.id = id;
+        this.student = student;
+    }
+
     public ClassDto(Long id, StudentDto student, SubjectDto subject) {
         this.id = id;
         this.student = student;
