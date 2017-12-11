@@ -15,7 +15,7 @@ public class Term {
     private Integer year;
     @ManyToOne
     private Curriculum curriculum;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tblterm_subject", joinColumns = @JoinColumn(name = "termId"),
             inverseJoinColumns = @JoinColumn(name="subjectId"))
     private List<Subject> subjects = new ArrayList<>();

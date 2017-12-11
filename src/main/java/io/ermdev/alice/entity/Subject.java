@@ -15,13 +15,17 @@ public class Subject {
     private String description;
     private Integer unit;
 
-    @ManyToMany(mappedBy = "subjects", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "subjects")
     private List<Term> terms = new ArrayList<>();
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<Class> classes = new ArrayList<>();
 
     public Subject() {}
+
+    public Subject(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;

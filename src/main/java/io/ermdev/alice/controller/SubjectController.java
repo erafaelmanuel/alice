@@ -31,8 +31,8 @@ public class SubjectController {
 
     @GetMapping("subject/{subjectId}")
     public SubjectDto getSubjectById(@PathVariable("subjectId") Long subjectId) {
-        List<TermDto> terms = new ArrayList<>();
         Subject subject = subjectRepository.findById(subjectId);
+        List<TermDto> terms = new ArrayList<>();
         subject.getTerms().parallelStream().forEach(term -> {
             CurriculumDto curriculum = new CurriculumDto();
             terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
@@ -58,28 +58,115 @@ public class SubjectController {
     public SubjectDto add(@RequestParam(value = "termIds", required = false) List<Long> termIds,
                           @RequestParam(value = "classIds", required = false) List<Long> classIds,
                           @RequestBody Subject subject) {
-        List<TermDto> terms = new ArrayList<>();
-        List<ClassDto> classes = new ArrayList<>();
+        List<Term> terms = new ArrayList<>();
+        List<TermDto> termDtos = new ArrayList<>();
+        List<Class> classes = new ArrayList<>();
+        List<ClassDto> classDtos = new ArrayList<>();
 
+        subject.getTerms().clear();
+        subject.getClasses().clear();
+        subject=subjectRepository.save(subject);
+
+        final Long subjectId = subject.getId();
         if(termIds != null && termIds.size() > 0) {
             termIds.parallelStream().forEach(termId-> {
                 Term term = termRepository.findById(termId);
-                terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
+                term.getSubjects().add(new Subject(subjectId));
+                terms.add(term);
+                termDtos.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
             });
         }
         if(classIds != null && classIds.size() > 0) {
             classIds.parallelStream().forEach(classId -> {
                 Class _class = classRepository.findById(classId);
+                _class.setSubject(new Subject(subjectId));
+                classes.add(_class);
                 Student student = _class.getStudent();
                 StudentDto studentDto = new StudentDto(student.getId(), student.getFirstName(), student.getLastName());
-                classes.add(new ClassDto(_class.getId(), studentDto));
+                classDtos.add(new ClassDto(_class.getId(), studentDto));
             });
         }
-        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), terms);
+        subject.getTerms().addAll(terms);
+        subject.getClasses().addAll(classes);
+        subject=subjectRepository.save(subject);
+        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), termDtos);
     }
 
     @PutMapping("subject/update/{subjectId}")
-    public SubjectDto updateById(@PathVariable("subjectId") Long subjectId) {
-        return null;
+    public SubjectDto updateById(@PathVariable("subjectId") Long subjectId,
+                                 @RequestParam(value = "termIds", required = false) List<Long> termIds,
+                                 @RequestParam(value = "classIds", required = false) List<Long> classIds,
+                                 @RequestBody(required = false) Subject subject) {
+        Subject currentSubject = subjectRepository.findById(subjectId);
+        List<Term> terms = new ArrayList<>();
+        List<TermDto> termDtos = new ArrayList<>();
+        List<Class> classes = new ArrayList<>();
+        List<ClassDto> classDtos = new ArrayList<>();
+
+        if(subject != null) {
+            subject.getTerms().clear();
+            subject.getClasses().clear();
+        } else {
+            subject = new Subject();
+        }
+        subject.setId(subjectId);
+        if(subject.getName() == null || subject.getName().trim().equals("")) {
+            subject.setName(currentSubject.getName());
+        }
+        if(subject.getDescription() == null || subject.getDescription().trim().equals("")) {
+            subject.setDescription(currentSubject.getDescription());
+        }
+        if(subject.getUnit() == null) {
+            subject.setUnit(currentSubject.getUnit());
+        }
+        if(termIds != null && termIds.size() > 0) {
+            currentSubject.getTerms().parallelStream().forEach(term -> term.getSubjects().remove(currentSubject));
+            termIds.parallelStream().forEach(termId-> {
+                Term term = termRepository.findById(termId);
+                term.getSubjects().add(new Subject(subjectId));
+                terms.add(term);
+                termDtos.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
+            });
+            subject.getTerms().addAll(terms);
+        } else {
+            subject.getTerms().addAll(currentSubject.getTerms());
+        }
+        if(classIds != null && classIds.size() > 0) {
+            currentSubject.getClasses().parallelStream().forEach(_class -> _class.setSubject(null));
+            classIds.parallelStream().forEach(classId -> {
+                Class _class = classRepository.findById(classId);
+                _class.setSubject(new Subject(subjectId));
+                classes.add(_class);
+                Student student = _class.getStudent();
+                StudentDto studentDto = new StudentDto(student.getId(), student.getFirstName(), student.getLastName());
+                classDtos.add(new ClassDto(_class.getId(), studentDto));
+            });
+            subject.getClasses().addAll(classes);
+        } else {
+            subject.getClasses().addAll(currentSubject.getClasses());
+        }
+        subjectRepository.save(subject);
+        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), termDtos);
+    }
+
+    @DeleteMapping("subject/delete/{subjectId}")
+    public SubjectDto deleteById(@PathVariable("subjectId") Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId);
+
+        subject.getTerms().parallelStream().forEach(term -> term.getSubjects().remove(subject));
+        subject.getClasses().parallelStream().forEach(_class-> _class.setSubject(null));
+
+        subject.getTerms().clear();
+        subject.getClasses().clear();
+
+        subjectRepository.save(subject);
+        subjectRepository.delete(subject);
+
+        List<TermDto> terms = new ArrayList<>();
+        subject.getTerms().parallelStream().forEach(term -> {
+            CurriculumDto curriculum = new CurriculumDto();
+            terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
+        });
+        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), terms);
     }
 }
