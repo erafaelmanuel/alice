@@ -34,8 +34,6 @@ public class Role {
         this.name = name;
     }
 
-    @JsonIgnore
-    @XmlTransient
     public List<User> getUsers() {
         return users;
     }

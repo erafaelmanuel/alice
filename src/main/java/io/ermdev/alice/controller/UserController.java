@@ -1,5 +1,7 @@
 package io.ermdev.alice.controller;
 
+import io.ermdev.alice.dto.RoleDto;
+import io.ermdev.alice.dto.UserDto;
 import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.entity.User;
 import io.ermdev.alice.repository.RoleRepository;
@@ -23,19 +25,29 @@ public class UserController {
     }
 
     @GetMapping("user/{userId}")
-    public User getUserById(@PathVariable("userId") Long userId) {
-        return userRepository.findOne(userId);
+    public UserDto getUserById(@PathVariable("userId") Long userId) {
+        User user = userRepository.findById(userId);
+
+        List<RoleDto> roles = new ArrayList<>();
+        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
     }
 
     @GetMapping("user/all")
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUser() {
+        List<UserDto> users = new ArrayList<>();
+        userRepository.findAll().parallelStream().forEach(user -> {
+            List<RoleDto> roles = new ArrayList<>();
+            user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+            users.add(new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles));
+        });
+        return users;
     }
 
     @PostMapping("user/add")
-    public User addUser(@RequestParam(value = "roleIds", required = false) List<Long> roleIds, @RequestBody User user) {
+    public UserDto addUser(@RequestParam(value = "roleIds", required = false) List<Long> roleIds, @RequestBody User user) {
         user.getRoles().clear();
-        if(roleIds.size() > 0) {
+        if(roleIds != null && roleIds.size() > 0) {
             List<Role> roles = new ArrayList<>();
             roleIds.parallelStream().forEach(roleId-> roles.add(roleRepository.findById(roleId)));
             user.getRoles().addAll(roles);
@@ -46,11 +58,13 @@ public class UserController {
         } else {
             user=userRepository.save(user);
         }
-        return user;
+        List<RoleDto> roles = new ArrayList<>();
+        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
     }
 
     @PutMapping("user/update/{userId}")
-    public User updateUserById(
+    public UserDto updateUserById(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
             @RequestBody User user) {
@@ -62,7 +76,7 @@ public class UserController {
             currentUser.setPassword(user.getPassword());
         }
         user.getRoles().clear();
-        if(roleIds.size() > 0) {
+        if(roleIds != null && roleIds.size() > 0) {
             List<Role> roles = new ArrayList<>();
             roleIds.parallelStream().forEach(roleId-> roles.add(roleRepository.findById(roleId)));
             user.getRoles().addAll(roles);
@@ -72,13 +86,19 @@ public class UserController {
             currentUser.getRoles().clear();
             currentUser.getRoles().addAll(user.getRoles());
         }
-        return userRepository.save(currentUser);
+        user = userRepository.save(currentUser);
+        List<RoleDto> roles = new ArrayList<>();
+        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
     }
 
     @DeleteMapping("user/delete/{userId}")
-    public User deleteUserById(@PathVariable("userId") Long userId) {
+    public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
+        List<RoleDto> roles = new ArrayList<>();
+        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+
         userRepository.delete(user);
-        return user;
+        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
     }
 }

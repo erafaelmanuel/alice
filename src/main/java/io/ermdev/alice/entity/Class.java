@@ -14,6 +14,10 @@ public class Class {
     @JoinColumn(name = "studentId")
     private Student student;
 
+    @ManyToOne
+    @JoinColumn(name = "subjectId")
+    private Subject subject;
+
     public Class(){}
 
     public Long getId() {
