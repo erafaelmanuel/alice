@@ -1,6 +1,7 @@
 package io.ermdev.alice.dto;
 
 import io.ermdev.alice.entity.Class;
+import io.ermdev.mapfierj.Excluded;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public class StudentDto {
     private Long id;
     private String firstName;
     private String lastName;
+
+    @Excluded
     private List<Class> classes = new ArrayList<>();
 
     public StudentDto() {}

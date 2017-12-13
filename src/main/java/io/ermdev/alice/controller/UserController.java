@@ -6,6 +6,7 @@ import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.entity.User;
 import io.ermdev.alice.repository.RoleRepository;
 import io.ermdev.alice.repository.UserRepository;
+import io.ermdev.mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +18,13 @@ public class UserController {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private SimpleMapper mapper;
 
     @Autowired
-    public UserController(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, SimpleMapper mapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.mapper = mapper;
     }
 
     @GetMapping("user/{userId}")
@@ -29,8 +32,11 @@ public class UserController {
         User user = userRepository.findById(userId);
 
         List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
-        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
+        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
+
+        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
+        userDto.setRoles(roles);
+        return userDto;
     }
 
     @GetMapping("user/all")
@@ -38,8 +44,11 @@ public class UserController {
         List<UserDto> users = new ArrayList<>();
         userRepository.findAll().parallelStream().forEach(user -> {
             List<RoleDto> roles = new ArrayList<>();
-            user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
-            users.add(new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles));
+            user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
+
+            UserDto userDto = mapper.set(user).mapTo(UserDto.class);
+            userDto.setRoles(roles);
+            users.add(userDto);
         });
         return users;
     }
@@ -59,8 +68,11 @@ public class UserController {
             user=userRepository.save(user);
         }
         List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
-        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
+        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
+
+        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
+        userDto.setRoles(roles);
+        return userDto;
     }
 
     @PutMapping("user/update/{userId}")
@@ -88,17 +100,22 @@ public class UserController {
         }
         user = userRepository.save(currentUser);
         List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
-        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
+        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
+
+        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
+        userDto.setRoles(roles);
+        return userDto;
     }
 
     @DeleteMapping("user/delete/{userId}")
     public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
         List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(new RoleDto(role.getId(), role.getName())));
+        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
 
         userRepository.delete(user);
-        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), roles);
+        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
+        userDto.setRoles(roles);
+        return userDto;
     }
 }

@@ -1,5 +1,7 @@
 package io.ermdev.alice.dto;
 
+import io.ermdev.mapfierj.Excluded;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,8 @@ public class TermDto {
     private Integer semester;
     private Integer year;
     private CurriculumDto curriculum;
+
+    @Excluded
     private List<SubjectDto> subjects = new ArrayList<>();
 
     public TermDto() {}

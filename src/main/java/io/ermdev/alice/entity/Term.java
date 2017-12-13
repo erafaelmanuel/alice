@@ -1,5 +1,8 @@
 package io.ermdev.alice.entity;
 
+import io.ermdev.alice.dto.CurriculumDto;
+import io.ermdev.mapfierj.MapTo;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,8 @@ public class Term {
     private Long id;
     private Integer semester;
     private Integer year;
+
+    @MapTo(CurriculumDto.class)
     @ManyToOne
     private Curriculum curriculum;
     @ManyToMany(fetch = FetchType.EAGER)

@@ -8,6 +8,7 @@ import io.ermdev.alice.entity.Term;
 import io.ermdev.alice.repository.ClassRepository;
 import io.ermdev.alice.repository.SubjectRepository;
 import io.ermdev.alice.repository.TermRepository;
+import io.ermdev.mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,24 +21,27 @@ public class SubjectController {
     private SubjectRepository subjectRepository;
     private TermRepository termRepository;
     private ClassRepository classRepository;
+    private SimpleMapper mapper;
 
     @Autowired
     public SubjectController(SubjectRepository subjectRepository, TermRepository termRepository,
-                             ClassRepository classRepository) {
+                             ClassRepository classRepository, SimpleMapper mapper) {
         this.subjectRepository = subjectRepository;
         this.termRepository = termRepository;
         this.classRepository = classRepository;
+        this.mapper = mapper;
     }
 
     @GetMapping("subject/{subjectId}")
     public SubjectDto getSubjectById(@PathVariable("subjectId") Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId);
         List<TermDto> terms = new ArrayList<>();
-        subject.getTerms().parallelStream().forEach(term -> {
-            CurriculumDto curriculum = new CurriculumDto();
-            terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
-        });
-        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), terms);
+        subject.getTerms().parallelStream().forEach(term ->
+                terms.add(mapper.set(term).mapTo(TermDto.class)));
+
+        SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+        subjectDto.setTerms(terms);
+        return subjectDto;
     }
 
     @GetMapping("subject/all")
@@ -45,11 +49,12 @@ public class SubjectController {
         List<SubjectDto> subjects = new ArrayList<>();
         subjectRepository.findAll().parallelStream().forEach(subject -> {
             List<TermDto> terms = new ArrayList<>();
-            subject.getTerms().parallelStream().forEach(term -> {
-                CurriculumDto curriculum = new CurriculumDto();
-                terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
-            });
-            subjects.add(new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), terms));
+            subject.getTerms().parallelStream().forEach(term ->
+                    terms.add(mapper.set(term).mapTo(TermDto.class)));
+
+            SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+            subjectDto.setTerms(terms);
+            subjects.add(subjectDto);
         });
         return subjects;
     }
@@ -63,6 +68,7 @@ public class SubjectController {
         List<Class> classes = new ArrayList<>();
         List<ClassDto> classDtos = new ArrayList<>();
 
+        //Make it persist or detach object
         subject.getTerms().clear();
         subject.getClasses().clear();
         subject=subjectRepository.save(subject);
@@ -73,23 +79,25 @@ public class SubjectController {
                 Term term = termRepository.findById(termId);
                 term.getSubjects().add(new Subject(subjectId));
                 terms.add(term);
-                termDtos.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
+                termDtos.add(mapper.set(term).mapTo(TermDto.class));
             });
+            subject.getTerms().addAll(terms);
         }
         if(classIds != null && classIds.size() > 0) {
             classIds.parallelStream().forEach(classId -> {
                 Class _class = classRepository.findById(classId);
                 _class.setSubject(new Subject(subjectId));
                 classes.add(_class);
-                Student student = _class.getStudent();
-                StudentDto studentDto = new StudentDto(student.getId(), student.getFirstName(), student.getLastName());
-                classDtos.add(new ClassDto(_class.getId(), studentDto));
+                classDtos.add(mapper.set(_class).mapTo(ClassDto.class));
             });
+            subject.getClasses().addAll(classes);
         }
-        subject.getTerms().addAll(terms);
-        subject.getClasses().addAll(classes);
         subject=subjectRepository.save(subject);
-        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), termDtos);
+
+        SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+        subjectDto.setTerms(termDtos);
+        subjectDto.setClasses(classDtos);
+        return subjectDto;
     }
 
     @PutMapping("subject/update/{subjectId}")
@@ -125,7 +133,7 @@ public class SubjectController {
                 Term term = termRepository.findById(termId);
                 term.getSubjects().add(new Subject(subjectId));
                 terms.add(term);
-                termDtos.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
+                termDtos.add(mapper.set(term).mapTo(TermDto.class));
             });
             subject.getTerms().addAll(terms);
         } else {
@@ -137,16 +145,16 @@ public class SubjectController {
                 Class _class = classRepository.findById(classId);
                 _class.setSubject(new Subject(subjectId));
                 classes.add(_class);
-                Student student = _class.getStudent();
-                StudentDto studentDto = new StudentDto(student.getId(), student.getFirstName(), student.getLastName());
-                classDtos.add(new ClassDto(_class.getId(), studentDto));
+                classDtos.add(mapper.set(_class).mapTo(ClassDto.class));
             });
             subject.getClasses().addAll(classes);
         } else {
             subject.getClasses().addAll(currentSubject.getClasses());
         }
         subjectRepository.save(subject);
-        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), termDtos);
+        SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+        subjectDto.setTerms(termDtos);
+        return subjectDto;
     }
 
     @DeleteMapping("subject/delete/{subjectId}")
@@ -163,10 +171,11 @@ public class SubjectController {
         subjectRepository.delete(subject);
 
         List<TermDto> terms = new ArrayList<>();
-        subject.getTerms().parallelStream().forEach(term -> {
-            CurriculumDto curriculum = new CurriculumDto();
-            terms.add(new TermDto(term.getId(), term.getSemester(), term.getYear()));
-        });
-        return new SubjectDto(subject.getId(), subject.getName(), subject.getDescription(), subject.getUnit(), terms);
+        subject.getTerms().parallelStream().forEach(term ->
+                terms.add(mapper.set(term).mapTo(TermDto.class)));
+
+        SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+        subjectDto.setTerms(terms);
+        return subjectDto;
     }
 }

@@ -1,6 +1,6 @@
 package io.ermdev.alice.dto;
 
-import io.ermdev.alice.entity.Term;
+import io.ermdev.mapfierj.Excluded;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -13,7 +13,11 @@ public class SubjectDto {
     private String name;
     private String description;
     private Integer unit;
+
+    @Excluded
     private List<TermDto> terms = new ArrayList<>();
+
+    @Excluded
     private List<ClassDto> classes = new ArrayList<>();
 
     public SubjectDto() {}
