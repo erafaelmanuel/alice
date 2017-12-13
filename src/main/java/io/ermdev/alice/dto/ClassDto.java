@@ -1,6 +1,12 @@
 package io.ermdev.alice.dto;
 
+import io.ermdev.alice.entity.Schedule;
+import io.ermdev.alice.entity.Teacher;
+import io.ermdev.mapfierj.Excluded;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 public class ClassDto {
@@ -8,6 +14,10 @@ public class ClassDto {
     private Long id;
     private StudentDto student;
     private SubjectDto subject;
+    private Teacher teacher;
+
+    @Excluded
+    private List<Schedule> schedules = new ArrayList<>();
 
     public ClassDto() {}
 

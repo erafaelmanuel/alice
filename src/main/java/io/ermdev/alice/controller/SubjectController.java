@@ -1,8 +1,9 @@
 package io.ermdev.alice.controller;
 
-import io.ermdev.alice.dto.*;
+import io.ermdev.alice.dto.ClassDto;
+import io.ermdev.alice.dto.SubjectDto;
+import io.ermdev.alice.dto.TermDto;
 import io.ermdev.alice.entity.Class;
-import io.ermdev.alice.entity.Student;
 import io.ermdev.alice.entity.Subject;
 import io.ermdev.alice.entity.Term;
 import io.ermdev.alice.repository.ClassRepository;
@@ -154,6 +155,7 @@ public class SubjectController {
         subjectRepository.save(subject);
         SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
         subjectDto.setTerms(termDtos);
+        subjectDto.setClasses(classDtos);
         return subjectDto;
     }
 
