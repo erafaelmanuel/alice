@@ -33,8 +33,7 @@ public class ClassController {
 
     @GetMapping("class/{classId}")
     public ClassDto getById(@PathVariable("classId") Long classId) {
-        Class _class = classRepository.findById(classId);
-        return mapper.set(_class).mapTo(ClassDto.class);
+        return mapper.set(classRepository.findById(classId)).mapTo(ClassDto.class);
     }
 
     @GetMapping("class/all")
@@ -53,9 +52,8 @@ public class ClassController {
 
         _class.setStudent(student);
         _class.setSubject(subject);
-        _class = classRepository.save(_class);
 
-        return mapper.set(_class).mapTo(ClassDto.class);
+        return mapper.set(classRepository.save(_class)).mapTo(ClassDto.class);
     }
 
     @PutMapping("class/update/{classId}")
@@ -76,14 +74,14 @@ public class ClassController {
         _class.setId(classId);
         _class.setStudent(student);
         _class.setSubject(subject);
-        classRepository.save(_class);
 
-        return mapper.set(_class).mapTo(ClassDto.class);
+        return mapper.set(classRepository.save(_class)).mapTo(ClassDto.class);
     }
 
     @DeleteMapping("class/delete/{classId}")
     public ClassDto deleteById(@PathVariable("classId") Long classId) {
         Class _class = classRepository.findOne(classId);
+
         _class.setStudent(null);
         _class.setSubject(null);
 
