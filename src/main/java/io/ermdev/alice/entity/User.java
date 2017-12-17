@@ -1,9 +1,9 @@
 package io.ermdev.alice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ermdev.alice.dto.RoleDto;
+import io.ermdev.mapfierj.MapTo;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,8 @@ public class User {
     private Long id;
     private String username;
     private String password;
+
+    @MapTo(value = RoleDto.class, collection = true)
     @ManyToMany
     @JoinTable(name = "tbluser_role", joinColumns = @JoinColumn(name = "userId"),
     inverseJoinColumns = @JoinColumn(name = "roleId"))

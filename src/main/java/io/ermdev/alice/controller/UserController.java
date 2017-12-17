@@ -1,6 +1,5 @@
 package io.ermdev.alice.controller;
 
-import io.ermdev.alice.dto.RoleDto;
 import io.ermdev.alice.dto.UserDto;
 import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.entity.User;
@@ -29,27 +28,13 @@ public class UserController {
 
     @GetMapping("user/{userId}")
     public UserDto getUserById(@PathVariable("userId") Long userId) {
-        User user = userRepository.findById(userId);
-
-        List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
-
-        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
-        userDto.setRoles(roles);
-        return userDto;
+        return mapper.set(userRepository.findById(userId)).mapTo(UserDto.class);
     }
 
     @GetMapping("user/all")
     public List<UserDto> getAllUser() {
         List<UserDto> users = new ArrayList<>();
-        userRepository.findAll().parallelStream().forEach(user -> {
-            List<RoleDto> roles = new ArrayList<>();
-            user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
-
-            UserDto userDto = mapper.set(user).mapTo(UserDto.class);
-            userDto.setRoles(roles);
-            users.add(userDto);
-        });
+        userRepository.findAll().parallelStream().forEach(user -> users.add(mapper.set(user).mapTo(UserDto.class)));
         return users;
     }
 
@@ -67,12 +52,7 @@ public class UserController {
         } else {
             user=userRepository.save(user);
         }
-        List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
-
-        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
-        userDto.setRoles(roles);
-        return userDto;
+        return mapper.set(user).mapTo(UserDto.class);
     }
 
     @PutMapping("user/update/{userId}")
@@ -98,24 +78,14 @@ public class UserController {
             currentUser.getRoles().clear();
             currentUser.getRoles().addAll(user.getRoles());
         }
-        user = userRepository.save(currentUser);
-        List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
-
-        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
-        userDto.setRoles(roles);
-        return userDto;
+        return mapper.set(userRepository.save(currentUser)).mapTo(UserDto.class);
     }
 
     @DeleteMapping("user/delete/{userId}")
     public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
-        List<RoleDto> roles = new ArrayList<>();
-        user.getRoles().parallelStream().forEach(role -> roles.add(mapper.set(role).mapTo(RoleDto.class)));
-
         userRepository.delete(user);
-        UserDto userDto = mapper.set(user).mapTo(UserDto.class);
-        userDto.setRoles(roles);
-        return userDto;
+
+        return mapper.set(user).mapTo(UserDto.class);
     }
 }
