@@ -1,5 +1,9 @@
 package io.ermdev.alice.entity;
 
+import io.ermdev.alice.dto.ClassDto;
+import io.ermdev.alice.dto.TermDto;
+import io.ermdev.mapfierj.MapTo;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

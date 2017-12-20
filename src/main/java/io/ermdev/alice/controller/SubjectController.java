@@ -35,14 +35,7 @@ public class SubjectController {
 
     @GetMapping("subject/{subjectId}")
     public SubjectDto getSubjectById(@PathVariable("subjectId") Long subjectId) {
-        Subject subject = subjectRepository.findById(subjectId);
-        List<TermDto> terms = new ArrayList<>();
-        subject.getTerms().parallelStream().forEach(term ->
-                terms.add(mapper.set(term).mapTo(TermDto.class)));
-
-        SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
-        subjectDto.setTerms(terms);
-        return subjectDto;
+        return mapper.set(subjectRepository.findById(subjectId)).mapTo(SubjectDto.class);
     }
 
     @GetMapping("subject/all")
