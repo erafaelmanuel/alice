@@ -36,6 +36,15 @@ public class RoleController {
         return mapper.set(roleRepository.save(role)).mapTo(RoleDto.class);
     }
 
+    @PutMapping("role/{roleId}")
+    public RoleDto updateById(@PathVariable("roleId") Long roleId, @RequestBody Role role) {
+        Role current_role = roleRepository.findById(roleId);
+        if(role.getName() != null && !role.getName().trim().isEmpty()) {
+            current_role.setName(role.getName());
+        }
+        return mapper.set(roleRepository.save(role)).mapTo(RoleDto.class);
+    }
+
     @DeleteMapping("role/{roleId}")
     public RoleDto deleteById(@PathVariable("roleId") Long roleId) {
         Role role = roleRepository.findById(roleId);
