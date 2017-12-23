@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.github.erafaelmanuel</groupId>
 			<artifactId>mapfierJ</artifactId>
-			<version>e4bf83412e</version>
+			<version>v1.0-beta.3.2</version>
 		</dependency>
 	</dependencies>
 
