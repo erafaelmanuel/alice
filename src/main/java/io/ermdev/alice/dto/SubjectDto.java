@@ -14,7 +14,6 @@ public class SubjectDto {
     private String description;
     private Integer unit;
 
-    @Excluded
     private List<TermDto> terms = new ArrayList<>();
 
     @Excluded

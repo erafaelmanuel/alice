@@ -33,9 +33,7 @@ public class UserController {
 
     @GetMapping("user/all")
     public List<UserDto> getAllUser() {
-        List<UserDto> users = new ArrayList<>();
-        userRepository.findAll().parallelStream().forEach(user -> users.add(mapper.set(user).mapTo(UserDto.class)));
-        return users;
+        return mapper.set(userRepository.findAll()).mapToList(UserDto.class);
     }
 
     @PostMapping("user/add")

@@ -40,17 +40,18 @@ public class SubjectController {
 
     @GetMapping("subject/all")
     public List<SubjectDto> getAllSubject() {
-        List<SubjectDto> subjects = new ArrayList<>();
-        subjectRepository.findAll().parallelStream().forEach(subject -> {
-            List<TermDto> terms = new ArrayList<>();
-            subject.getTerms().parallelStream().forEach(term ->
-                    terms.add(mapper.set(term).mapTo(TermDto.class)));
-
-            SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
-            subjectDto.setTerms(terms);
-            subjects.add(subjectDto);
-        });
-        return subjects;
+//        List<SubjectDto> subjects = new ArrayList<>();
+//        subjectRepository.findAll().parallelStream().forEach(subject -> {
+//            List<TermDto> terms = new ArrayList<>();
+//            subject.getTerms().parallelStream().forEach(term ->
+//                    terms.add(mapper.set(term).mapTo(TermDto.class)));
+//
+//            SubjectDto subjectDto = mapper.set(subject).mapTo(SubjectDto.class);
+//            subjectDto.setTerms(terms);
+//            subjects.add(subjectDto);
+//        });
+        //return subjects;
+        return mapper.set(subjectRepository.findAll()).mapToList(SubjectDto.class);
     }
 
     @PostMapping("subject/add")
