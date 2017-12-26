@@ -1,7 +1,5 @@
 package io.ermdev.alice.entity;
 
-import io.ermdev.alice.dto.UserDto;
-import io.ermdev.mapfierj.MapTo;
 import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
@@ -17,8 +15,6 @@ public class Role {
     @Id
     private Long id;
     private String name;
-
-    @MapTo(value = UserDto.class, collection = true)
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 

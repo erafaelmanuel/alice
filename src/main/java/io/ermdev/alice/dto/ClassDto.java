@@ -15,7 +15,6 @@ public class ClassDto {
     private StudentDto student;
     private SubjectDto subject;
     private Teacher teacher;
-
     @Excluded
     private List<Schedule> schedules = new ArrayList<>();
 

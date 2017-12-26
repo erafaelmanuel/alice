@@ -11,7 +11,6 @@ public class SubjectDto {
     private String name;
     private String description;
     private Integer unit;
-
     private List<TermDto> terms = new ArrayList<>();
     private List<ClassDto> classes = new ArrayList<>();
 

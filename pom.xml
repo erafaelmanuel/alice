@@ -53,9 +53,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.erafaelmanuel</groupId>
-			<artifactId>mapfierJ</artifactId>
-			<version>v1.0-beta.4.0</version>
+			<groupId>io.ermdev.mapfierj</groupId>
+			<artifactId>mapfierj</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

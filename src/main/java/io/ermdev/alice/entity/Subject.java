@@ -1,8 +1,5 @@
 package io.ermdev.alice.entity;
 
-import io.ermdev.alice.dto.ClassDto;
-import io.ermdev.alice.dto.TermDto;
-import io.ermdev.mapfierj.MapTo;
 import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
@@ -20,12 +17,8 @@ public class Subject {
     private String name;
     private String description;
     private Integer unit;
-
-    @MapTo(value = TermDto.class, collection = true)
     @ManyToMany(mappedBy = "subjects")
     private List<Term> terms = new ArrayList<>();
-
-    @MapTo(value = ClassDto.class, collection = true)
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<Class> classes = new ArrayList<>();
 

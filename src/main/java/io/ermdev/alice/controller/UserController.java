@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("user/{userId}")
     public UserDto getUserById(@PathVariable("userId") Long userId) {
-        return mapper.set(userRepository.findById(userId)).mapTo(UserDto.class);
+        return mapper.set(userRepository.findById(userId)).mapAllTo(UserDto.class);
     }
 
     @GetMapping("user/all")
@@ -50,7 +50,7 @@ public class UserController {
         } else {
             user=userRepository.save(user);
         }
-        return mapper.set(user).mapTo(UserDto.class);
+        return mapper.set(user).mapAllTo(UserDto.class);
     }
 
     @PutMapping("user/update/{userId}")
@@ -76,14 +76,13 @@ public class UserController {
             currentUser.getRoles().clear();
             currentUser.getRoles().addAll(user.getRoles());
         }
-        return mapper.set(userRepository.save(currentUser)).mapTo(UserDto.class);
+        return mapper.set(userRepository.save(currentUser)).mapAllTo(UserDto.class);
     }
 
     @DeleteMapping("user/delete/{userId}")
     public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
         userRepository.delete(user);
-
-        return mapper.set(user).mapTo(UserDto.class);
+        return mapper.set(user).mapAllTo(UserDto.class);
     }
 }

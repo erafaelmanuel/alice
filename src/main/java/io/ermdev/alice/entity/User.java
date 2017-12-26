@@ -1,7 +1,5 @@
 package io.ermdev.alice.entity;
 
-import io.ermdev.alice.dto.RoleDto;
-import io.ermdev.mapfierj.MapTo;
 import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
@@ -18,8 +16,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-
-    @MapTo(value = RoleDto.class, collection = true)
     @ManyToMany
     @JoinTable(name = "tbluser_role", joinColumns = @JoinColumn(name = "userId"),
     inverseJoinColumns = @JoinColumn(name = "roleId"))

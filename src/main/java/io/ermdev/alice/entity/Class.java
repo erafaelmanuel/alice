@@ -1,9 +1,5 @@
 package io.ermdev.alice.entity;
 
-import io.ermdev.alice.dto.StudentDto;
-import io.ermdev.alice.dto.SubjectDto;
-import io.ermdev.alice.dto.TeacherDto;
-import io.ermdev.mapfierj.MapTo;
 import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
@@ -18,18 +14,12 @@ public class Class {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @MapTo(StudentDto.class)
     @ManyToOne
     @JoinColumn(name = "studentId")
     private Student student;
-
-    @MapTo(SubjectDto.class)
     @ManyToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
-
-    @MapTo(TeacherDto.class)
     @ManyToOne
     @JoinColumn(name = "teacherId")
     private Teacher teacher;
