@@ -1,12 +1,14 @@
 package io.ermdev.alice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ermdev.alice.dto.UserDto;
+import io.ermdev.mapfierj.MapTo;
+import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoRepeat
 @Table(name="tblrole")
 @Entity
 public class Role {
@@ -15,6 +17,8 @@ public class Role {
     @Id
     private Long id;
     private String name;
+
+    @MapTo(value = UserDto.class, collection = true)
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 
@@ -40,5 +44,14 @@ public class Role {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

@@ -4,11 +4,13 @@ import io.ermdev.alice.dto.StudentDto;
 import io.ermdev.alice.dto.SubjectDto;
 import io.ermdev.alice.dto.TeacherDto;
 import io.ermdev.mapfierj.MapTo;
+import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoRepeat
 @Table(name="tblclass")
 @Entity
 public class Class {

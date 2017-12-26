@@ -13,7 +13,6 @@ public class ClassDto {
 
     private Long id;
     private StudentDto student;
-    @Excluded
     private SubjectDto subject;
     private Teacher teacher;
 

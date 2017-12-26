@@ -1,7 +1,5 @@
 package io.ermdev.alice.dto;
 
-import io.ermdev.mapfierj.Excluded;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,6 @@ public class RoleDto {
     private Long id;
     private String name;
 
-    @Excluded
     private List<UserDto> users = new ArrayList<>();
 
     public RoleDto() {}
@@ -50,5 +47,14 @@ public class RoleDto {
 
     public void setUsers(List<UserDto> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "RoleDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

@@ -2,11 +2,13 @@ package io.ermdev.alice.entity;
 
 import io.ermdev.alice.dto.RoleDto;
 import io.ermdev.mapfierj.MapTo;
+import io.ermdev.mapfierj.NoRepeat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoRepeat
 @Table(name = "tbluser")
 @Entity
 public class User {
