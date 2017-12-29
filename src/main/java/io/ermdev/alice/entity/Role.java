@@ -1,6 +1,6 @@
 package io.ermdev.alice.entity;
 
-import io.ermdev.mapfierj.NoRepeat;
+import io.ermdev.mapfierj.core.NoRepeat;
 
 import javax.persistence.*;
 import java.util.ArrayList;

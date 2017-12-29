@@ -3,7 +3,7 @@ package io.ermdev.alice.controller;
 import io.ermdev.alice.dto.RoleDto;
 import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.repository.RoleRepository;
-import io.ermdev.mapfierj.SimpleMapper;
+import io.ermdev.mapfierj.core.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

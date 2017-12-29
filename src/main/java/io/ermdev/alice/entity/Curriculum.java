@@ -1,8 +1,8 @@
 package io.ermdev.alice.entity;
 
 import io.ermdev.alice.dto.TermDto;
-import io.ermdev.mapfierj.MapTo;
-import io.ermdev.mapfierj.NoRepeat;
+import io.ermdev.mapfierj.core.MapTo;
+import io.ermdev.mapfierj.core.NoRepeat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
