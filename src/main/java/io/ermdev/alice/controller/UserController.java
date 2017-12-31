@@ -6,6 +6,7 @@ import io.ermdev.alice.entity.User;
 import io.ermdev.alice.repository.RoleRepository;
 import io.ermdev.alice.repository.UserRepository;
 import io.ermdev.mapfierj.core.ModelMapper;
+import io.ermdev.mapfierj.core.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +18,10 @@ public class UserController {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
-    private ModelMapper mapper;
+    private SimpleMapper mapper;
 
     @Autowired
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, ModelMapper mapper) {
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, SimpleMapper mapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.mapper = mapper;
@@ -28,14 +29,12 @@ public class UserController {
 
     @GetMapping("user/{userId}")
     public UserDto getUserById(@PathVariable("userId") Long userId) {
-        return mapper.set(userRepository.findById(userId))
-                .getTransaction().mapAllTo(UserDto.class);
+        return mapper.set(userRepository.findById(userId)).mapAllTo(UserDto.class);
     }
 
     @GetMapping("user/all")
     public List<UserDto> getAllUser() {
-        return mapper.set(userRepository.findAll())
-                .getTransaction().mapToList(UserDto.class);
+        return mapper.set(userRepository.findAll()).mapToList(UserDto.class);
     }
 
     @PostMapping("user/add")
@@ -52,8 +51,7 @@ public class UserController {
         } else {
             user=userRepository.save(user);
         }
-        return mapper.set(user)
-                .getTransaction().mapAllTo(UserDto.class);
+        return mapper.set(user).mapAllTo(UserDto.class);
     }
 
     @PutMapping("user/update/{userId}")
@@ -79,15 +77,13 @@ public class UserController {
             currentUser.getRoles().clear();
             currentUser.getRoles().addAll(user.getRoles());
         }
-        return mapper.set(userRepository.save(currentUser))
-                .getTransaction().mapAllTo(UserDto.class);
+        return mapper.set(userRepository.save(currentUser)).mapAllTo(UserDto.class);
     }
 
     @DeleteMapping("user/delete/{userId}")
     public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
         userRepository.delete(user);
-        return mapper.set(user)
-                .getTransaction().mapAllTo(UserDto.class);
+        return mapper.set(user).mapAllTo(UserDto.class);
     }
 }
