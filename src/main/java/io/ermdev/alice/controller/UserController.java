@@ -5,8 +5,7 @@ import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.entity.User;
 import io.ermdev.alice.repository.RoleRepository;
 import io.ermdev.alice.repository.UserRepository;
-import io.ermdev.mapfierj.core.ModelMapper;
-import io.ermdev.mapfierj.core.SimpleMapper;
+import io.ermdev.mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

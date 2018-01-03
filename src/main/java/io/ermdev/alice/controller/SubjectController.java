@@ -7,7 +7,7 @@ import io.ermdev.alice.entity.Term;
 import io.ermdev.alice.repository.ClassRepository;
 import io.ermdev.alice.repository.SubjectRepository;
 import io.ermdev.alice.repository.TermRepository;
-import io.ermdev.mapfierj.core.SimpleMapper;
+import io.ermdev.mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
