@@ -36,7 +36,7 @@ public class UserController {
         return mapper.set(userRepository.findAll()).mapToList(UserDto.class);
     }
 
-    @PostMapping("user/add")
+    @PostMapping("user")
     public UserDto addUser(@RequestParam(value = "roleIds", required = false) List<Long> roleIds, @RequestBody User user) {
         user.getRoles().clear();
         if(roleIds != null && roleIds.size() > 0) {
@@ -53,7 +53,7 @@ public class UserController {
         return mapper.set(user).mapAllTo(UserDto.class);
     }
 
-    @PutMapping("user/update/{userId}")
+    @PutMapping("user/{userId}")
     public UserDto updateUserById(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
@@ -79,7 +79,7 @@ public class UserController {
         return mapper.set(userRepository.save(currentUser)).mapAllTo(UserDto.class);
     }
 
-    @DeleteMapping("user/delete/{userId}")
+    @DeleteMapping("user/{userId}")
     public UserDto deleteUserById(@PathVariable("userId") Long userId) {
         User user = userRepository.findOne(userId);
         userRepository.delete(user);
