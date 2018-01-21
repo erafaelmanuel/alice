@@ -14,11 +14,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String username;
+
     private String password;
+
     @ManyToMany
     @JoinTable(name = "tbluser_role", joinColumns = @JoinColumn(name = "userId"),
-    inverseJoinColumns = @JoinColumn(name = "roleId"))
+            inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles = new ArrayList<>();
 
     public User(){}
