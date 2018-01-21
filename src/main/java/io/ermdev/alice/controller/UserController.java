@@ -13,76 +13,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("user")
 public class UserController {
 
     private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private SimpleMapper mapper;
 
     @Autowired
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, SimpleMapper mapper) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.mapper = mapper;
     }
 
-    @GetMapping("user/{userId}")
-    public UserDto getUserById(@PathVariable("userId") Long userId) {
-        return mapper.set(userRepository.findById(userId)).mapAllTo(UserDto.class);
+    @GetMapping("{userId}")
+    public User getById(@PathVariable("userId") Long userId) {
+        return userRepository.findById(userId);
     }
 
-    @GetMapping("user/all")
-    public List<UserDto> getAllUser() {
-        return mapper.set(userRepository.findAll()).mapToList(UserDto.class);
+    @GetMapping("all")
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
-    @PostMapping("user")
-    public UserDto addUser(@RequestParam(value = "roleIds", required = false) List<Long> roleIds, @RequestBody User user) {
-        user.getRoles().clear();
-        if(roleIds != null && roleIds.size() > 0) {
-            List<Role> roles = new ArrayList<>();
-            roleIds.parallelStream().forEach(roleId-> roles.add(roleRepository.findById(roleId)));
-            user.getRoles().addAll(roles);
-        }
-        if(user.getRoles().size() > 0) {
-            user.getRoles().parallelStream().forEach(role -> roleRepository.save(role));
-            user = userRepository.save(user);
-        } else {
-            user=userRepository.save(user);
-        }
-        return mapper.set(user).mapAllTo(UserDto.class);
-    }
-
-    @PutMapping("user/{userId}")
-    public UserDto updateUserById(
-            @PathVariable("userId") Long userId,
-            @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
-            @RequestBody User user) {
-        User currentUser = userRepository.findOne(userId);
-        if(user.getUsername() != null) {
-            currentUser.setUsername(user.getUsername());
-        }
-        if(user.getPassword() != null) {
-            currentUser.setPassword(user.getPassword());
-        }
-        user.getRoles().clear();
-        if(roleIds != null && roleIds.size() > 0) {
-            List<Role> roles = new ArrayList<>();
-            roleIds.parallelStream().forEach(roleId-> roles.add(roleRepository.findById(roleId)));
-            user.getRoles().addAll(roles);
-        }
-        if(user.getRoles().size() > 0) {
-            user.getRoles().parallelStream().forEach(role -> roleRepository.save(role));
-            currentUser.getRoles().clear();
-            currentUser.getRoles().addAll(user.getRoles());
-        }
-        return mapper.set(userRepository.save(currentUser)).mapAllTo(UserDto.class);
-    }
-
-    @DeleteMapping("user/{userId}")
-    public UserDto deleteUserById(@PathVariable("userId") Long userId) {
-        User user = userRepository.findOne(userId);
-        userRepository.delete(user);
-        return mapper.set(user).mapAllTo(UserDto.class);
+    @PostMapping
+    public User add(@RequestBody User user) {
+        return userRepository.save(user);
     }
 }
