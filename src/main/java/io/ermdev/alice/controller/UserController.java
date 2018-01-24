@@ -1,15 +1,10 @@
 package io.ermdev.alice.controller;
 
-import io.ermdev.alice.dto.UserDto;
-import io.ermdev.alice.entity.Role;
 import io.ermdev.alice.entity.User;
-import io.ermdev.alice.repository.RoleRepository;
 import io.ermdev.alice.repository.UserRepository;
-import io.ermdev.mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
