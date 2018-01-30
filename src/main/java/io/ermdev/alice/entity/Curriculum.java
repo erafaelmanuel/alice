@@ -16,7 +16,7 @@ public class Curriculum {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @MapTo(value = TermDto.class, collection = true)
+    @MapTo(value = TermDto.class, strategy = MapTo.Strategy.COLLECTION)
     @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL)
     private List<Term> terms = new ArrayList<>();
 
