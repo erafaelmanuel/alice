@@ -1,7 +1,7 @@
 package io.ermdev.alice.bean;
 
-import io.ermdev.mapfierj.ModelMapper;
-import io.ermdev.mapfierj.SimpleMapper;
+import mapfierj.ModelMapper;
+import mapfierj.SimpleMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

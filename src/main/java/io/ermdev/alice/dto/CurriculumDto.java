@@ -1,7 +1,7 @@
 package io.ermdev.alice.dto;
 
 import io.ermdev.alice.entity.Term;
-import io.ermdev.mapfierj.Excluded;
+import mapfierj.Excluded;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;

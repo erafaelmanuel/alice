@@ -1,7 +1,7 @@
 package io.ermdev.alice.dto;
 
 import io.ermdev.alice.entity.Class;
-import io.ermdev.mapfierj.MapTo;
+import mapfierj.MapTo;
 
 import java.sql.Time;
 

@@ -7,7 +7,7 @@ import io.ermdev.alice.entity.Subject;
 import io.ermdev.alice.repository.ClassRepository;
 import io.ermdev.alice.repository.StudentRepository;
 import io.ermdev.alice.repository.SubjectRepository;
-import io.ermdev.mapfierj.SimpleMapper;
+import mapfierj.SimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +39,14 @@ public class ClassController {
     @GetMapping("class/all")
     public List<ClassDto> getAll() {
         List<ClassDto> classes = new ArrayList<>();
-        classRepository.findAll().parallelStream().forEach(_class->
+        classRepository.findAll().parallelStream().forEach(_class ->
                 classes.add(mapper.set(_class).mapTo(ClassDto.class)));
         return classes;
     }
 
     @PostMapping("class/add")
     public ClassDto add(@RequestParam(value = "studentId", required = true) Long studentId,
-                     @RequestParam(value = "subjectId", required = true) Long subjectId, @RequestBody Class _class) {
+                        @RequestParam(value = "subjectId", required = true) Long subjectId, @RequestBody Class _class) {
         Student student = studentRepository.findById(studentId);
         Subject subject = subjectRepository.findById(subjectId);
 
@@ -65,10 +65,10 @@ public class ClassController {
         Student student = currentClass.getStudent();
         Subject subject = currentClass.getSubject();
 
-        if(studentId != null) {
+        if (studentId != null) {
             student = studentRepository.findById(studentId);
         }
-        if(subjectId != null) {
+        if (subjectId != null) {
             subject = subjectRepository.findById(subjectId);
         }
         _class.setId(classId);
